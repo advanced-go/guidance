@@ -11,10 +11,11 @@ type CostFunction struct {
 }
 
 type EntryV1 struct {
-	Origin       core.Origin
-	Status       int    `json:"status"`
-	CreatedTS    string `json:"created-ts"`
-	UpdatedTS    string `json:"updated-ts"`
+	Origin    core.Origin
+	Status    string `json:"status"`
+	CreatedTS string `json:"created-ts"`
+	UpdatedTS string `json:"updated-ts"`
+
 	CostFunction CostFunction
 
 	// Routing
