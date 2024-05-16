@@ -1,21 +1,17 @@
 package http
 
 import (
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"strings"
 )
 
-const (
-	ModulePath = "github/advanced-go/guidance"
-	PkgPath    = ModulePath + "/http"
-)
-
 // https://localhost:8081/github/advanced-go/guidance:v1/search?q=golang
 
 func Exchange(r *http.Request) (*http.Response, *core.Status) {
-	_, status := httpx.ValidateRequest(r, ModulePath)
+	_, status := httpx.ValidateRequest(r, module.Authority)
 	if !status.OK() {
 		return httpx.NewErrorResponse(status), status
 	}

@@ -1,35 +1,31 @@
 package types
 
+import "github.com/advanced-go/stdlib/core"
+
 // https://localhost:8081/github/advanced-go/guidance:region/zone/subzone/app
-
-type Timeout struct {
-	Duration string `json:"duration"`
-}
-
-type RateLimiter struct {
-	Limit string `json:"limit"`
-	Burst int    `json:"burst"`
-}
+// guidance:us-west.zone1.sub-zone.app
+// guidance:us-east.zone2..app
 
 type CostFunction struct {
 	Threshold string `json:"threshold"`
 }
 
-type Routing struct {
-	Active    string
-	Primary   string
-	Secondary string
-	//FailureThreshold int // For failures
-	StepPercentage int // Steps for traffic routing
-}
-
 type EntryV1 struct {
-	Name         string `json:"name"`
+	Origin       core.Origin
 	Status       int    `json:"status"`
 	CreatedTS    string `json:"created-ts"`
 	UpdatedTS    string `json:"updated-ts"`
 	CostFunction CostFunction
-	Routing      Routing
-	Timeout      Timeout
-	RateLimiter  RateLimiter
+
+	// Routing
+	PrimaryRoute   string `json:"primary-route"`
+	SecondaryRoute string `json:"secondary-route"`
+	SecondaryPct   string `json:"secondary-pct"`
+
+	// Timeout
+	Timeout string `json:"timeout"`
+
+	// Rate Limiting
+	RateLimit string `json:"rate-limit"`
+	RateBurst string `json:"rate-burst"`
 }
