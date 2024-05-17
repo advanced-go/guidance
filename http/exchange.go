@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// https://localhost:8081/github/advanced-go/guidance:v1/search?q=golang
+// https://localhost:8081/github/advanced-go/guidance:v1/us-west/zone/sub-zone/app/route?q=golang
 
 const (
 	googleProvider = "google"
@@ -37,10 +37,10 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewErrorResponse(status), status
 	}
 	switch strings.ToLower(path) {
-	case core.VersionPath:
-		return versionResponse, core.StatusOK()
+	case core.VersionPath, core.InfoPath:
+		return httpx.NewInfoResponse(module.Info()), core.StatusOK()
 	case core.HealthReadinessPath, core.HealthLivenessPath:
-		return httpx.HealthResponseOK, core.StatusOK()
+		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
 		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", path)))
 		return httpx.NewErrorResponse(status), status
