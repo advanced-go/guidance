@@ -15,13 +15,11 @@ import (
 // https://localhost:8081/github/advanced-go/guidance:v1/us-west/zone/sub-zone/app/route?q=golang
 
 const (
-	googleProvider = "google"
-	yahooProvider  = "yahoo"
+	timeseries    = "timeseries"
+	yahooProvider = "yahoo"
 )
 
-var (
-	versionResponse = httpx.NewResponse(core.StatusOK(), core.VersionContent(module.Version))
-)
+var authorityResponse = httpx.NewAuthorityResponse(module.Authority)
 
 // Controllers - authority controllers
 func Controllers() []*controller.Controller {
@@ -37,8 +35,10 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewErrorResponse(status), status
 	}
 	switch strings.ToLower(path) {
-	case core.VersionPath, core.InfoPath:
-		return httpx.NewInfoResponse(module.Info()), core.StatusOK()
+	case core.VersionPath:
+		return httpx.NewVersionResponse(module.Version), core.StatusOK()
+	case core.AuthorityPath:
+		return authorityResponse, core.StatusOK()
 	case core.HealthReadinessPath, core.HealthLivenessPath:
 		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
