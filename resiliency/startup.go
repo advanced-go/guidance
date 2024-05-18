@@ -1,4 +1,4 @@
-package types
+package resiliency
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/types"
+	PkgPath = "github/advanced-go/guidance/resiliency"
 )
 
 func init() {
