@@ -28,7 +28,7 @@ func Controllers() []*controller.Controller {
 	}
 }
 
-// Exchange - HTTP exchange function
+// Exchange - HTTP exchange
 func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	_, path, status := httpx.ValidateRequestURL(r, module.Authority)
 	if !status.OK() {
@@ -52,9 +52,9 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 func resiliencySwitch(r *http.Request) (*http.Response, *core.Status) {
 	switch r.Method {
 	case http.MethodGet:
-		return resiliency.Get(r)
+		return resiliency.Get[core.Log](r)
 	case http.MethodPut:
-		return resiliency.Post(r)
+		return resiliency.Post[core.Log](r)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewErrorResponse(status), status
