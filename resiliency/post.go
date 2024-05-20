@@ -7,10 +7,16 @@ import (
 	"github.com/advanced-go/stdlib/json"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
-func Post[E core.ErrorHandler](r *http.Request) (*http.Response, *core.Status) {
+// PostConstraints - Post constraints
+type PostEntryConstraints interface {
+	[]entryV1 | []byte | *http.Request
+}
+
+func Post[E core.ErrorHandler](h http.Header, method string, values url.Values, body *http.Request) (*http.Response, *core.Status) {
 	var e E
 
 	if r == nil {
