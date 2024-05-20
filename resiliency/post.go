@@ -28,10 +28,10 @@ func Post[E core.ErrorHandler](r *http.Request) (*http.Response, *core.Status) {
 			e.Handle(status, core.RequestId(r.Header))
 			return httpx.NewErrorResponseWithStatus(status)
 		}
-		status = addEntriesV1(r.Context(), entries)
-		if !status.OK() {
-			e.Handle(status, core.RequestId(r.Header))
-		}
+		//status = addEntriesV1(r.Context(), entries)
+		//if !status.OK() {
+		//	e.Handle(status, core.RequestId(r.Header))
+		//}
 		return httpx.NewResponseWithStatus(core.StatusOK(), "")
 	default:
 		return httpx.NewErrorResponseWithStatus(core.NewStatus(http.StatusMethodNotAllowed))

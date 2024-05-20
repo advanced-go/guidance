@@ -30,13 +30,13 @@ func Controllers() []*controller.Controller {
 
 // Exchange - HTTP exchange
 func Exchange(r *http.Request) (*http.Response, *core.Status) {
-	_, path, status := httpx.ValidateRequestURL(r, module.Authority)
+	version, path, status := httpx.ValidateRequestURL(r, module.Authority)
 	if !status.OK() {
 		return httpx.NewErrorResponse(status), status
 	}
 	switch strings.ToLower(path) {
 	case resiliencyPath:
-		return resiliencySwitch(r)
+		return resiliencySwitch(version, r)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -49,10 +49,10 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 }
 
-func resiliencySwitch(r *http.Request) (*http.Response, *core.Status) {
+func resiliencySwitch(version string, r *http.Request) (*http.Response, *core.Status) {
 	switch r.Method {
 	case http.MethodGet:
-		return resiliency.Get[core.Log](r)
+		return resiliency.Get[core.Log](r.Context(), version, r.Header, r.URL.Query())
 	case http.MethodPut:
 		return resiliency.Post[core.Log](r)
 	default:
