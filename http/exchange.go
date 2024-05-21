@@ -34,6 +34,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	if !status.OK() {
 		return httpx.NewErrorResponse(status), status
 	}
+	r.Header.Add(core.XVersion, version)
 	switch strings.ToLower(path) {
 	case resiliencyPath:
 		return resiliencySwitch(version, r)
@@ -52,9 +53,9 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 func resiliencySwitch(version string, r *http.Request) (*http.Response, *core.Status) {
 	switch r.Method {
 	case http.MethodGet:
-		return resiliency.Get[core.Log](r.Context(), version, r.Header, r.URL.Query())
+		return resiliency.Get(r)
 	case http.MethodPut:
-		return resiliency.Post[core.Log](r)
+		return resiliency.Put(r)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewErrorResponse(status), status
