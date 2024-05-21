@@ -1,6 +1,7 @@
 package resiliency
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
@@ -39,7 +40,7 @@ func ExampleFilterEntries() {
 	fmt.Printf("test: FilterEntriesV1() -> [status:%v] [entries:%v]\n", status, len(entries))
 
 	values := make(url.Values)
-	values.Add(core.Region, "region1")
+	values.Add(core.RegionKey, "regIon1")
 	entries, status = filterEntries[entryV1](nil, values)
 	fmt.Printf("test: FilterEntriesV1() -> [status:%v] [entries:%v]\n", status, len(entries))
 	//fmt.Printf("test: EntriesV1 -> [%v]\n", entries)
@@ -52,4 +53,17 @@ func ExampleFilterEntries() {
 	//test: FilterEntriesV1() -> [status:OK] [entries:2]
 	//test: FilterEntriesV2() -> [status:Not Found] [entries:0]
 
+}
+
+func _ExampleOutput() {
+	//buff, err := json.Marshal(testV1)
+	//fmt.Printf("%v\n", err)
+	//fmt.Printf("%v\n", string(buff))
+
+	buff, err := json.Marshal(testV2)
+	fmt.Printf("%v\n", err)
+	fmt.Printf("%v\n", string(buff))
+
+	//Output:
+	//fail
 }
