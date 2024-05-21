@@ -10,20 +10,20 @@ import (
 	"net/url"
 )
 
+// Put - resource PUT
 func Put(r *http.Request) (*http.Response, *core.Status) {
 	if r == nil {
-		return httpx.NewErrorResponseWithStatus(core.NewStatus(http.StatusBadRequest))
+		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
 	}
-	status := put[core.Log, *http.Request](r.Context(), r.Header, r.URL.Query(), r)
-	return httpx.NewResponseWithStatus(status, "")
+	return put[core.Log, *http.Request](r.Context(), r.Header, r.URL.Query(), r)
 }
 
 type putBodyConstraints interface {
 	[]entryV1 | []entryV2 | []byte | *http.Request
 }
 
-func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.Header, values url.Values, body T) *core.Status {
-	var e E
+func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.Header, values url.Values, body T) (*http.Response, *core.Status) {
+	//var e E
 
 	/*
 		switch strings.ToUpper(r.Method) {
@@ -48,7 +48,7 @@ func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.
 		}
 
 	*/
-	return nil
+	return nil, nil
 }
 
 func createEntries[T entryConstraints](h http.Header, body io.ReadCloser) (entries []T, status *core.Status) {

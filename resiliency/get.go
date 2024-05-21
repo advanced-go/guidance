@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
@@ -17,22 +18,38 @@ const (
 
 // http://localhost:8081/github/advanced-go/guidance:resiliency?reg=us&az=dallas&sz=dfwocp1&host=www.google.com
 
-func Get(r *http.Request) (*http.Response, *core.Status) {
-	if r == nil {
+// Get - resource GET
+func Get(ctx context.Context, h http.Header, values url.Values) (*http.Response, *core.Status) {
+	if h == nil {
 		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
 	}
-	switch r.Header.Get(core.XVersion) {
+	if values == nil {
+		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
+	}
+	switch h.Get(core.XURLVersion) {
 	case version1, "":
-		entries, status := get[core.Log, entryV1](r.Context(), r.Header, r.URL.Query())
+		entries, status := get[core.Log, entryV1](ctx, h, values)
+		if status.NotFound() || status.Timeout() {
+			return httpx.NewResponseWithStatus(status, nil)
+		}
 		if !status.OK() {
-			return httpx.NewErrorResponseWithStatus(status)
+			return httpx.NewResponseWithStatus(status, status.Err)
 		}
 		if entries != nil {
-			//buf,err := json
+			var e core.Log
+			rc, status1 := json.NewReadCloser(entries)
+			if !status1.OK() {
+				e.Handle(status1, core.RequestId(h))
+				return httpx.NewResponseWithStatus(status, status.Err)
+			}
+			rh := make(http.Header)
+			rh.Add(httpx.ContentType, httpx.ContentTypeJson)
+			return &http.Response{StatusCode: status1.HttpCode(), Status: status1.String(), Header: rh, Body: rc}, core.StatusOK()
 		}
 		return nil, core.StatusOK()
 	default:
-		return httpx.NewErrorResponseWithStatus(core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion)))))
+		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XURLVersion))))
+		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 }
 
@@ -48,28 +65,3 @@ func get[E core.ErrorHandler, T entryConstraints](ctx context.Context, h http.He
 	}
 	return entries, core.StatusOK()
 }
-
-/*
-func getV1[E core.ErrorHandler](r *http.Request) (*http.Response, *core.Status) {
-	if r == nil {
-		return httpx.NewErrorResponseWithStatus(core.NewStatus(http.StatusBadRequest))
-	}
-	entries, status := getEntriesV1(r.Context(), r.URL.Query())
-	switch status.Code {
-	case http.StatusNotFound, http.StatusGatewayTimeout, core.StatusDeadlineExceeded:
-		return httpx.NewResponseWithStatus(status, "")
-	case http.StatusOK:
-		var resp *http.Response
-		if entries != nil {
-
-		}
-		return resp, status
-	default:
-		var e E
-		e.Handle(status, core.RequestId(r))
-		return httpx.NewErrorResponseWithStatus(status)
-	}
-}
-
-
-*/
