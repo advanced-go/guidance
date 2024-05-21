@@ -3,6 +3,8 @@ package resiliency
 import (
 	"context"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/io"
+	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
@@ -20,13 +22,6 @@ type entryV1 struct {
 	CreatedTS string `json:"created-ts"`
 	UpdatedTS string `json:"updated-ts"`
 
-	CostFunction string `json:"cost-function"`
-
-	// Routing
-	PrimaryRoute   string `json:"primary-route"`
-	SecondaryRoute string `json:"secondary-route"`
-	SecondaryPct   string `json:"secondary-pct"`
-
 	// Timeout
 	Timeout string `json:"timeout"`
 
@@ -41,13 +36,6 @@ type entryV2 struct {
 	CreatedTS string `json:"created-ts"`
 	UpdatedTS string `json:"updated-ts"`
 
-	CostFunction string `json:"cost-function"`
-
-	// Routing
-	PrimaryRoute   string `json:"primary-route"`
-	SecondaryRoute string `json:"secondary-route"`
-	SecondaryPct   string `json:"secondary-pct"`
-
 	// Timeout
 	Timeout string `json:"timeout"`
 
@@ -57,8 +45,21 @@ type entryV2 struct {
 }
 
 func getEntries[T entryConstraints](ctx context.Context, values url.Values) (entries []T, status *core.Status) {
-	switch any(entries).(type) {
-	case []entryV1:
+	var buf []byte
+
+	location := values.Get(httpx.ContentLocation)
+	if location != "" {
+		buf, status = io.ReadFile(location)
+		if !status.OK() {
+			return nil, status
+		}
+	}
+	switch p := any(&entries).(type) {
+	case *[]entryV1:
+		if len(buf) > 0 {
+			*p, status = json.New[[]entryV1](buf, nil)
+			return
+		}
 		if len(listV1) == 0 {
 			return entries, core.NewStatus(http.StatusNotFound)
 		}
@@ -66,7 +67,11 @@ func getEntries[T entryConstraints](ctx context.Context, values url.Values) (ent
 			return entries, core.StatusOK()
 		}
 		return filterEntries[T](ctx, values)
-	case []entryV2:
+	case *[]entryV2:
+		if len(buf) > 0 {
+			*p, status = json.New[[]entryV2](buf, nil)
+			return
+		}
 		if len(listV2) == 0 {
 			return entries, core.NewStatus(http.StatusNotFound)
 		}

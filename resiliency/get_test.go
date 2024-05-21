@@ -48,7 +48,7 @@ func Test_get(t *testing.T) {
 		want  []T
 		want1 *core.Status
 	}
-	tests := []testCase[entryV1 /* TODO: Insert concrete types here */ ]{
+	tests := []testCase[entryV1 /* TODO: Insert concrete types here */]{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {

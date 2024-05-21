@@ -5,7 +5,6 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
-	"io"
 	"net/http"
 	"net/url"
 )
@@ -51,7 +50,7 @@ func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.
 	return nil, nil
 }
 
-func createEntries[T entryConstraints](h http.Header, body io.ReadCloser) (entries []T, status *core.Status) {
+func createEntries[T putBodyConstraints, E entryConstraints](h http.Header, body T) (entries []E, status *core.Status) {
 	if body == nil {
 		return nil, core.NewStatus(core.StatusInvalidContent)
 	}

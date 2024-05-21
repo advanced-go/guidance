@@ -63,5 +63,5 @@ func get[E core.ErrorHandler, T entryConstraints](ctx context.Context, h http.He
 		e.Handle(status, core.RequestId(h))
 		return nil, status
 	}
-	return entries, core.StatusOK()
+	return entries, status
 }
