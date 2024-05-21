@@ -53,7 +53,7 @@ func Test_get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := get(tt.args.ctx, tt.args.h, tt.args.values)
+			got, got1 := get[core.Output, entryV1](tt.args.ctx, tt.args.h, tt.args.values)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("get() got = %v, want %v", got, tt.want)
 			}

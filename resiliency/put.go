@@ -50,7 +50,8 @@ func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.
 	return nil, nil
 }
 
-func createEntries[T putBodyConstraints, E entryConstraints](h http.Header, body T) (entries []E, status *core.Status) {
+// createEntries - body supports []byte, io.ReadCloser, io.Reader
+func createEntries[E entryConstraints](h http.Header, body any) (entries []E, status *core.Status) {
 	if body == nil {
 		return nil, core.NewStatus(core.StatusInvalidContent)
 	}
@@ -61,8 +62,13 @@ func createEntries[T putBodyConstraints, E entryConstraints](h http.Header, body
 			return nil, status.AddLocation()
 		}
 		return entries, status
+	case *[]entryV2:
+		*ptr, status = json.New[[]entryV2](body, h)
+		if !status.OK() {
+			return nil, status.AddLocation()
+		}
+		return entries, status
 	default:
 		return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(body))
 	}
-	return entries, core.StatusOK()
 }

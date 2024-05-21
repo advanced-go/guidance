@@ -26,7 +26,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (*http.Response,
 	if values == nil {
 		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
 	}
-	switch h.Get(core.XURLVersion) {
+	switch h.Get(core.XVersion) {
 	case version1, "":
 		entries, status := get[core.Log, entryV1](ctx, h, values)
 		if status.NotFound() || status.Timeout() {
@@ -48,7 +48,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (*http.Response,
 		}
 		return nil, core.StatusOK()
 	default:
-		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XURLVersion))))
+		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 }

@@ -3,18 +3,12 @@ package resiliency
 import (
 	"context"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/io"
 	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
-
-type entryConstraints interface {
-	entryV1 | entryV2
-}
-
-var listV1 []entryV1
-var listV2 []entryV2
 
 type entryV1 struct {
 	Origin    core.Origin
@@ -32,6 +26,7 @@ type entryV1 struct {
 
 type entryV2 struct {
 	Origin    core.Origin
+	Version   string `json:"version"`
 	Status    string `json:"status"`
 	CreatedTS string `json:"created-ts"`
 	UpdatedTS string `json:"updated-ts"`
@@ -44,9 +39,21 @@ type entryV2 struct {
 	RateBurst string `json:"rate-burst"`
 }
 
-func getEntries[T entryConstraints](ctx context.Context, values url.Values) (entries []T, status *core.Status) {
+type entryConstraints interface {
+	entryV1 | entryV2
+}
+
+var (
+	listV1 []entryV1
+	listV2 []entryV2
+)
+
+func getEntries[E entryConstraints](ctx context.Context, values url.Values) (entries []E, status *core.Status) {
 	var buf []byte
 
+	if values == nil {
+		return nil, core.NewStatus(http.StatusNotFound)
+	}
 	location := values.Get(httpx.ContentLocation)
 	if location != "" {
 		buf, status = io.ReadFile(location)
@@ -60,33 +67,38 @@ func getEntries[T entryConstraints](ctx context.Context, values url.Values) (ent
 			*p, status = json.New[[]entryV1](buf, nil)
 			return
 		}
-		if len(listV1) == 0 {
-			return entries, core.NewStatus(http.StatusNotFound)
-		}
-		if values == nil {
-			return entries, core.StatusOK()
-		}
-		return filterEntries[T](ctx, values)
+		//if len(listV1) == 0 {
+		//	return entries, core.NewStatus(http.StatusNotFound)
+		//}
+		//if values == nil {
+		//	return entries, core.StatusOK()
+		//}
+		//return filterEntries[E](ctx, values)
 	case *[]entryV2:
 		if len(buf) > 0 {
 			*p, status = json.New[[]entryV2](buf, nil)
 			return
 		}
-		if len(listV2) == 0 {
-			return entries, core.NewStatus(http.StatusNotFound)
-		}
-		if values == nil {
-			return entries, core.StatusOK()
-		}
-		return filterEntries[T](ctx, values)
+		//if len(listV2) == 0 {
+		//	return entries, core.NewStatus(http.StatusNotFound)
+		//}
+		//
+		//return filterEntries[E](ctx, values)
 	default:
 		return nil, core.NewStatus(http.StatusBadRequest)
 	}
+	return filterEntries[E](ctx, values)
 }
 
-func filterEntries[T entryConstraints](ctx context.Context, values url.Values) (entries []T, status *core.Status) {
+func filterEntries[E entryConstraints](ctx context.Context, values url.Values) (entries []E, status *core.Status) {
+	if values == nil {
+		return nil, core.NewStatus(http.StatusNotFound)
+	}
 	switch ptr := any(&entries).(type) {
 	case *[]entryV1:
+		if len(listV1) == 0 {
+			return nil, core.NewStatus(http.StatusNotFound)
+		}
 		filter := core.NewOrigin(values)
 		for _, target := range listV1 {
 			if core.OriginMatch(target.Origin, filter) {
@@ -96,8 +108,10 @@ func filterEntries[T entryConstraints](ctx context.Context, values url.Values) (
 		if len(*ptr) == 0 {
 			return nil, core.NewStatus(http.StatusNotFound)
 		}
-		return entries, core.StatusOK()
 	case *[]entryV2:
+		if len(listV2) == 0 {
+			return nil, core.NewStatus(http.StatusNotFound)
+		}
 		filter := core.NewOrigin(values)
 		for _, target := range listV2 {
 			if core.OriginMatch(target.Origin, filter) {
@@ -107,17 +121,23 @@ func filterEntries[T entryConstraints](ctx context.Context, values url.Values) (
 		if len(*ptr) == 0 {
 			return nil, core.NewStatus(http.StatusNotFound)
 		}
-		return entries, core.StatusOK()
 	default:
 		return nil, core.NewStatus(http.StatusBadRequest)
 	}
+	return entries, core.StatusOK()
 }
 
-func addEntriesV1(ctx context.Context, e []entryV1) *core.Status {
-	for _, item := range e {
-		//item.CreatedTS = time.Now().UTC()
-		listV1 = append(listV1, item)
-		//status = logActivity(ctx, item)
+func addEntries[E entryConstraints](ctx context.Context, entries []E) *core.Status {
+	if len(entries) == 0 {
+		return core.StatusOK()
+	}
+	switch ptr := any(entries).(type) {
+	case []entryV1:
+		listV1 = append(listV1, ptr...)
+	case []entryV2:
+		listV2 = append(listV2, ptr...)
+	default:
+		return core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(ptr))
 	}
 	return core.StatusOK()
 }
