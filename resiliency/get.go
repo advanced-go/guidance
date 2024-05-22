@@ -21,13 +21,13 @@ const (
 func Get(ctx context.Context, h http.Header, values url.Values) (resp *http.Response, status *core.Status) {
 	var entries any
 
-	if h == nil {
-		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
-	}
 	if values == nil {
-		return httpx.NewResponseWithStatus(core.NewStatus(http.StatusBadRequest), nil)
+		return httpx.NewResponseWithStatus(core.StatusBadRequest(), nil)
 	}
-
+	if h == nil {
+		h = make(http.Header)
+	}
+	core.AddRequestId(h)
 	switch h.Get(core.XVersion) {
 	case version1, "":
 		entries, status = get[core.Log, entryV1](ctx, h, values)

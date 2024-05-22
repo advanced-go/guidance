@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	entryV1Path = "file://[cwd]/resiliencytest/entry-v1.json"
-	entryV2Path = "file://[cwd]/resiliencytest/entry-v2.json"
+	entryV1Path    = "file://[cwd]/resiliencytest/entry-v1.json"
+	entryV2Path    = "file://[cwd]/resiliencytest/entry-v2.json"
+	emptyPath      = "file://[cwd]/resiliencytest/empty.json"
+	emptyEntryPath = "file://[cwd]/resiliencytest/entry-empty.json"
 )
 
 var testV1 = []entryV1{
@@ -87,7 +89,23 @@ func ExampleFilterEntries() {
 
 }
 
-func ExampleGetEntriesV1() {
+func ExampleGetEntries_Empty() {
+	values := make(url.Values)
+	values.Add(httpx.ContentLocation, emptyPath)
+	entries, status := getEntries[entryV1](nil, values)
+	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
+
+	values.Set(httpx.ContentLocation, emptyEntryPath)
+	entries, status = getEntries[entryV1](nil, values)
+	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
+
+	//Output:
+	//test: GetEntries() -> [status:Not Found] [entries:0]
+	//test: GetEntries() -> [status:Not Found] [entries:0]
+
+}
+
+func ExampleGetEntries_V1() {
 	entries1, status1 := getEntries[entryV1](nil, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
@@ -112,7 +130,7 @@ func ExampleGetEntriesV1() {
 
 }
 
-func ExampleGetEntriesV2() {
+func ExampleGetEntries_V2() {
 	entries1, status1 := getEntries[entryV2](nil, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 

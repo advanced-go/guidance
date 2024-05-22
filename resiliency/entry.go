@@ -60,16 +60,25 @@ func getEntries[E entryConstraints](ctx context.Context, values url.Values) (ent
 		if !status.OK() {
 			return nil, status
 		}
+		if len(buf) == 0 {
+			return nil, core.StatusNotFound()
+		}
 	}
 	switch p := any(&entries).(type) {
 	case *[]entryV1:
 		if len(buf) > 0 {
 			*p, status = json.New[[]entryV1](buf, nil)
+			if len(*p) == 0 {
+				return nil, core.StatusNotFound()
+			}
 			return
 		}
 	case *[]entryV2:
 		if len(buf) > 0 {
 			*p, status = json.New[[]entryV2](buf, nil)
+			if len(*p) == 0 {
+				return nil, core.StatusNotFound()
+			}
 			return
 		}
 	default:

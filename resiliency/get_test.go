@@ -2,14 +2,49 @@ package resiliency
 
 import (
 	"context"
+	"fmt"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"net/url"
 	"reflect"
 	"testing"
 )
 
-func TestGet(t *testing.T) {
+func ExampleGet() {
+	resp, status := Get(nil, nil, nil)
+	fmt.Printf("test: Get(nil,nil,nil) -> [status:%v] [content:%v]\n", status, resp.Body != nil)
+
+	// Empty version defaults to v1
+	values := make(url.Values)
+	resp, status = Get(nil, nil, values)
+	fmt.Printf("test: Get(nil,nil,values) -> [status:%v] [content-length:%v]\n", status, resp.ContentLength)
+
+	h := make(http.Header)
+	h.Add(core.XVersion, "v5")
+	resp, status = Get(nil, h, values)
+	fmt.Printf("test: Get(nil,nil,values) -> [status:%v] [content-type:%v] [content-length:%v]\n", status, resp.Header.Get(httpx.ContentType), resp.ContentLength)
+
+	h.Set(core.XVersion, "v1")
+	values.Add(httpx.ContentLocation, entryV1Path)
+	resp, status = Get(nil, h, values)
+	fmt.Printf("test: Get(nil,nil,values) -> [status:%v] [content-type:%v] [content-length:%v]\n", status, resp.Header.Get(httpx.ContentType), resp.ContentLength)
+
+	h.Set(core.XVersion, "v2")
+	values.Add(httpx.ContentLocation, entryV2Path)
+	resp, status = Get(nil, h, values)
+	fmt.Printf("test: Get(nil,nil,values) -> [status:%v] [content-type:%v] [content-length:%v]\n", status, resp.Header.Get(httpx.ContentType), resp.ContentLength)
+
+	//Output:
+	//test: Get(nil,nil,nil) -> [status:Bad Request] [content:false]
+	//test: Get(nil,nil,values) -> [status:Not Found] [content-length:0]
+	//test: Get(nil,nil,values) -> [status:Bad Request [invalid version: [v5]]] [content-type:text/plain charset=utf-8] [content-length:21]
+	//test: Get(nil,nil,values) -> [status:OK] [content-type:application/json] [content-length:618]
+	//test: Get(nil,nil,values) -> [status:OK] [content-type:application/json] [content-length:657]
+	
+}
+
+func _TestGet(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		h      http.Header
@@ -21,7 +56,8 @@ func TestGet(t *testing.T) {
 		want  *http.Response
 		want1 *core.Status
 	}{
-		// TODO: Add test cases.
+		{"test-nil-values", args{nil, nil, nil}, httpx.NewResponse(core.StatusBadRequest(), nil), core.StatusBadRequest()},
+		{"test-invalid-version", args{nil, nil, make(url.Values)}, httpx.NewResponse(core.StatusBadRequest(), nil), core.StatusBadRequest()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -36,7 +72,7 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func Test_get(t *testing.T) {
+func _Test_get(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		h      http.Header
@@ -48,7 +84,7 @@ func Test_get(t *testing.T) {
 		want  []T
 		want1 *core.Status
 	}
-	tests := []testCase[entryV1 /* TODO: Insert concrete types here */]{
+	tests := []testCase[entryV1 /* TODO: Insert concrete types here */ ]{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
