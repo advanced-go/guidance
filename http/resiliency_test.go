@@ -49,6 +49,7 @@ func Test_resiliencyExchange(t *testing.T) {
 		name string
 		args args
 	}{
+		{"get-empty", args{req: "get-empty-req.txt", resp: "get-empty-resp.txt"}},
 		{"get-v1", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
 		{"get-v2", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt"}},
 	}
@@ -59,7 +60,7 @@ func Test_resiliencyExchange(t *testing.T) {
 			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
-			got, _ := resiliencyExchange(req)
+			got, status := resiliencyExchange(req)
 			// test status code
 			if got.StatusCode != resp.StatusCode {
 				var buf []byte
@@ -67,6 +68,9 @@ func Test_resiliencyExchange(t *testing.T) {
 					buf, _ = io.ReadAll(got.Body)
 				}
 				t.Errorf("StatusCode got = %v, want = %v content = %v", got.StatusCode, resp.StatusCode, string(buf))
+				return
+			}
+			if !status.OK() {
 				return
 			}
 			// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
