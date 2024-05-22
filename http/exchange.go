@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/advanced-go/guidance/module"
-	"github.com/advanced-go/guidance/resiliency"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -37,7 +36,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	r.Header.Add(core.XVersion, version)
 	switch strings.ToLower(path) {
 	case resiliencyPath:
-		return resiliencySwitch(r)
+		return resiliencyExchange(r)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -46,18 +45,6 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
 		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", path)))
-		return httpx.NewResponseWithStatus(status, status.Err)
-	}
-}
-
-func resiliencySwitch(r *http.Request) (*http.Response, *core.Status) {
-	switch r.Method {
-	case http.MethodGet:
-		return resiliency.Get(r.Context(), r.Header, r.URL.Query())
-	case http.MethodPut:
-		return resiliency.Put(r)
-	default:
-		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 }
