@@ -11,5 +11,5 @@ func ExampleExchange_Invalid() {
 
 	//Output:
 	//test: Exchange(nil) -> [status:Invalid Argument [error: request is nil]] [content-type:text/plain charset=utf-8] [content-length:21]
-	
+
 }

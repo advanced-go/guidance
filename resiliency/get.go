@@ -21,9 +21,6 @@ const (
 func Get(ctx context.Context, h http.Header, values url.Values) (resp *http.Response, status *core.Status) {
 	var entries any
 
-	if values == nil {
-		return httpx.NewResponseWithStatus(core.StatusBadRequest(), errors.New("invalid argument: values are nil"))
-	}
 	if h == nil {
 		h = make(http.Header)
 	}
@@ -50,7 +47,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (resp *http.Resp
 }
 
 func get[E core.ErrorHandler, T entryConstraints](ctx context.Context, h http.Header, values url.Values) (entries []T, status *core.Status) {
-	entries, status = getEntries[T](ctx, values)
+	entries, status = getEntries[T](ctx, h, values)
 	if status.OK() || status.NotFound() || status.Timeout() {
 		return
 	}

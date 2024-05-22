@@ -48,20 +48,19 @@ var (
 	listV2 []entryV2
 )
 
-func getEntries[E entryConstraints](ctx context.Context, values url.Values) (entries []E, status *core.Status) {
+func getEntries[E entryConstraints](ctx context.Context, h http.Header, values url.Values) (entries []E, status *core.Status) {
 	var buf []byte
 
-	if values == nil {
-		return nil, core.NewStatus(http.StatusNotFound)
-	}
-	location := values.Get(httpx.ContentLocation)
-	if location != "" {
-		buf, status = io.ReadFile(location)
-		if !status.OK() {
-			return nil, status
-		}
-		if len(buf) == 0 {
-			return nil, core.StatusNotFound()
+	if h != nil {
+		location := h.Get(httpx.ContentLocation)
+		if location != "" {
+			buf, status = io.ReadFile(location)
+			if !status.OK() {
+				return nil, status
+			}
+			if len(buf) == 0 {
+				return nil, core.StatusNotFound()
+			}
 		}
 	}
 	switch p := any(&entries).(type) {
@@ -88,9 +87,9 @@ func getEntries[E entryConstraints](ctx context.Context, values url.Values) (ent
 }
 
 func filterEntries[E entryConstraints](ctx context.Context, values url.Values) (entries []E, status *core.Status) {
-	if values == nil {
-		return nil, core.NewStatus(http.StatusNotFound)
-	}
+	//if values == nil {
+	//	return nil, core.NewStatus(http.StatusNotFound)
+	//}
 	switch ptr := any(&entries).(type) {
 	case *[]entryV1:
 		if len(listV1) == 0 {

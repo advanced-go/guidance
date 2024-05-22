@@ -6,6 +6,7 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/io"
+	"net/http"
 	"net/url"
 )
 
@@ -83,20 +84,21 @@ func ExampleFilterEntries() {
 	fmt.Printf("test: FilterEntriesV2() -> [status:%v] [entries:%v]\n", status2, len(entries2))
 
 	//Output:
-	//test: FilterEntriesV1() -> [status:Not Found] [entries:0]
+	//test: FilterEntriesV1() -> [status:OK] [entries:3]
 	//test: FilterEntriesV1() -> [status:OK] [entries:2]
-	//test: FilterEntriesV2() -> [status:Not Found] [entries:0]
+	//test: FilterEntriesV2() -> [status:OK] [entries:4]
 
 }
 
 func ExampleGetEntries_Empty() {
-	values := make(url.Values)
-	values.Add(httpx.ContentLocation, emptyPath)
-	entries, status := getEntries[entryV1](nil, values)
+	h := make(http.Header)
+	//values := make(url.Values)
+	h.Add(httpx.ContentLocation, emptyPath)
+	entries, status := getEntries[entryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
 
-	values.Set(httpx.ContentLocation, emptyEntryPath)
-	entries, status = getEntries[entryV1](nil, values)
+	h.Set(httpx.ContentLocation, emptyEntryPath)
+	entries, status = getEntries[entryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
 
 	//Output:
@@ -106,24 +108,25 @@ func ExampleGetEntries_Empty() {
 }
 
 func ExampleGetEntries_V1() {
-	entries1, status1 := getEntries[entryV1](nil, nil)
-	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
+	//entries1, status1 := getEntries[entryV1](nil,nil, nil)
+	//fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	values := make(url.Values)
 	values.Add(core.RegionKey, "region1")
-	entries1, status1 = getEntries[entryV1](nil, values)
+	entries1, status1 := getEntries[entryV1](nil, nil, values)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	buf, status := io.ReadFile(entryV1Path)
 	fmt.Printf("test: ReadFile(\"%v\") -> [status:%v] [buff:%v]\n", entryV1Path, status, len(buf))
 
-	values = make(url.Values)
-	values.Add(httpx.ContentLocation, entryV1Path)
-	entries1, status1 = getEntries[entryV1](nil, values)
+	//values = make(url.Values)
+	//values.Add(httpx.ContentLocation, entryV1Path)
+	h := make(http.Header)
+	h.Add(httpx.ContentLocation, entryV1Path)
+	entries1, status1 = getEntries[entryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	//Output:
-	//test: GetEntries() -> [status:Not Found] [entries:0]
 	//test: GetEntries() -> [status:OK] [entries:2]
 	//test: ReadFile("file://[cwd]/resiliencytest/entry-v1.json") -> [status:OK] [buff:901]
 	//test: GetEntries() -> [status:OK] [entries:3]
@@ -131,12 +134,12 @@ func ExampleGetEntries_V1() {
 }
 
 func ExampleGetEntries_V2() {
-	entries1, status1 := getEntries[entryV2](nil, nil)
-	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
+	//entries1, status1 := getEntries[entryV2](nil,nil, nil)
+	//fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	values := make(url.Values)
 	values.Add(core.ZoneKey, "zonE1")
-	entries1, status1 = getEntries[entryV2](nil, values)
+	entries1, status1 := getEntries[entryV2](nil, nil, values)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	buf, status := io.ReadFile(entryV2Path)
@@ -144,11 +147,12 @@ func ExampleGetEntries_V2() {
 
 	values = make(url.Values)
 	values.Add(httpx.ContentLocation, entryV2Path)
-	entries1, status1 = getEntries[entryV2](nil, values)
+	h := make(http.Header)
+	h.Add(httpx.ContentLocation, entryV2Path)
+	entries1, status1 = getEntries[entryV2](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	//Output:
-	//test: GetEntries() -> [status:Not Found] [entries:0]
 	//test: GetEntries() -> [status:OK] [entries:3]
 	//test: ReadFile("file://[cwd]/resiliencytest/entry-v2.json") -> [status:OK] [buff:1291]
 	//test: GetEntries() -> [status:OK] [entries:4]
