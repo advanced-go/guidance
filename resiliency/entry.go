@@ -141,3 +141,26 @@ func addEntries[E entryConstraints](ctx context.Context, entries []E) *core.Stat
 	}
 	return core.StatusOK()
 }
+
+// createEntries - body supports []byte, io.ReadCloser, io.Reader
+func createEntries[E entryConstraints](h http.Header, body any) (entries []E, status *core.Status) {
+	if body == nil {
+		return nil, core.NewStatus(core.StatusInvalidContent)
+	}
+	switch ptr := any(&entries).(type) {
+	case *[]entryV1:
+		*ptr, status = json.New[[]entryV1](body, h)
+		if !status.OK() {
+			return nil, status.AddLocation()
+		}
+		return entries, status
+	case *[]entryV2:
+		*ptr, status = json.New[[]entryV2](body, h)
+		if !status.OK() {
+			return nil, status.AddLocation()
+		}
+		return entries, status
+	default:
+		return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(body))
+	}
+}

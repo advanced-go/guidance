@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
-	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
@@ -48,27 +47,4 @@ func put[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.
 
 	*/
 	return nil, nil
-}
-
-// createEntries - body supports []byte, io.ReadCloser, io.Reader
-func createEntries[E entryConstraints](h http.Header, body any) (entries []E, status *core.Status) {
-	if body == nil {
-		return nil, core.NewStatus(core.StatusInvalidContent)
-	}
-	switch ptr := any(&entries).(type) {
-	case *[]entryV1:
-		*ptr, status = json.New[[]entryV1](body, h)
-		if !status.OK() {
-			return nil, status.AddLocation()
-		}
-		return entries, status
-	case *[]entryV2:
-		*ptr, status = json.New[[]entryV2](body, h)
-		if !status.OK() {
-			return nil, status.AddLocation()
-		}
-		return entries, status
-	default:
-		return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(body))
-	}
 }
