@@ -67,23 +67,11 @@ func getEntries[E entryConstraints](ctx context.Context, values url.Values) (ent
 			*p, status = json.New[[]entryV1](buf, nil)
 			return
 		}
-		//if len(listV1) == 0 {
-		//	return entries, core.NewStatus(http.StatusNotFound)
-		//}
-		//if values == nil {
-		//	return entries, core.StatusOK()
-		//}
-		//return filterEntries[E](ctx, values)
 	case *[]entryV2:
 		if len(buf) > 0 {
 			*p, status = json.New[[]entryV2](buf, nil)
 			return
 		}
-		//if len(listV2) == 0 {
-		//	return entries, core.NewStatus(http.StatusNotFound)
-		//}
-		//
-		//return filterEntries[E](ctx, values)
 	default:
 		return nil, core.NewStatus(http.StatusBadRequest)
 	}
