@@ -22,7 +22,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (resp *http.Resp
 	var entries any
 
 	if values == nil {
-		return httpx.NewResponseWithStatus(core.StatusBadRequest(), nil)
+		return httpx.NewResponseWithStatus(core.StatusBadRequest(), errors.New("invalid argument: values are nil"))
 	}
 	if h == nil {
 		h = make(http.Header)
