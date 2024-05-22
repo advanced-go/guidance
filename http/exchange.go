@@ -37,7 +37,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	r.Header.Add(core.XVersion, version)
 	switch strings.ToLower(path) {
 	case resiliencyPath:
-		return resiliencySwitch(version, r)
+		return resiliencySwitch(r)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -50,7 +50,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 }
 
-func resiliencySwitch(version string, r *http.Request) (*http.Response, *core.Status) {
+func resiliencySwitch(r *http.Request) (*http.Response, *core.Status) {
 	switch r.Method {
 	case http.MethodGet:
 		return resiliency.Get(r.Context(), r.Header, r.URL.Query())
