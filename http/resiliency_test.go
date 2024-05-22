@@ -4,6 +4,7 @@ import (
 	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
+	"io"
 	"reflect"
 	"testing"
 )
@@ -38,7 +39,7 @@ type resiliencyEntryV2 struct {
 }
 
 func Test_resiliencyExchange(t *testing.T) {
-	basePath := "file://[cwd]/httptest/"
+	basePath := "file://[cwd]/httptest/resiliency/"
 
 	type args struct {
 		req  string
@@ -47,10 +48,9 @@ func Test_resiliencyExchange(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		//want  *http.Response
-		//want1 *core.Status
 	}{
 		{"get-v1", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
+		{"get-v2", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp(basePath, tt.args.req, tt.args.resp)
@@ -62,33 +62,40 @@ func Test_resiliencyExchange(t *testing.T) {
 			got, _ := resiliencyExchange(req)
 			// test status code
 			if got.StatusCode != resp.StatusCode {
-				t.Errorf("StatusCode got = %v, want %v", got.StatusCode, resp.StatusCode)
-			} else {
-				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
-
-				// test content type, body read, and content length
-				var gotBuf []byte
-				var wantBuf []byte
-				failures, gotBuf, wantBuf = httpxtest.Content(got, resp, true)
-				if failures != nil {
-					httpxtest.Errorf(t, failures)
-				} else {
-					// test content
-					switch req.Header.Get(core.XVersion) {
-					case module.Ver1, "":
-						failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV1](gotBuf, wantBuf)
-					case module.Ver2:
-						failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV2](gotBuf, wantBuf)
-					default:
-					}
-					if failures != nil {
-						httpxtest.Errorf(t, failures)
-					} else {
-						if !reflect.DeepEqual(gotT, wantT) {
-							t.Errorf("DeepEqual() got = %v, want %v", gotT, wantT)
-						}
-					}
+				var buf []byte
+				if got.Body != nil {
+					buf, _ = io.ReadAll(got.Body)
 				}
+				t.Errorf("StatusCode got = %v, want = %v content = %v", got.StatusCode, resp.StatusCode, string(buf))
+				return
+			}
+			// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
+
+			// test content type, body IO, and optionally, content length
+			var gotBuf []byte
+			var wantBuf []byte
+			failures, gotBuf, wantBuf = httpxtest.Content(got, resp)
+			if failures != nil {
+				httpxtest.Errorf(t, failures)
+				return
+			}
+
+			// test content
+			var gotT any
+			var wantT any
+			switch req.Header.Get(core.XVersion) {
+			case module.Ver1, "":
+				failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV1](gotBuf, wantBuf)
+			case module.Ver2:
+				failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV2](gotBuf, wantBuf)
+			default:
+			}
+			if failures != nil {
+				httpxtest.Errorf(t, failures)
+				return
+			}
+			if !reflect.DeepEqual(gotT, wantT) {
+				t.Errorf("DeepEqual() got = %v, want %v", gotT, wantT)
 			}
 		})
 	}

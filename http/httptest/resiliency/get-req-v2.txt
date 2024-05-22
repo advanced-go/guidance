@@ -1,0 +1,4 @@
+GET /github/advanced-go/guidance:v2/resiliency HTTP/1.1
+Host: localhost
+Content-Location: file://[cwd]/httptest/resiliency/entry-v2.json
+
