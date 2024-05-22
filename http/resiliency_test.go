@@ -66,10 +66,10 @@ func Test_resiliencyExchange(t *testing.T) {
 			} else {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
-				// test content type and length
+				// test content type, body read, and content length
 				var gotBuf []byte
 				var wantBuf []byte
-				failures, gotBuf, wantBuf = httpxtest.Content(got, resp)
+				failures, gotBuf, wantBuf = httpxtest.Content(got, resp, true)
 				if failures != nil {
 					httpxtest.Errorf(t, failures)
 				} else {
