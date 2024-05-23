@@ -65,54 +65,67 @@ func getEntries[E entryConstraints](ctx context.Context, h http.Header, values u
 	}
 	switch p := any(&entries).(type) {
 	case *[]entryV1:
+		list := listV1
 		if len(buf) > 0 {
-			*p, status = json.New[[]entryV1](buf, nil)
-			if len(*p) == 0 {
+			list, status = json.New[[]entryV1](buf, nil)
+			if !status.OK() {
+				return nil, status
+			}
+			if len(list) == 0 {
 				return nil, core.StatusNotFound()
 			}
-			return
 		}
+		*p, status = filterEntries[entryV1](ctx, list, values)
 	case *[]entryV2:
+		list := listV2
 		if len(buf) > 0 {
-			*p, status = json.New[[]entryV2](buf, nil)
-			if len(*p) == 0 {
+			list, status = json.New[[]entryV2](buf, nil)
+			if !status.OK() {
+				return nil, status
+			}
+			if len(list) == 0 {
 				return nil, core.StatusNotFound()
 			}
-			return
 		}
+		*p, status = filterEntries[entryV2](ctx, list, values)
 	default:
 		return nil, core.NewStatus(http.StatusBadRequest)
 	}
-	return filterEntries[E](ctx, values)
+	return
 }
 
-func filterEntries[E entryConstraints](ctx context.Context, values url.Values) (entries []E, status *core.Status) {
-	//if values == nil {
-	//	return nil, core.NewStatus(http.StatusNotFound)
-	//}
+func filterEntries[E entryConstraints](ctx context.Context, list any, values url.Values) (entries []E, status *core.Status) {
 	switch ptr := any(&entries).(type) {
 	case *[]entryV1:
-		if len(listV1) == 0 {
-			return nil, core.NewStatus(http.StatusNotFound)
-		}
-		filter := core.NewOrigin(values)
-		for _, target := range listV1 {
-			if core.OriginMatch(target.Origin, filter) {
-				*ptr = append(*ptr, target)
+		if l1, ok := list.([]entryV1); ok {
+			if len(l1) == 0 {
+				return nil, core.NewStatus(http.StatusNotFound)
 			}
+			filter := core.NewOrigin(values)
+			for _, target := range l1 {
+				if core.OriginMatch(target.Origin, filter) {
+					*ptr = append(*ptr, target)
+				}
+			}
+		} else {
+			return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(list))
 		}
 		if len(*ptr) == 0 {
 			return nil, core.NewStatus(http.StatusNotFound)
 		}
 	case *[]entryV2:
-		if len(listV2) == 0 {
-			return nil, core.NewStatus(http.StatusNotFound)
-		}
-		filter := core.NewOrigin(values)
-		for _, target := range listV2 {
-			if core.OriginMatch(target.Origin, filter) {
-				*ptr = append(*ptr, target)
+		if l2, ok := list.([]entryV2); ok {
+			if len(l2) == 0 {
+				return nil, core.NewStatus(http.StatusNotFound)
 			}
+			filter := core.NewOrigin(values)
+			for _, target := range l2 {
+				if core.OriginMatch(target.Origin, filter) {
+					*ptr = append(*ptr, target)
+				}
+			}
+		} else {
+			return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(list))
 		}
 		if len(*ptr) == 0 {
 			return nil, core.NewStatus(http.StatusNotFound)
@@ -160,3 +173,17 @@ func createEntries[E entryConstraints](h http.Header, body any) (entries []E, st
 		return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(body))
 	}
 }
+
+/*
+func testFilter[E entryConstraints](ctx context.Context, list []E, values url.Values) (entries []E, status *core.Status) {
+	return nil, nil
+}
+
+func testCall[E entryConstraints]() {
+	var list []entryV1
+
+	testFilter[entryV1](nil, list, nil)
+}
+
+
+*/
