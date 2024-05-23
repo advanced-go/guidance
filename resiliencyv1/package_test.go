@@ -9,6 +9,7 @@ import (
 	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -65,9 +66,9 @@ func do(r *http.Request) (*http.Response, *core.Status) {
 	//if !status1.OK() {
 	//	return httpx.NewResponseWithStatus(status1, status1.Err)
 	//}
-	//if path == core.AuthorityPath {
-	//	return authorityResponse, core.StatusOK()
-	//}
+	if strings.Contains(r.URL.Path, core.AuthorityPath) {
+		return authorityResponse, core.StatusOK()
+	}
 	switch r.Method {
 	case http.MethodGet:
 		// Need to add authority
