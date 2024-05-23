@@ -27,10 +27,6 @@ func resiliencyExchange(r *http.Request) (*http.Response, *core.Status) {
 func get(ctx context.Context, h http.Header, values url.Values) (resp *http.Response, status *core.Status) {
 	var entries any
 
-	if h == nil {
-		h = make(http.Header)
-	}
-	core.AddRequestId(h)
 	switch h.Get(core.XVersion) {
 	case module.Ver1, "":
 		entries, status = resiliency.Get[resiliency.EntryV1](ctx, h, values)
@@ -52,6 +48,13 @@ func get(ctx context.Context, h http.Header, values url.Values) (resp *http.Resp
 	return
 }
 
-func put(r *http.Request) (*http.Response, *core.Status) {
-	return nil, nil
+func put(r *http.Request) (resp *http.Response, status *core.Status) {
+	switch r.Header.Get(core.XVersion) {
+	case module.Ver1, module.Ver2, "":
+		status = resiliency.Put[*http.Request](r.Context(), r.Header, r)
+	default:
+		status1 := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+		return httpx.NewResponseWithStatus(status1, status1.Err)
+	}
+	return httpx.NewResponseWithStatus(status, status.Err)
 }

@@ -34,6 +34,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 	r.Header.Add(core.XVersion, version)
+	core.AddRequestId(r.Header)
 	switch strings.ToLower(path) {
 	case resiliencyPath:
 		return resiliencyExchange(r)

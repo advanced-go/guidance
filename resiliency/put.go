@@ -35,9 +35,14 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body any) *cor
 	case module.Ver2:
 		entries, status := createEntries[EntryV2](h, body)
 		if !status.OK() {
+			e.Handle(status, core.RequestId(h))
 			return status
 		}
-		return addEntries[EntryV2](ctx, h, entries)
+		status = addEntries[EntryV2](ctx, h, entries)
+		if !status.OK() {
+			e.Handle(status, core.RequestId(h))
+		}
+		return status
 	default:
 		return core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
 	}
