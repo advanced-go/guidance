@@ -49,10 +49,11 @@ func Test_resiliencyExchange(t *testing.T) {
 		name string
 		args args
 	}{
-		{"get-query-v2", args{req: "get-query-req-v2.txt", resp: "get-query-resp-v2.txt"}},
 		{"get-empty", args{req: "get-empty-req.txt", resp: "get-empty-resp.txt"}},
+		{"get-entry-empty", args{req: "get-entry-empty-req.txt", resp: "get-empty-resp.txt"}},
 		{"get-v1", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
 		{"get-v2", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt"}},
+		{"get-query-v2", args{req: "get-query-req-v2.txt", resp: "get-query-resp-v2.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp(basePath, tt.args.req, tt.args.resp)
