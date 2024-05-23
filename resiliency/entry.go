@@ -10,45 +10,12 @@ import (
 	"net/url"
 )
 
-type entryV1 struct {
-	Origin    core.Origin
-	Status    string `json:"status"`
-	CreatedTS string `json:"created-ts"`
-	UpdatedTS string `json:"updated-ts"`
-
-	// Timeout
-	Timeout string `json:"timeout"`
-
-	// Rate Limiting
-	RateLimit string `json:"rate-limit"`
-	RateBurst string `json:"rate-burst"`
-}
-
-type entryV2 struct {
-	Origin    core.Origin
-	Version   string `json:"version"`
-	Status    string `json:"status"`
-	CreatedTS string `json:"created-ts"`
-	UpdatedTS string `json:"updated-ts"`
-
-	// Timeout
-	Timeout string `json:"timeout"`
-
-	// Rate Limiting
-	RateLimit string `json:"rate-limit"`
-	RateBurst string `json:"rate-burst"`
-}
-
-type entryConstraints interface {
-	entryV1 | entryV2
-}
-
 var (
-	listV1 []entryV1
-	listV2 []entryV2
+	listV1 []EntryV1
+	listV2 []EntryV2
 )
 
-func getEntries[E entryConstraints](ctx context.Context, h http.Header, values url.Values) (entries []E, status *core.Status) {
+func getEntries[E EntryConstraints](ctx context.Context, h http.Header, values url.Values) (entries []E, status *core.Status) {
 	var buf []byte
 
 	if h != nil {
@@ -64,10 +31,10 @@ func getEntries[E entryConstraints](ctx context.Context, h http.Header, values u
 		}
 	}
 	switch p := any(&entries).(type) {
-	case *[]entryV1:
+	case *[]EntryV1:
 		list := listV1
 		if len(buf) > 0 {
-			list, status = json.New[[]entryV1](buf, nil)
+			list, status = json.New[[]EntryV1](buf, nil)
 			if !status.OK() {
 				return nil, status
 			}
@@ -75,11 +42,11 @@ func getEntries[E entryConstraints](ctx context.Context, h http.Header, values u
 				return nil, core.StatusNotFound()
 			}
 		}
-		*p, status = filterEntries[entryV1](ctx, list, values)
-	case *[]entryV2:
+		*p, status = filterEntries[EntryV1](ctx, list, values)
+	case *[]EntryV2:
 		list := listV2
 		if len(buf) > 0 {
-			list, status = json.New[[]entryV2](buf, nil)
+			list, status = json.New[[]EntryV2](buf, nil)
 			if !status.OK() {
 				return nil, status
 			}
@@ -87,17 +54,17 @@ func getEntries[E entryConstraints](ctx context.Context, h http.Header, values u
 				return nil, core.StatusNotFound()
 			}
 		}
-		*p, status = filterEntries[entryV2](ctx, list, values)
+		*p, status = filterEntries[EntryV2](ctx, list, values)
 	default:
 		return nil, core.NewStatus(http.StatusBadRequest)
 	}
 	return
 }
 
-func filterEntries[E entryConstraints](ctx context.Context, list any, values url.Values) (entries []E, status *core.Status) {
+func filterEntries[E EntryConstraints](ctx context.Context, list any, values url.Values) (entries []E, status *core.Status) {
 	switch ptr := any(&entries).(type) {
-	case *[]entryV1:
-		if l1, ok := list.([]entryV1); ok {
+	case *[]EntryV1:
+		if l1, ok := list.([]EntryV1); ok {
 			if len(l1) == 0 {
 				return nil, core.NewStatus(http.StatusNotFound)
 			}
@@ -113,8 +80,8 @@ func filterEntries[E entryConstraints](ctx context.Context, list any, values url
 		if len(*ptr) == 0 {
 			return nil, core.NewStatus(http.StatusNotFound)
 		}
-	case *[]entryV2:
-		if l2, ok := list.([]entryV2); ok {
+	case *[]EntryV2:
+		if l2, ok := list.([]EntryV2); ok {
 			if len(l2) == 0 {
 				return nil, core.NewStatus(http.StatusNotFound)
 			}
@@ -136,14 +103,14 @@ func filterEntries[E entryConstraints](ctx context.Context, list any, values url
 	return entries, core.StatusOK()
 }
 
-func addEntries[E entryConstraints](ctx context.Context, entries []E) *core.Status {
+func addEntries[E EntryConstraints](ctx context.Context, _ http.Header, entries []E) *core.Status {
 	if len(entries) == 0 {
 		return core.StatusOK()
 	}
 	switch ptr := any(entries).(type) {
-	case []entryV1:
+	case []EntryV1:
 		listV1 = append(listV1, ptr...)
-	case []entryV2:
+	case []EntryV2:
 		listV2 = append(listV2, ptr...)
 	default:
 		return core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(ptr))
@@ -152,19 +119,19 @@ func addEntries[E entryConstraints](ctx context.Context, entries []E) *core.Stat
 }
 
 // createEntries - body supports []byte, io.ReadCloser, io.Reader
-func createEntries[E entryConstraints](h http.Header, body any) (entries []E, status *core.Status) {
+func createEntries[E EntryConstraints](h http.Header, body any) (entries []E, status *core.Status) {
 	if body == nil {
 		return nil, core.NewStatus(core.StatusInvalidContent)
 	}
 	switch ptr := any(&entries).(type) {
-	case *[]entryV1:
-		*ptr, status = json.New[[]entryV1](body, h)
+	case *[]EntryV1:
+		*ptr, status = json.New[[]EntryV1](body, h)
 		if !status.OK() {
 			return nil, status.AddLocation()
 		}
 		return entries, status
-	case *[]entryV2:
-		*ptr, status = json.New[[]entryV2](body, h)
+	case *[]EntryV2:
+		*ptr, status = json.New[[]EntryV2](body, h)
 		if !status.OK() {
 			return nil, status.AddLocation()
 		}
@@ -180,9 +147,9 @@ func testFilter[E entryConstraints](ctx context.Context, list []E, values url.Va
 }
 
 func testCall[E entryConstraints]() {
-	var list []entryV1
+	var list []EntryV1
 
-	testFilter[entryV1](nil, list, nil)
+	testFilter[EntryV1](nil, list, nil)
 }
 
 

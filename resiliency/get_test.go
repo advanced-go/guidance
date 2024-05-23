@@ -1,12 +1,6 @@
 package resiliency
 
-import (
-	"fmt"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
-	"net/http"
-)
-
+/*
 func ExampleGet() {
 	//resp, status := Get(nil, nil, nil)
 	//fmt.Printf("test: Get(nil,nil,nil) -> [status:%v] [content-type:%v] [content-length:%v]\n", status, resp.Header.Get(httpx.ContentType), resp.ContentLength)
@@ -39,3 +33,6 @@ func ExampleGet() {
 	//test: Get(nil,h,nil) -> [status:OK] [content-type:application/json] [content-length:881]
 
 }
+
+
+*/

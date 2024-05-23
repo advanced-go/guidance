@@ -20,7 +20,7 @@ type postBodyConstraints interface {
 	*http.Request
 }
 
-func post[E core.ErrorHandler, T putBodyConstraints](ctx context.Context, h http.Header, values url.Values, body T) (*http.Response, *core.Status) {
+func post[E core.ErrorHandler, T PutBodyConstraints](ctx context.Context, h http.Header, values url.Values, body T) (*http.Response, *core.Status) {
 
 	return nil, nil
 }

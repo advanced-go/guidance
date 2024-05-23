@@ -17,13 +17,13 @@ const (
 	emptyEntryPath = "file://[cwd]/resiliencytest/entry-empty.json"
 )
 
-var testV1 = []entryV1{
+var testV1 = []EntryV1{
 	{Origin: core.Origin{Region: "region1", Zone: "Zone1", Host: "www.host1.com"}, Status: "active", Timeout: "100ms", RateLimit: "125", RateBurst: "25"},
 	{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 	{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
 }
 
-var testV2 = []entryV2{
+var testV2 = []EntryV2{
 	{Origin: core.Origin{Region: "region1", Zone: "Zone1", Host: "www.host1.com"}, Version: "v2", Status: "active", Timeout: "100ms", RateLimit: "125", RateBurst: "25"},
 	{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host1.com"}, Version: "v2", Status: "active", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 	{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Version: "v2", Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
@@ -34,16 +34,16 @@ func ExampleCreateEntries() {
 	buf, status := io.ReadFile(entryV1Path)
 	fmt.Printf("test: ReadFile(\"%v\") -> [status:%v] [buff:%v]\n", entryV1Path, status, len(buf))
 
-	entries1, status1 := createEntries[entryV1](nil, nil)
+	entries1, status1 := createEntries[EntryV1](nil, nil)
 	fmt.Printf("test: CreateEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
-	entries1, status1 = createEntries[entryV1](nil, buf)
+	entries1, status1 = createEntries[EntryV1](nil, buf)
 	fmt.Printf("test: CreateEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	buf, status = io.ReadFile(entryV2Path)
 	fmt.Printf("test: ReadFile(\"%v\") -> [status:%v] [buff:%v]\n", entryV2Path, status, len(buf))
 
-	entries2, status2 := createEntries[entryV2](nil, buf)
+	entries2, status2 := createEntries[EntryV2](nil, buf)
 	fmt.Printf("test: CreateEntries() -> [status:%v] [entries:%v]\n", status2, len(entries2))
 
 	//Output:
@@ -56,11 +56,11 @@ func ExampleCreateEntries() {
 }
 
 func ExampleAddEntries() {
-	status := addEntries[entryV1](nil, testV1)
+	status := addEntries[EntryV1](nil, nil, testV1)
 	fmt.Printf("test: AddEntriesV1() -> [status:%v] [add:%v] [total:%v]\n", status, len(testV1), len(listV1))
 	//fmt.Printf("test: ListV1 -> [%v]\n", listV1)
 
-	status = addEntries[entryV2](nil, testV2)
+	status = addEntries[EntryV2](nil, nil, testV2)
 	fmt.Printf("test: AddEntriesV2() -> [status:%v] [add:%v] [total:%v]\n", status, len(testV2), len(listV2))
 	//fmt.Printf("test: ListV2 -> [%v]\n", listV2)
 
@@ -71,22 +71,22 @@ func ExampleAddEntries() {
 }
 
 func ExampleFilterEntries() {
-	entries, status := filterEntries[entryV1](nil, listV1, nil)
+	entries, status := filterEntries[EntryV1](nil, listV1, nil)
 	fmt.Printf("test: FilterEntriesV1() -> [status:%v] [entries:%v]\n", status, len(entries))
 
 	values := make(url.Values)
 	values.Add(core.RegionKey, "regIon1")
-	entries, status = filterEntries[entryV1](nil, listV1, values)
+	entries, status = filterEntries[EntryV1](nil, listV1, values)
 	fmt.Printf("test: FilterEntriesV1() -> [status:%v] [entries:%v]\n", status, len(entries))
 	//fmt.Printf("test: EntriesV1 -> [%v]\n", entries)
 
-	entries2, status2 := filterEntries[entryV2](nil, listV2, nil)
+	entries2, status2 := filterEntries[EntryV2](nil, listV2, nil)
 	fmt.Printf("test: FilterEntriesV2() -> [status:%v] [entries:%v]\n", status2, len(entries2))
 
 	values.Set(core.RegionKey, "regIon2")
 	values.Add(core.ZoneKey, "zone1")
 	values.Add(core.HostKey, "www.google.com")
-	entries2, status2 = filterEntries[entryV2](nil, listV2, values)
+	entries2, status2 = filterEntries[EntryV2](nil, listV2, values)
 	fmt.Printf("test: FilterEntriesV2() -> [status:%v] [entries:%v]\n", status2, entries2)
 
 	//Output:
@@ -100,11 +100,11 @@ func ExampleFilterEntries() {
 func ExampleGetEntries_Empty() {
 	h := make(http.Header)
 	h.Add(httpx.ContentLocation, emptyPath)
-	entries, status := getEntries[entryV1](nil, h, nil)
+	entries, status := getEntries[EntryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
 
 	h.Set(httpx.ContentLocation, emptyEntryPath)
-	entries, status = getEntries[entryV1](nil, h, nil)
+	entries, status = getEntries[EntryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status, len(entries))
 
 	//Output:
@@ -116,7 +116,7 @@ func ExampleGetEntries_Empty() {
 func ExampleGetEntries_V1() {
 	values := make(url.Values)
 	values.Add(core.RegionKey, "region1")
-	entries1, status1 := getEntries[entryV1](nil, nil, values)
+	entries1, status1 := getEntries[EntryV1](nil, nil, values)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	buf, status := io.ReadFile(entryV1Path)
@@ -124,7 +124,7 @@ func ExampleGetEntries_V1() {
 
 	h := make(http.Header)
 	h.Add(httpx.ContentLocation, entryV1Path)
-	entries1, status1 = getEntries[entryV1](nil, h, nil)
+	entries1, status1 = getEntries[EntryV1](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	//Output:
@@ -137,7 +137,7 @@ func ExampleGetEntries_V1() {
 func ExampleGetEntries_V2() {
 	values := make(url.Values)
 	values.Add(core.ZoneKey, "zonE1")
-	entries1, status1 := getEntries[entryV2](nil, nil, values)
+	entries1, status1 := getEntries[EntryV2](nil, nil, values)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	buf, status := io.ReadFile(entryV2Path)
@@ -147,7 +147,7 @@ func ExampleGetEntries_V2() {
 	values.Add(httpx.ContentLocation, entryV2Path)
 	h := make(http.Header)
 	h.Add(httpx.ContentLocation, entryV2Path)
-	entries1, status1 = getEntries[entryV2](nil, h, nil)
+	entries1, status1 = getEntries[EntryV2](nil, h, nil)
 	fmt.Printf("test: GetEntries() -> [status:%v] [entries:%v]\n", status1, len(entries1))
 
 	//Output:
