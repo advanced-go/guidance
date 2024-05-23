@@ -35,7 +35,12 @@ var (
 			return false
 		},
 		func(item any, r *http.Request) {
-
+			filter := core.NewOrigin(r.URL.Query())
+			if entry, ok := item.(*Entry); ok {
+				if core.OriginMatch(entry.Origin, filter) {
+					return true
+				}
+			}
 		})
 )
 
