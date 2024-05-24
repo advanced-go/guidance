@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	PkgPath            = "github/advanced-go/guidance/resiliencyv1"
-	documentsAuthority = "github/advanced-go/documents"
+	PkgPath            = "github/advanced-go/guidance/resiliency2"
+	documentsAuthority = "github/advanced-go/documentsv2"
 	documentsResource  = "resiliency"
 )
 
