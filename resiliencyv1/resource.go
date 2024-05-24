@@ -30,6 +30,10 @@ func (r *Resource[T]) Count() int {
 	return len(r.List)
 }
 
+func (r *Resource[T]) Empty() {
+	r.List = nil
+}
+
 func (r *Resource[T]) Get(values url.Values) (items []T, status *core.Status) {
 	if r.MatchFn == nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("MatchFunc() is nil"))
@@ -80,10 +84,11 @@ func (r *Resource[T]) Delete(values url.Values) *core.Status {
 }
 
 func (r *Resource[T]) Do(req *http.Request) (*http.Response, *core.Status) {
-	//_, path, status1 := httpx.ValidateRequestURL(r, module.Authority)
+	//_, _, status1 := httpx.ValidateRequestURL(req, module.Authority)
 	//if !status1.OK() {
 	//	return httpx.NewResponseWithStatus(status1, status1.Err)
 	//}
+	fmt.Printf("Do() -> [url:%v]\n", req.URL.String())
 	if strings.Contains(req.URL.Path, core.AuthorityPath) {
 		return r.Authority, core.StatusOK()
 	}
