@@ -22,7 +22,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body any) *cor
 	var e E
 
 	// Set headers
-	url := "http://localhost:8080/github/advanced-go/documents:resiliency"
+	url := "/github/advanced-go/documents:resiliency"
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))

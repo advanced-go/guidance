@@ -18,8 +18,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
-	//url := "http://localhost:8080/github/advanced-go/documents:resiliency"
-	url := "/resiliency" + "?" + values.Encode()
+	url := "github/advanced-go/documents:resiliency" + "?" + values.Encode()
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	// Set headers

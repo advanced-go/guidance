@@ -2,6 +2,7 @@ package resiliency
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
@@ -28,8 +29,8 @@ var (
 
 func originMatch(item any, values url.Values) bool {
 	filter := core.NewOrigin(values)
-	if entry, ok := item.(*Entry); ok {
-		if core.OriginMatch(entry.Origin, filter) {
+	if entry, ok := item.(*core.Origin); ok {
+		if core.OriginMatch(*entry, filter) {
 			return true
 		}
 	}
@@ -44,7 +45,7 @@ func originPatch(item any, patch *httpx.Patch) {
 		for _, op := range patch.Updates {
 			switch op.Op {
 			case httpx.OpReplace:
-				if op.Path == "Host" {
+				if op.Path == core.HostKey {
 					if s, ok1 := op.Value.(string); ok1 {
 						target.Host = s
 					}
@@ -76,12 +77,69 @@ func ExampleOriginResource() {
 	rc, _, status0 := createOriginReadCloser(testOrigins)
 	fmt.Printf("test: createReaderCloser() -> [status:%v]\n", status0)
 
-	req, _ := http.NewRequest(http.MethodPut, url, rc)
-	resp, status := httpx.DoExchange(req)
+	// Get authority
+	auth := core.Authority(originRsc.Do)
+	fmt.Printf("test: originRsc.Do-AUTH() -> [auth:%v]\n", auth)
 
-	fmt.Printf("test: DoExchange() -> [status:%v] [resp:%v]\n", status, resp != nil)
+	// Put
+	req, _ := http.NewRequest(http.MethodPut, url, rc)
+	resp, status := originRsc.Do(req)
+	fmt.Printf("test: originRsc.Do-PUT() -> [status:%v] [resp:%v] [count:%v]\n", status, resp != nil, originRsc.Count())
+
+	// Get all
+	req, _ = http.NewRequest(http.MethodGet, url, nil)
+	items, status1 := getItems(req)
+	fmt.Printf("test: originRsc.Do-GET(*) -> [status:%v] [count:%v]\n", status1, len(items))
+
+	// Get zone=zone1
+	req, _ = http.NewRequest(http.MethodGet, url+"?az=zone1", nil)
+	items, status1 = getItems(req)
+	fmt.Printf("test: originRsc.Do-GET(az=zone1) -> [status:%v] [count:%v]\n", status1, len(items))
+
+	// Patch replace www.google.com -> www.search.yahoo.com
+	p := httpx.Patch{Updates: []httpx.Operation{
+		{Op: httpx.OpReplace, Path: core.HostKey, Value: "www.search.yahoo.com"},
+	}}
+	buf, _ := json.Marshal(p)
+	req, _ = http.NewRequest(http.MethodPatch, url+"?host=www.google.com", io.NopCloser(bytes.NewReader(buf)))
+	resp, status = originRsc.Do(req)
+	fmt.Printf("test: originRsc.Do-PATCH() -> [status:%v]\n", status)
+
+	// GET patched Origin
+	req, _ = http.NewRequest(http.MethodGet, url+"?host=www.search.yahoo.com", nil)
+	items, status = getItems(req)
+	fmt.Printf("test: originRsc.Do-GET(host=www.search.yahoo.com) -> [status:%v] [count:%v]\n", status, len(items))
+
+	// DELETE - patched item
+	req, _ = http.NewRequest(http.MethodDelete, url+"?host=www.search.yahoo.com", nil)
+	resp, status = originRsc.Do(req)
+	fmt.Printf("test: originRsc.Do-DELETE(host=www.search.yahoo.com) -> [status:%v] [count:%v]\n", status, originRsc.Count())
+
+	// Get *
+	req, _ = http.NewRequest(http.MethodGet, url, nil)
+	items, status = getItems(req)
+	fmt.Printf("test: originRsc.Do-GET(*) -> [status:%v] [count:%v]\n", status, len(items))
 
 	//Output:
-	//fail
+	//test: createReaderCloser() -> [status:OK]
+	//test: originRsc.Do-AUTH() -> [auth:github/advanced-go/origin-resource]
+	//test: originRsc.Do-PUT() -> [status:OK] [resp:true] [count:3]
+	//test: originRsc.Do-GET(*) -> [status:OK] [count:3]
+	//test: originRsc.Do-GET(az=zone1) -> [status:OK] [count:2]
+	//test: originRsc.Do-PATCH() -> [status:OK]
+	//test: originRsc.Do-GET(host=www.search.yahoo.com) -> [status:OK] [count:1]
+	//test: originRsc.Do-DELETE(host=www.search.yahoo.com) -> [status:OK] [count:2]
+	//test: originRsc.Do-GET(*) -> [status:OK] [count:2]
+	
+}
 
+func getItems(req *http.Request) ([]core.Origin, *core.Status) {
+	resp, status := originRsc.Do(req)
+	if !status.OK() {
+		return nil, status
+	}
+	if resp.Body == nil {
+		return nil, core.StatusNotFound()
+	}
+	return json2.New[[]core.Origin](resp.Body, nil)
 }

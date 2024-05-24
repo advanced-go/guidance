@@ -8,7 +8,6 @@ import (
 	"github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type Resource[T any] struct {
@@ -63,9 +62,9 @@ func (r *Resource[T]) Patch(values url.Values, patch *httpx.Patch) *core.Status 
 	if r.PatchFn == nil {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("PatchFunc() is nil"))
 	}
-	for _, target := range r.List {
+	for i, target := range r.List {
 		if r.MatchFn(&target, values) {
-			r.PatchFn(&target, patch)
+			r.PatchFn(&r.List[i], patch)
 		}
 	}
 	return core.StatusOK()
@@ -75,25 +74,23 @@ func (r *Resource[T]) Delete(values url.Values) *core.Status {
 	if r.MatchFn == nil {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("MatchFunc() is nil"))
 	}
-	for _, target := range r.List {
+	//if values
+	for i, target := range r.List {
 		if r.MatchFn(&target, values) {
-			//delete
+			r.List = append(r.List[:i], r.List[i+1:]...)
 		}
 	}
 	return core.StatusOK()
 }
 
 func (r *Resource[T]) Do(req *http.Request) (*http.Response, *core.Status) {
-	//_, _, status1 := httpx.ValidateRequestURL(req, module.Authority)
-	//if !status1.OK() {
-	//	return httpx.NewResponseWithStatus(status1, status1.Err)
-	//}
-	fmt.Printf("Do() -> [url:%v]\n", req.URL.String())
-	if strings.Contains(req.URL.Path, core.AuthorityPath) {
-		return r.Authority, core.StatusOK()
-	}
+	//fmt.Printf("resource.Do() -> [url:%v]\n", req.URL.String())
 	switch req.Method {
 	case http.MethodGet:
+		if req.URL.Path == core.AuthorityRootPath {
+			return r.Authority, core.StatusOK()
+		}
+		//if strings.HasPrefix(req.URL.Path, core.AuthorityRootPath) {
 		items, status := r.Get(req.URL.Query())
 		if !status.OK() {
 			return httpx.NewResponseWithStatus(status, status.Err)
