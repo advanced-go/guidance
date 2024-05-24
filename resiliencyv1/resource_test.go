@@ -10,7 +10,6 @@ import (
 	json2 "github.com/advanced-go/stdlib/json"
 	"io"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -27,8 +26,8 @@ var (
 	originRsc = NewResource[core.Origin](originAuthority, originMatch, originPatch)
 )
 
-func originMatch(item any, values url.Values) bool {
-	filter := core.NewOrigin(values)
+func originMatch(item any, req *http.Request) bool {
+	filter := core.NewOrigin(req.URL.Query())
 	if entry, ok := item.(*core.Origin); ok {
 		if core.OriginMatch(*entry, filter) {
 			return true
@@ -86,7 +85,7 @@ func ExampleOriginResource() {
 	resp, status := originRsc.Do(req)
 	fmt.Printf("test: originRsc.Do-PUT() -> [status:%v] [resp:%v] [count:%v]\n", status, resp != nil, originRsc.Count())
 
-	// Get all
+	// Get no filter
 	req, _ = http.NewRequest(http.MethodGet, url, nil)
 	items, status1 := getItems(req)
 	fmt.Printf("test: originRsc.Do-GET(*) -> [status:%v] [count:%v]\n", status1, len(items))
@@ -116,21 +115,26 @@ func ExampleOriginResource() {
 	fmt.Printf("test: originRsc.Do-DELETE(host=www.search.yahoo.com) -> [status:%v] [count:%v]\n", status, originRsc.Count())
 
 	// Get *
-	req, _ = http.NewRequest(http.MethodGet, url, nil)
-	items, status = getItems(req)
-	fmt.Printf("test: originRsc.Do-GET(*) -> [status:%v] [count:%v]\n", status, len(items))
+	//req, _ = http.NewRequest(http.MethodGet, url, nil)
+	//items, status = getItems(req)
+	//fmt.Printf("test: originRsc.Do-GET(*) -> [status:%v] [count:%v]\n", status, len(items))
+
+	originRsc.Empty()
+	//req, _ = http.NewRequest(http.MethodGet, url, nil)
+	//items, status = getItems(req)
+	fmt.Printf("test: originRsc.Count() -> [status:%v] [count:%v]\n", core.StatusOK(), originRsc.Count())
 
 	//Output:
 	//test: createReaderCloser() -> [status:OK]
 	//test: originRsc.Do-AUTH() -> [auth:github/advanced-go/origin-resource]
 	//test: originRsc.Do-PUT() -> [status:OK] [resp:true] [count:3]
-	//test: originRsc.Do-GET(*) -> [status:OK] [count:3]
+	//test: originRsc.Do-GET(*) -> [status:Not Found] [count:0]
 	//test: originRsc.Do-GET(az=zone1) -> [status:OK] [count:2]
 	//test: originRsc.Do-PATCH() -> [status:OK]
 	//test: originRsc.Do-GET(host=www.search.yahoo.com) -> [status:OK] [count:1]
 	//test: originRsc.Do-DELETE(host=www.search.yahoo.com) -> [status:OK] [count:2]
-	//test: originRsc.Do-GET(*) -> [status:OK] [count:2]
-	
+	//test: originRsc.Count() -> [status:OK] [count:0]
+
 }
 
 func getItems(req *http.Request) ([]core.Origin, *core.Status) {

@@ -7,17 +7,16 @@ import (
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
 	"net/http"
-	"net/url"
 )
 
 type Resource[T any] struct {
 	List      []T
 	Authority *http.Response
-	MatchFn   func(item any, values url.Values) bool
+	MatchFn   func(item any, r *http.Request) bool
 	PatchFn   func(item any, patch *httpx.Patch)
 }
 
-func NewResource[T any](authority string, match func(item any, values url.Values) bool, patch func(item any, patch *httpx.Patch)) *Resource[T] {
+func NewResource[T any](authority string, match func(item any, r *http.Request) bool, patch func(item any, patch *httpx.Patch)) *Resource[T] {
 	r := new(Resource[T])
 	r.Authority = httpx.NewAuthorityResponse(authority)
 	r.MatchFn = match
@@ -33,12 +32,12 @@ func (r *Resource[T]) Empty() {
 	r.List = nil
 }
 
-func (r *Resource[T]) Get(values url.Values) (items []T, status *core.Status) {
+func (r *Resource[T]) Get(req *http.Request) (items []T, status *core.Status) {
 	if r.MatchFn == nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("MatchFunc() is nil"))
 	}
 	for _, target := range r.List {
-		if r.MatchFn(&target, values) {
+		if r.MatchFn(&target, req) {
 			items = append(items, target)
 		}
 	}
@@ -55,7 +54,7 @@ func (r *Resource[T]) Put(items []T) *core.Status {
 	return core.StatusOK()
 }
 
-func (r *Resource[T]) Patch(values url.Values, patch *httpx.Patch) *core.Status {
+func (r *Resource[T]) Patch(req *http.Request, patch *httpx.Patch) *core.Status {
 	if r.MatchFn == nil {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("MatchFunc() is nil"))
 	}
@@ -63,20 +62,19 @@ func (r *Resource[T]) Patch(values url.Values, patch *httpx.Patch) *core.Status 
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("PatchFunc() is nil"))
 	}
 	for i, target := range r.List {
-		if r.MatchFn(&target, values) {
+		if r.MatchFn(&target, req) {
 			r.PatchFn(&r.List[i], patch)
 		}
 	}
 	return core.StatusOK()
 }
 
-func (r *Resource[T]) Delete(values url.Values) *core.Status {
+func (r *Resource[T]) Delete(req *http.Request) *core.Status {
 	if r.MatchFn == nil {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("MatchFunc() is nil"))
 	}
-	//if values
 	for i, target := range r.List {
-		if r.MatchFn(&target, values) {
+		if r.MatchFn(&target, req) {
 			r.List = append(r.List[:i], r.List[i+1:]...)
 		}
 	}
@@ -91,7 +89,7 @@ func (r *Resource[T]) Do(req *http.Request) (*http.Response, *core.Status) {
 			return r.Authority, core.StatusOK()
 		}
 		//if strings.HasPrefix(req.URL.Path, core.AuthorityRootPath) {
-		items, status := r.Get(req.URL.Query())
+		items, status := r.Get(req)
 		if !status.OK() {
 			return httpx.NewResponseWithStatus(status, status.Err)
 		}
@@ -115,10 +113,10 @@ func (r *Resource[T]) Do(req *http.Request) (*http.Response, *core.Status) {
 		if !status.OK() {
 			return httpx.NewResponseWithStatus(status, status.Err)
 		}
-		status = r.Patch(req.URL.Query(), &patch)
+		status = r.Patch(req, &patch)
 		return httpx.NewResponseWithStatus(status, status.Err)
 	case http.MethodDelete:
-		status := r.Delete(req.URL.Query())
+		status := r.Delete(req)
 		return httpx.NewResponseWithStatus(status, status.Err)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("unsupported method: %v", req.Method)))
