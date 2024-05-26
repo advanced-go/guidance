@@ -14,10 +14,6 @@ import (
 
 // https://localhost:8081/github/advanced-go/guidance:v1/us-west/zone/sub-zone/app/route?q=golang
 
-const (
-	resiliencyPath = "resiliency"
-)
-
 var authorityResponse = httpx.NewAuthorityResponse(module.Authority)
 
 // Controllers - egress controllers
@@ -36,7 +32,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	r.Header.Add(core.XVersion, version)
 	core.AddRequestId(r.Header)
 	switch strings.ToLower(path) {
-	case resiliencyPath:
+	case module.ResiliencyResource:
 		return resiliencyExchange(r)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()

@@ -22,19 +22,18 @@ var (
 		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
 	}
-	rsc       = httpx.NewResource[core.Origin, httpx.Patch, struct{}](rscName, match, nil, patchProcess, nil)
-	host, err = httpx.NewHost(module.DocumentsAuthority, func(r *http.Request) string { return rscName }, rsc.Do)
+	rsc = httpx.NewResource[Entry, httpx.Patch, struct{}](rscName, match, nil, patchProcess, nil)
 )
 
-func match(item *core.Origin, req *http.Request) bool {
+func match(item *Entry, req *http.Request) bool {
 	filter := core.NewOrigin(req.URL.Query())
-	if core.OriginMatch(*item, filter) {
+	if core.OriginMatch(item.Origin, filter) {
 		return true
 	}
 	return false
 }
 
-func patchProcess(item *[]core.Origin, patch *httpx.Patch) *http.Response {
+func patchProcess(item *[]Entry, patch *httpx.Patch) *http.Response {
 	if item == nil || patch == nil {
 		return httpx.NewResponse(core.NewStatus(http.StatusBadRequest), nil)
 	}
@@ -43,7 +42,7 @@ func patchProcess(item *[]core.Origin, patch *httpx.Patch) *http.Response {
 		case httpx.OpReplace:
 			if op.Path == core.HostKey {
 				if s, ok1 := op.Value.(string); ok1 {
-					(*item)[0].Host = s
+					(*item)[0].Origin.Host = s
 				}
 			}
 		default:
@@ -53,16 +52,14 @@ func patchProcess(item *[]core.Origin, patch *httpx.Patch) *http.Response {
 }
 
 func init() {
-	if err != nil {
-		fmt.Printf("error: new resource %v", err)
-	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", rsc.Do), nil)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("localhost:8082", module.DocumentsAuthority, time.Second*2, "", rsc.Do), nil)
 	controller.RegisterController(ctrl)
 }
 
-func ExampleExchange_Simple() {
+func ExampleExchange_PutGet() {
 	status := put[core.Output](context.Background(), nil, testEntry)
-	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, rsc.Count())
+	cnt := rsc.Count()
+	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
 
 	values := make(url.Values)
 	values.Add(core.ZoneKey, "zone1")

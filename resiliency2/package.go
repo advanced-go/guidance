@@ -8,7 +8,7 @@ import (
 const (
 	PkgPath            = "github/advanced-go/guidance/resiliency2"
 	documentsAuthority = "github/advanced-go/documentsv2"
-	documentsResource  = "resiliency"
+	documentsResource  = "resiliency1"
 )
 
 type Entry struct {

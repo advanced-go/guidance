@@ -22,14 +22,14 @@ func Put[T PutBodyConstraints](ctx context.Context, h http.Header, body T) *core
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body any) *core.Status {
 	var e E
 
-	// Set headers
-	url := module.BuildDocumentsPath(module.Ver2, nil)
+	url := module.BuildDocumentsPath(module.Ver1, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 		return status
 	}
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
+	httpx.Forward(req.Header, h)
 	_, status = httpx.DoExchange(req)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))

@@ -1,45 +1,57 @@
 package http
 
 import (
+	"fmt"
 	"github.com/advanced-go/guidance/module"
+	resiliency1 "github.com/advanced-go/guidance/resiliency1"
+	resiliency2 "github.com/advanced-go/guidance/resiliency2"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"io"
+	"net/http"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 )
 
-type resiliencyEntryV1 struct {
-	Origin    core.Origin
-	Status    string `json:"status"`
-	CreatedTS string `json:"created-ts"`
-	UpdatedTS string `json:"updated-ts"`
+const (
+	documentsV1Name = module.Ver1 + "/" + module.DocumentsResource
+	documentsV2Name = module.Ver2 + "/" + module.DocumentsResource
+)
 
-	// Timeout
-	Timeout string `json:"timeout"`
-
-	// Rate Limiting
-	RateLimit string `json:"rate-limit"`
-	RateBurst string `json:"rate-burst"`
+func matchOrigin(item *core.Origin, req *http.Request) bool {
+	filter := core.NewOrigin(req.URL.Query())
+	if core.OriginMatch(*item, filter) {
+		return true
+	}
+	return false
 }
 
-type resiliencyEntryV2 struct {
-	Origin    core.Origin
-	Version   string `json:"version"`
-	Status    string `json:"status"`
-	CreatedTS string `json:"created-ts"`
-	UpdatedTS string `json:"updated-ts"`
+func mapResiliency(r *http.Request) string {
+	if strings.Contains(r.URL.Path, documentsV2Name) {
+		return documentsV2Name
+	}
+	return documentsV1Name
+}
 
-	// Timeout
-	Timeout string `json:"timeout"`
+var (
+	rsc       = httpx.NewResource[core.Origin, httpx.Patch, struct{}](documentsV1Name, matchOrigin, nil, nil, nil)
+	host, err = httpx.NewHost(module.DocumentsAuthority, mapResiliency, rsc.Do)
+)
 
-	// Rate Limiting
-	RateLimit string `json:"rate-limit"`
-	RateBurst string `json:"rate-burst"`
+func init() {
+	if err != nil {
+		fmt.Printf("error: new resource %v", err)
+	}
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", rsc.Do), nil)
+	controller.RegisterController(ctrl)
 }
 
 func Test_resiliencyExchange(t *testing.T) {
-	basePath := "file://[cwd]/httptest/resiliency/"
+	basePath := "file://[cwd]/httptest/resiliency1/"
 
 	type args struct {
 		req  string
@@ -91,9 +103,9 @@ func Test_resiliencyExchange(t *testing.T) {
 			var wantT any
 			switch req.Header.Get(core.XVersion) {
 			case module.Ver1, "":
-				failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV1](gotBuf, wantBuf)
+				failures, gotT, wantT = httpxtest.Unmarshal[resiliency1.Entry](gotBuf, wantBuf)
 			case module.Ver2:
-				failures, gotT, wantT = httpxtest.Unmarshal[resiliencyEntryV2](gotBuf, wantBuf)
+				failures, gotT, wantT = httpxtest.Unmarshal[resiliency2.Entry](gotBuf, wantBuf)
 			default:
 			}
 			if failures != nil {

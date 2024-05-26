@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/resiliency"
+	PkgPath = "github/advanced-go/guidance/resiliency1"
 )
 
 type EntryV1 struct {
