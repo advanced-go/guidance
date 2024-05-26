@@ -2,6 +2,7 @@ package resiliency
 
 import (
 	"context"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
@@ -18,7 +19,7 @@ func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
-	url := documentsAuthority + ":" + documentsResource + "?" + values.Encode()
+	url := module.BuildDocumentsPath(module.Ver1, values)
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	// Set headers

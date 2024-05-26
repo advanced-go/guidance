@@ -6,9 +6,7 @@ import (
 )
 
 const (
-	PkgPath            = "github/advanced-go/guidance/resiliency1"
-	documentsAuthority = "github/advanced-go/documents"
-	documentsResource  = "resiliency"
+	PkgPath = "github/advanced-go/guidance/resiliency1"
 )
 
 type Entry struct {

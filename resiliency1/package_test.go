@@ -3,6 +3,7 @@ package resiliency
 import (
 	"context"
 	"fmt"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -11,34 +12,9 @@ import (
 	"time"
 )
 
-func match(item any, req *http.Request) bool {
-	filter := core.NewOrigin(req.URL.Query())
-	if entry, ok := item.(*Entry); ok {
-		if core.OriginMatch(entry.Origin, filter) {
-			return true
-		}
-	}
-	return false
-}
-
-func patch(item any, patch *httpx.Patch) {
-	if item == nil || patch == nil {
-		return
-	}
-	if entry, ok := item.(*Entry); ok {
-		for _, op := range patch.Updates {
-			switch op.Op {
-			case httpx.OpReplace:
-				if op.Path == core.HostKey {
-					if s, ok1 := op.Value.(string); ok1 {
-						entry.Origin.Host = s
-					}
-				}
-			default:
-			}
-		}
-	}
-}
+const (
+	rscName = "test-rsc"
+)
 
 var (
 	testEntry = []Entry{
@@ -46,12 +22,41 @@ var (
 		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
 	}
-
-	rsc = httpx.NewResource[Entry](documentsAuthority, match, patch)
+	rsc       = httpx.NewResource[core.Origin, httpx.Patch, struct{}](rscName, match, nil, patchProcess, nil)
+	host, err = httpx.NewHost(module.DocumentsAuthority, func(r *http.Request) string { return rscName }, rsc.Do)
 )
 
+func match(item *core.Origin, req *http.Request) bool {
+	filter := core.NewOrigin(req.URL.Query())
+	if core.OriginMatch(*item, filter) {
+		return true
+	}
+	return false
+}
+
+func patchProcess(item *[]core.Origin, patch *httpx.Patch) *http.Response {
+	if item == nil || patch == nil {
+		return httpx.NewResponse(core.NewStatus(http.StatusBadRequest), nil)
+	}
+	for _, op := range patch.Updates {
+		switch op.Op {
+		case httpx.OpReplace:
+			if op.Path == core.HostKey {
+				if s, ok1 := op.Value.(string); ok1 {
+					(*item)[0].Host = s
+				}
+			}
+		default:
+		}
+	}
+	return httpx.NewResponse(core.StatusOK(), nil)
+}
+
 func init() {
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", documentsAuthority, time.Second*2, "", rsc.Do), nil)
+	if err != nil {
+		fmt.Printf("error: new resource %v", err)
+	}
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", rsc.Do), nil)
 	controller.RegisterController(ctrl)
 }
 
