@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/advanced-go/guidance/module"
+	//resiliency2 "github.com/advanced-go/guidance/resiliency2"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -33,7 +34,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	core.AddRequestId(r.Header)
 	switch strings.ToLower(path) {
 	case module.ResiliencyResource:
-		return resiliencyExchange(r)
+		return resiliencyMux(r)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -44,4 +45,17 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", path)))
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
+}
+
+func resiliencyMux(r *http.Request) (*http.Response, *core.Status) {
+	switch r.Header.Get(core.XVersion) {
+	case module.Ver1, "":
+		return resiliency1Exchange(r)
+	case module.Ver2:
+		return resiliency2Exchange(r)
+	default:
+		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+		return httpx.NewResponseWithStatus(status, status.Err)
+	}
+
 }
