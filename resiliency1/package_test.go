@@ -3,17 +3,10 @@ package resiliency
 import (
 	"context"
 	"fmt"
-	"github.com/advanced-go/guidance/module"
-	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"net/url"
-	"time"
-)
-
-const (
-	rscName = "test-rsc"
 )
 
 var (
@@ -22,18 +15,9 @@ var (
 		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
 	}
-	rsc = httpx.NewResource2[Entry, httpx.Patch, struct{}](rscName, httpx.NewListContent[Entry, httpx.Patch, struct{}](match, patchProcess, nil), nil)
 )
 
-func match(req *http.Request, item *Entry) bool {
-	filter := core.NewOrigin(req.URL.Query())
-	if core.OriginMatch(item.Origin, filter) {
-		return true
-	}
-	return false
-}
-
-func patchProcess(req *http.Request, item *[]Entry, patch *httpx.Patch) *core.Status {
+func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Status {
 	if item == nil || patch == nil {
 		return core.NewStatus(http.StatusBadRequest)
 	}
@@ -51,14 +35,9 @@ func patchProcess(req *http.Request, item *[]Entry, patch *httpx.Patch) *core.St
 	return core.StatusOK()
 }
 
-func init() {
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("localhost:8082", module.DocumentsAuthority, time.Second*2, "", rsc.Do), nil)
-	controller.RegisterController(ctrl)
-}
-
 func ExampleExchange_PutGet() {
 	status := put[core.Output](context.Background(), nil, testEntry)
-	cnt := rsc.Count()
+	cnt := entryRsc.Count()
 	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
 
 	values := make(url.Values)

@@ -3,9 +3,11 @@ package resiliency
 import (
 	"fmt"
 	"github.com/advanced-go/guidance/module"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
+	"time"
 )
 
 const (
@@ -33,7 +35,7 @@ type PutBodyConstraints interface {
 
 var (
 	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource2[Entry, httpx.Patch, struct{}](resiliencyName, entryContent, nil)
+	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](resiliencyName, entryContent, nil)
 	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource, entryRsc.Do)
 )
 
@@ -41,8 +43,8 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	//ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
-	//controller.RegisterController(ctrl)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
+	controller.RegisterController(ctrl)
 }
 
 func matchEntry(req *http.Request, item *Entry) bool {
