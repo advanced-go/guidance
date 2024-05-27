@@ -34,8 +34,8 @@ type PutBodyConstraints interface {
 }
 
 var (
-	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](resiliencyName, entryContent, nil)
+	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}, httpx.Lock](matchEntry, nil, nil)
+	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}, httpx.Lock](resiliencyName, entryContent, nil)
 	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource, entryRsc.Do)
 )
 
