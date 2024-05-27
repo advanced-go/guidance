@@ -5,16 +5,13 @@ import (
 	"github.com/advanced-go/guidance/module"
 	resiliency1 "github.com/advanced-go/guidance/resiliency1"
 	resiliency2 "github.com/advanced-go/guidance/resiliency2"
-	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"io"
 	"net/http"
 	"reflect"
 	"strings"
 	"testing"
-	"time"
 )
 
 const (
@@ -41,16 +38,16 @@ func mapResiliency(r *http.Request) string {
 }
 
 var (
-	rsc       = httpx.NewResource[core.Origin, struct{}, struct{}](documentsV1Name, matchOrigin, nil, nil, nil)
-	host, err = httpx.NewHost(module.DocumentsAuthority, mapResiliency, rsc.Do)
+// rsc       = httpx.NewResource2[core.Origin, struct{}, struct{}](documentsV1Name, matchOrigin, nil, nil, nil)
+// host, err = httpx.NewHost(module.DocumentsAuthority, mapResiliency, rsc.Do)
 )
 
 func init() {
-	if err != nil {
-		fmt.Printf("error: new resource %v", err)
-	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
-	controller.RegisterController(ctrl)
+	//if err != nil {
+	//	fmt.Printf("error: new resource %v", err)
+	//}
+	//ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
+	//controller.RegisterController(ctrl)
 }
 
 func Test_resiliency1Exchange(t *testing.T) {
