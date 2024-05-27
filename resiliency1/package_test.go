@@ -22,10 +22,10 @@ var (
 		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
 		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
 	}
-	rsc = httpx.NewResource[Entry, httpx.Patch, struct{}](rscName, match, nil, patchProcess, nil)
+	rsc = httpx.NewResource2[Entry, httpx.Patch, struct{}](rscName, httpx.NewListContent[Entry, httpx.Patch, struct{}](match, patchProcess, nil), nil)
 )
 
-func match(item *Entry, req *http.Request) bool {
+func match(req *http.Request, item *Entry) bool {
 	filter := core.NewOrigin(req.URL.Query())
 	if core.OriginMatch(item.Origin, filter) {
 		return true
@@ -33,9 +33,9 @@ func match(item *Entry, req *http.Request) bool {
 	return false
 }
 
-func patchProcess(item *[]Entry, patch *httpx.Patch) *http.Response {
+func patchProcess(req *http.Request, item *[]Entry, patch *httpx.Patch) *core.Status {
 	if item == nil || patch == nil {
-		return httpx.NewResponse(core.NewStatus(http.StatusBadRequest), nil)
+		return core.NewStatus(http.StatusBadRequest)
 	}
 	for _, op := range patch.Updates {
 		switch op.Op {
@@ -48,7 +48,7 @@ func patchProcess(item *[]Entry, patch *httpx.Patch) *http.Response {
 		default:
 		}
 	}
-	return httpx.NewResponse(core.StatusOK(), nil)
+	return core.StatusOK()
 }
 
 func init() {
