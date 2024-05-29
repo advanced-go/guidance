@@ -2,16 +2,19 @@ package resiliency
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
-	PkgPath        = "github/advanced-go/guidance/resiliency1"
-	resiliencyRoot = "resiliency1"
+	PkgPath = "github/advanced-go/guidance/resiliency1"
 )
 
 type Entry struct {
@@ -33,11 +36,11 @@ type PostData struct {
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || url.Path != resiliencyRoot {
-		return nil, core.StatusBadRequest()
+	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
+		return nil, core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid URL")))
 	}
 	switch url.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return get[core.Log](ctx, core.AddRequestId(h), url.Query())
 	default:
 		return nil, core.StatusBadRequest()
@@ -46,11 +49,11 @@ func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Statu
 
 // Delete - resource DELETE
 func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
-	if url == nil {
-		return core.StatusBadRequest()
+	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
+		return core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid URL")))
 	}
 	switch url.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return delete[core.Log](ctx, core.AddRequestId(h), url.Query())
 	default:
 		return core.StatusBadRequest()
@@ -64,8 +67,8 @@ func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
 
 // Put - resource PUT
 func Put(r *http.Request, body []Entry) *core.Status {
-	if r == nil || r.URL == nil {
-		return core.NewStatus(http.StatusBadRequest)
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+		return core.NewStatusError(http.StatusBadRequest, errors.New("invalid URL"))
 	}
 	if body == nil {
 		content, status := json2.New[[]Entry](r.Body, r.Header)
@@ -77,7 +80,7 @@ func Put(r *http.Request, body []Entry) *core.Status {
 		body = content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -86,8 +89,8 @@ func Put(r *http.Request, body []Entry) *core.Status {
 
 // Post - resource POST
 func Post(r *http.Request, body *PostData) *core.Status {
-	if r == nil || r.URL == nil {
-		return core.NewStatus(http.StatusBadRequest)
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+		return core.NewStatusError(http.StatusBadRequest, errors.New("invalid URL"))
 	}
 	if body == nil {
 		content, status := json2.New[PostData](r.Body, r.Header)
@@ -99,7 +102,7 @@ func Post(r *http.Request, body *PostData) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -108,8 +111,8 @@ func Post(r *http.Request, body *PostData) *core.Status {
 
 // Patch - resource PATCH
 func Patch(r *http.Request, body *httpx.Patch) *core.Status {
-	if r == nil || r.URL == nil {
-		return core.NewStatus(http.StatusBadRequest)
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+		return core.NewStatusError(http.StatusBadRequest, errors.New("invalid URL"))
 	}
 	if body == nil {
 		content, status := json2.New[httpx.Patch](r.Body, r.Header)
@@ -121,7 +124,7 @@ func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()

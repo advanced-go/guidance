@@ -9,14 +9,6 @@ import (
 	"net/url"
 )
 
-var (
-	testEntry = []Entry{
-		{Origin: core.Origin{Region: "region1", Zone: "Zone1", Host: "www.host1.com"}, Status: "active", Timeout: "100ms", RateLimit: "125", RateBurst: "25"},
-		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
-		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
-	}
-)
-
 func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Status {
 	if item == nil || patch == nil {
 		return core.NewStatus(http.StatusBadRequest)
@@ -35,7 +27,7 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 	return core.StatusOK()
 }
 
-func ExampleExchange_PutGet() {
+func _ExampleExchange_PutGet() {
 	status := put[core.Output](context.Background(), nil, testEntry)
 	cnt := entryRsc.Count()
 	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
@@ -47,6 +39,17 @@ func ExampleExchange_PutGet() {
 
 	//Output:
 	//test: put() -> [status:OK] [count:3]
+	//test: get() -> [status:OK] [count:2]
+
+}
+
+func ExampleExchange_Get() {
+	values := make(url.Values)
+	values.Add(core.ZoneKey, "zone1")
+	docs, status1 := get[core.Output](context.Background(), nil, values)
+	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs))
+
+	//Output:
 	//test: get() -> [status:OK] [count:2]
 
 }

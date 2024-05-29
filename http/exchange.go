@@ -29,16 +29,15 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	if r == nil {
 		return httpx.NewResponseWithStatus(core.StatusBadRequest(), nil)
 	}
-	version, path, status := httpx.ValidateURL(r.URL, module.Authority)
+	p, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
-	r.Header.Add(core.XVersion, version)
 	core.AddRequestId(r.Header)
-	switch strings.ToLower("") {
+	//r.Header.Add(core.XVersion, p.Version)
+	switch strings.ToLower(p.Resource) {
 	case module.ResiliencyResource:
-		//return resiliencyMux(r)
-		return resiliencyExchange(r, path, nil)
+		return resiliencyExchange(r, p)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -46,7 +45,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	case core.HealthReadinessPath, core.HealthLivenessPath:
 		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
-		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", path)))
+		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", p.Path)))
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 }

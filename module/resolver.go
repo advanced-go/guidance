@@ -9,7 +9,8 @@ const (
 	DocumentsAuthority = "github/advanced-go/documents"
 	DocumentsResource  = "resiliency"
 
-	ResiliencyResource      = "resiliency1"
+	ResiliencyResource = "resiliency"
+	//ResiliencyV2Resource    = "resiliency2"
 	completeFormat          = "/%v:%v/%v?%v"
 	noQueryFormat           = "/%v:%v/%v"
 	noVersionCompleteFormat = "/%v:%v?%v"

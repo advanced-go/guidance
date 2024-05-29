@@ -9,13 +9,20 @@ import (
 	resiliency2 "github.com/advanced-go/guidance/resiliency2"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 )
 
-func resiliencyExchange(r *http.Request, path string, values url.Values) (*http.Response, *core.Status) {
-	//Need to reset the URL to only the path after the ":"
-
+func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.Status) {
+	if p == nil {
+		p1, status := httpx.ValidateURL(r.URL, module.Authority)
+		if !status.OK() {
+			return httpx.NewResponseWithStatus(status, status.Err)
+		}
+		p = p1
+	}
+	r.URL = p.PathURL()
 	switch r.Method {
 	case http.MethodGet:
 		return get(r.Context(), r.Header, r.URL)

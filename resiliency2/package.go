@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
+	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
@@ -62,6 +63,15 @@ func Put(r *http.Request, body []Entry) *core.Status {
 	if r == nil || r.URL == nil {
 		return core.NewStatus(http.StatusBadRequest)
 	}
+	if body == nil {
+		content, status := json2.New[[]Entry](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = content
+	}
 	switch r.URL.Path {
 	case resiliencyRoot:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
@@ -75,6 +85,15 @@ func Post(r *http.Request, body *PostData) *core.Status {
 	if r == nil || r.URL == nil {
 		return core.NewStatus(http.StatusBadRequest)
 	}
+	if body == nil {
+		content, status := json2.New[PostData](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = &content
+	}
 	switch r.URL.Path {
 	case resiliencyRoot:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
@@ -87,6 +106,15 @@ func Post(r *http.Request, body *PostData) *core.Status {
 func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 	if r == nil || r.URL == nil {
 		return core.NewStatus(http.StatusBadRequest)
+	}
+	if body == nil {
+		content, status := json2.New[httpx.Patch](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = &content
 	}
 	switch r.URL.Path {
 	case resiliencyRoot:

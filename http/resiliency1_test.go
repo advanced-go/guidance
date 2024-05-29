@@ -90,7 +90,7 @@ func Test_resiliency1Exchange(t *testing.T) {
 			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
-			got, status := resiliencyExchange(req, "", nil)
+			got, status := resiliencyExchange(req, nil)
 			// test status code
 			if got.StatusCode != resp.StatusCode {
 				var buf []byte
