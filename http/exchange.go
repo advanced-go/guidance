@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/advanced-go/guidance/module"
-	"github.com/advanced-go/stdlib/uri"
-
 	//resiliency2 "github.com/advanced-go/guidance/resiliency2"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
@@ -38,8 +36,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	core.AddRequestId(r.Header)
 	switch strings.ToLower(p.Resource) {
 	case module.ResiliencyResource:
-		//return resiliencyExchange(r, p)
-		return resiliencyMux(r, p)
+		return resiliencyExchange(r, p)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -52,6 +49,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 }
 
+/*
 func resiliencyMux(r *http.Request, p *uri.Parsed) (*http.Response, *core.Status) {
 	switch p.Version {
 	case module.Ver1, "":
@@ -64,3 +62,6 @@ func resiliencyMux(r *http.Request, p *uri.Parsed) (*http.Response, *core.Status
 	}
 
 }
+
+
+*/
