@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/advanced-go/guidance/module"
 	resiliency1 "github.com/advanced-go/guidance/resiliency1"
-	resiliency2 "github.com/advanced-go/guidance/resiliency2"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"io"
@@ -17,9 +16,9 @@ import (
 const (
 	documentsV1Name = module.Ver1 + "/" + module.DocumentsResource
 	actionTest      = "test"
-	actionEmpty     = "empty"
-	actionInit      = "init"
-	actionAdd       = "add"
+	//actionEmpty     = "empty"
+	actionInit = "init"
+	actionAdd  = "add"
 )
 
 func matchOrigin(item *core.Origin, req *http.Request) bool {
@@ -51,6 +50,7 @@ func init() {
 }
 
 func Test_resiliencyExchangeV1(t *testing.T) {
+	//access.Dis
 	basePath := "file://[cwd]/httptest/resiliency1/"
 
 	type args struct {
@@ -58,13 +58,13 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 		resp string
 	}
 	workflow := []struct {
-		action string
+		suite  string
 		name   string
+		action string
 		args   args
 	}{
-		{actionInit, "rsc-one", args{req: "document-init.json", resp: ""}},
-		{actionAdd, "rsc-one", args{req: "document-add.json", resp: ""}},
-		{actionEmpty, "rsc-one", args{req: "", resp: ""}},
+		{"empty-all", "first", "test", args{req: "get-empty-req.txt", resp: "get-empty-resp.txt"}},
+		{"empty-all", "next", "test", args{req: "get-all-req.txt", resp: "get-all-resp.txt"}},
 
 		/*
 			{actionTest,"get-empty", args{req: "get-empty-req.txt", resp: "get-empty-resp.txt"}},
@@ -78,10 +78,6 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 	for _, tt := range workflow {
 		if tt.action != actionTest {
 			fmt.Printf("action: %v\n", tt.action)
-			switch tt.action {
-			case actionEmpty:
-
-			}
 			continue
 		}
 		failures, req, resp := httpxtest.ReadHttp(basePath, tt.args.req, tt.args.resp)
@@ -89,7 +85,7 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.suite+"/"+tt.name, func(t *testing.T) {
 			got, status := resiliencyExchange(req, nil)
 			// test status code
 			if got.StatusCode != resp.StatusCode {
@@ -117,13 +113,7 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 			// test content
 			var gotT any
 			var wantT any
-			switch req.Header.Get(core.XVersion) {
-			case module.Ver1, "":
-				failures, gotT, wantT = httpxtest.Unmarshal[resiliency1.Entry](gotBuf, wantBuf)
-			case module.Ver2:
-				failures, gotT, wantT = httpxtest.Unmarshal[resiliency2.Entry](gotBuf, wantBuf)
-			default:
-			}
+			failures, gotT, wantT = httpxtest.Unmarshal[resiliency1.Entry](gotBuf, wantBuf)
 			if failures != nil {
 				httpxtest.Errorf(t, failures)
 				return

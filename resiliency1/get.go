@@ -20,7 +20,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	httpx.Forward(req.Header, h)
 	resp, status1 := httpx.DoExchange(req)
 	if status1.NotFound() || status1.Timeout() {
-		return nil, core.StatusOK()
+		return nil, status1
 	}
 	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))
