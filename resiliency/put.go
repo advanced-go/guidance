@@ -9,14 +9,6 @@ import (
 	"net/http"
 )
 
-// Put - resource PUT
-func Put[T PutBodyConstraints](ctx context.Context, h http.Header, body T) *core.Status {
-	if body == nil {
-		return core.NewStatus(http.StatusBadRequest)
-	}
-	return put[core.Log, *http.Request](ctx, core.AddRequestId(h), body)
-}
-
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body any) *core.Status {
 	var e E
 

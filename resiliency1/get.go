@@ -12,11 +12,6 @@ import (
 
 // http://localhost:8081/github/advanced-go/guidance:resiliency?reg=us&az=dallas&sz=dfwocp1&host=www.google.com
 
-// Get - resource GET
-func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
-	return get[core.Log](ctx, core.AddRequestId(h), values)
-}
-
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
 	url := module.BuildDocumentsPath(module.Ver1, values)

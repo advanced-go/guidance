@@ -15,7 +15,7 @@ func resiliency1Exchange(r *http.Request) (resp *http.Response, status *core.Sta
 
 	switch r.Method {
 	case http.MethodGet:
-		entries, status = resiliency1.Get(r.Context(), r.Header, r.URL.Query())
+		entries, status = resiliency1.Get(r.Context(), r.Header, r.URL)
 		if status.NotFound() || status.Timeout() {
 			return httpx.NewResponseWithStatus(status, status.Err)
 		}
@@ -25,7 +25,7 @@ func resiliency1Exchange(r *http.Request) (resp *http.Response, status *core.Sta
 		}
 		return httpx.NewResponseWithStatus(status, status.Err)
 	case http.MethodPut:
-		status = resiliency1.Put[*http.Request](r.Context(), r.Header, r)
+		status = resiliency1.Put(r, nil)
 		return httpx.NewResponseWithStatus(status, status.Err)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))

@@ -26,16 +26,19 @@ func Controllers() []*controller.Controller {
 
 // Exchange - HTTP exchange
 func Exchange(r *http.Request) (*http.Response, *core.Status) {
-	version, path, status := httpx.ValidateRequestURL(r, module.Authority)
+	if r == nil {
+		return httpx.NewResponseWithStatus(core.StatusBadRequest(), nil)
+	}
+	version, path, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 	r.Header.Add(core.XVersion, version)
 	core.AddRequestId(r.Header)
-	switch strings.ToLower(path) {
+	switch strings.ToLower("") {
 	case module.ResiliencyResource:
 		//return resiliencyMux(r)
-		return resiliencyExchange(r)
+		return resiliencyExchange(r, path, nil)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:

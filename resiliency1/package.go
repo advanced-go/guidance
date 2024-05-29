@@ -1,18 +1,17 @@
 package resiliency
 
 import (
-	"fmt"
-	"github.com/advanced-go/guidance/module"
-	"github.com/advanced-go/stdlib/controller"
+	"context"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
+	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
-	"time"
+	"net/url"
 )
 
 const (
 	PkgPath        = "github/advanced-go/guidance/resiliency1"
-	resiliencyName = "resiliency1"
+	resiliencyRoot = "resiliency1"
 )
 
 type Entry struct {
@@ -29,33 +28,102 @@ type Entry struct {
 	RateBurst string `json:"rate-burst"`
 }
 
-type PutBodyConstraints interface {
-	[]Entry | []byte | *http.Request
+type PostData struct {
 }
 
-var (
-	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}, httpx.Lock](matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}, httpx.Lock](resiliencyName, entryContent, nil)
-	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource, entryRsc.Do)
-)
-
-func init() {
-	if err != nil {
-		fmt.Printf("error: new resource %v", err)
+// Get - resource GET
+func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
+	if url == nil || url.Path != resiliencyRoot {
+		return nil, core.StatusBadRequest()
 	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
-	controller.RegisterController(ctrl)
-}
-
-func matchEntry(req *http.Request, item *Entry) bool {
-	filter := core.NewOrigin(req.URL.Query())
-	if core.OriginMatch(item.Origin, filter) {
-		return true
+	switch url.Path {
+	case resiliencyRoot:
+		return get[core.Log](ctx, core.AddRequestId(h), url.Query())
+	default:
+		return nil, core.StatusBadRequest()
 	}
-	return false
 }
 
-func mapResource(r *http.Request) string {
-	return resiliencyName
+// Delete - resource DELETE
+func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
+	if url == nil {
+		return core.StatusBadRequest()
+	}
+	switch url.Path {
+	case resiliencyRoot:
+		return delete[core.Log](ctx, core.AddRequestId(h), url.Query())
+	default:
+		return core.StatusBadRequest()
+	}
+}
 
+// PutBodyConstraints - put constraints
+//type PutBodyConstraints interface {
+//	[]Entry | []byte
+//}
+
+// Put - resource PUT
+func Put(r *http.Request, body []Entry) *core.Status {
+	if r == nil || r.URL == nil {
+		return core.NewStatus(http.StatusBadRequest)
+	}
+	if body == nil {
+		content, status := json2.New[[]Entry](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = content
+	}
+	switch r.URL.Path {
+	case resiliencyRoot:
+		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+	default:
+		return core.StatusBadRequest()
+	}
+}
+
+// Post - resource POST
+func Post(r *http.Request, body *PostData) *core.Status {
+	if r == nil || r.URL == nil {
+		return core.NewStatus(http.StatusBadRequest)
+	}
+	if body == nil {
+		content, status := json2.New[PostData](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = &content
+	}
+	switch r.URL.Path {
+	case resiliencyRoot:
+		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+	default:
+		return core.StatusBadRequest()
+	}
+}
+
+// Patch - resource PATCH
+func Patch(r *http.Request, body *httpx.Patch) *core.Status {
+	if r == nil || r.URL == nil {
+		return core.NewStatus(http.StatusBadRequest)
+	}
+	if body == nil {
+		content, status := json2.New[httpx.Patch](r.Body, r.Header)
+		if !status.OK() {
+			var e core.Log
+			e.Handle(status, core.RequestId(r.Header))
+			return status
+		}
+		body = &content
+	}
+	switch r.URL.Path {
+	case resiliencyRoot:
+		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+	default:
+		return core.StatusBadRequest()
+	}
 }

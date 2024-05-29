@@ -11,15 +11,7 @@ import (
 	"net/http"
 )
 
-// Put - resource PUT
-func Put[T PutBodyConstraints](ctx context.Context, h http.Header, body T) *core.Status {
-	if body == nil {
-		return core.NewStatus(http.StatusBadRequest)
-	}
-	return put[core.Log](ctx, core.AddRequestId(h), body)
-}
-
-func put[E core.ErrorHandler](ctx context.Context, h http.Header, body any) *core.Status {
+func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) *core.Status {
 	var e E
 
 	url := module.BuildDocumentsPath(module.Ver1, nil)

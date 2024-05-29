@@ -10,6 +10,6 @@ func ExampleExchange_Invalid() {
 	fmt.Printf("test: Exchange(nil) -> [status:%v] [content-type:%v] [content-length:%v]\n", status, resp.Header.Get(httpx.ContentType), resp.ContentLength)
 
 	//Output:
-	//test: Exchange(nil) -> [status:Invalid Argument [error: request is nil]] [content-type:text/plain charset=utf-8] [content-length:21]
-
+	//test: Exchange(nil) -> [status:Bad Request] [content-type:] [content-length:0]
+	
 }
