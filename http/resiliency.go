@@ -25,25 +25,25 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 	r.URL = p.PathURL()
 	switch r.Method {
 	case http.MethodGet:
-		return get(r.Context(), r.Header, r.URL)
+		return get(r.Context(), r.Header, r.URL, p.Version)
 	case http.MethodDelete:
-		return delete(r.Context(), r.Header, r.URL)
+		return delete(r.Context(), r.Header, r.URL, p.Version)
 	case http.MethodPut:
-		return put(r)
+		return put(r, p.Version)
 	case http.MethodPatch:
-		return patch(r)
+		return patch(r, p.Version)
 	case http.MethodPost:
-		return patch(r)
+		return post(r, p.Version)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 }
 
-func get(ctx context.Context, h http.Header, url *url.URL) (resp *http.Response, status *core.Status) {
+func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var entries any
 
-	switch h.Get(core.XVersion) {
+	switch version {
 	case module.Ver1, "":
 		entries, status = resiliency1.Get(ctx, h, url)
 	case module.Ver2:
@@ -64,8 +64,8 @@ func get(ctx context.Context, h http.Header, url *url.URL) (resp *http.Response,
 	return
 }
 
-func delete(ctx context.Context, h http.Header, url *url.URL) (resp *http.Response, status *core.Status) {
-	switch h.Get(core.XVersion) {
+func delete(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+	switch version {
 	case module.Ver1, "":
 		status = resiliency1.Delete(ctx, h, url)
 	case module.Ver2:
@@ -77,8 +77,8 @@ func delete(ctx context.Context, h http.Header, url *url.URL) (resp *http.Respon
 	return httpx.NewResponseWithStatus(status, status.Err)
 }
 
-func put(r *http.Request) (resp *http.Response, status *core.Status) {
-	switch r.Header.Get(core.XVersion) {
+func put(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	switch version {
 	case module.Ver1, "":
 		status = resiliency1.Put(r, nil)
 	case module.Ver2:
@@ -90,8 +90,8 @@ func put(r *http.Request) (resp *http.Response, status *core.Status) {
 	return httpx.NewResponseWithStatus(status, status.Err)
 }
 
-func patch(r *http.Request) (resp *http.Response, status *core.Status) {
-	switch r.Header.Get(core.XVersion) {
+func patch(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	switch version {
 	case module.Ver1, "":
 		status = resiliency1.Patch(r, nil)
 	case module.Ver2:
@@ -103,8 +103,8 @@ func patch(r *http.Request) (resp *http.Response, status *core.Status) {
 	return httpx.NewResponseWithStatus(status, status.Err)
 }
 
-func post(r *http.Request) (resp *http.Response, status *core.Status) {
-	switch r.Header.Get(core.XVersion) {
+func post(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	switch version {
 	case module.Ver1, "":
 		status = resiliency1.Post(r, nil)
 	case module.Ver2:
