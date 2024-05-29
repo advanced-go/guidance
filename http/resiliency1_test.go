@@ -50,7 +50,7 @@ func init() {
 	//controller.RegisterController(ctrl)
 }
 
-func Test_resiliency1Exchange(t *testing.T) {
+func Test_resiliencyExchangeV1(t *testing.T) {
 	basePath := "file://[cwd]/httptest/resiliency1/"
 
 	type args struct {
