@@ -37,7 +37,10 @@ type PostData struct {
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
 	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
-		return nil, core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid URL")))
+		return nil, core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid or nil URL")))
+	}
+	if url.Query() == nil {
+		return nil, core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("query arguments are nil")))
 	}
 	switch url.Path {
 	case module.ResiliencyResource:

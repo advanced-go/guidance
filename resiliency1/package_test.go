@@ -46,8 +46,8 @@ func _ExampleExchange_PutGet() {
 func ExampleExchange_GetAll() {
 	values := make(url.Values)
 	values.Add(core.RegionKey, "*")
-	docs, status1 := get[core.Output](context.Background(), nil, values)
-	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs))
+	docs1, status1 := get[core.Output](context.Background(), nil, values)
+	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
 
 	//Output:
 	//test: get() -> [status:OK] [count:3]
@@ -55,12 +55,14 @@ func ExampleExchange_GetAll() {
 }
 
 func ExampleURL() {
-	uri := "resiliency/controller/timeout?region=region1"
+	uri := "resiliency/controller/timeout?region=*"
 	u, _ := url.Parse(uri)
 
-	fmt.Printf("test: url.Parse(\"%v\") -> [path:%v] [query:%v]\n", uri, u.Path, u.Query())
+	fmt.Printf("test: url.Parse(\"%v\") -> [path:%v] [query:%v]\n", uri, u.Path, u.RawQuery)
+	fmt.Printf("test: url.Parse(\"%v\") -> [path:%v] [query:%v]\n", uri, u.Path, u.Query().Encode())
 
 	//Output:
-	//test: url.Parse("resiliency/controller/timeout?region=region1") -> [path:resiliency/controller/timeout] [query:map[region:[region1]]]
+	//test: url.Parse("resiliency/controller/timeout?region=*") -> [path:resiliency/controller/timeout] [query:region=*]
+	//test: url.Parse("resiliency/controller/timeout?region=*") -> [path:resiliency/controller/timeout] [query:region=%2A]
 
 }
