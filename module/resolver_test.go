@@ -3,14 +3,15 @@ package module
 import (
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/uri"
 	"net/url"
 )
 
 func ExampleBuildDocumentsPath() {
-	values := make(url.Values)
-	values.Add(core.RegionKey, "us")
-	values.Add(core.HostKey, "www.google.com")
-	values.Add(core.ZoneKey, "west")
+	values := uri.BuildValues("region=us&host=www.google.com&zone=*")
+	//values.Add(core.RegionKey, "us")
+	//values.Add(core.HostKey, "www.google.com")
+	//values.Add(core.ZoneKey, "west")
 
 	// No version, no query
 	path := BuildDocumentsPath("", nil)
@@ -22,11 +23,11 @@ func ExampleBuildDocumentsPath() {
 
 	// No version, include query
 	path = BuildDocumentsPath("", values)
-	fmt.Printf("test: BuildDocumentsPath(\"%v\",\"%v\") -> [%v]\n", "", values.Encode(), path)
+	fmt.Printf("test: BuildDocumentsPath(\"%v\",\"%v\") -> [%v]\n", "", values, path)
 
 	// Version plus query
 	path = BuildDocumentsPath(Ver2, values)
-	fmt.Printf("test: BuildDocumentsPath(\"%v\",\"%v\") -> [%v]\n", Ver2, values.Encode(), path)
+	fmt.Printf("test: BuildDocumentsPath(\"%v\",\"%v\") -> [%v]\n", Ver2, values, path)
 
 	//Output:
 	//test: BuildDocumentsPath("","") -> [github/advanced-go/documents:resiliency1]

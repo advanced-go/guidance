@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"github.com/advanced-go/stdlib/uri"
 	"net/url"
 )
 
@@ -26,7 +27,8 @@ func BuildResourcePath(version, resource string, values url.Values) string {
 }
 
 func BuildDocumentsPath(version string, values url.Values) string {
-	return BuildPath(DocumentsAuthority, version, DocumentsResource, values)
+	//path := fmt.Sprintf("/%v:%v", DocumentsAuthority, DocumentsResource)
+	return uri.BuildURLWithAuthority("", DocumentsAuthority, version, DocumentsResource, values)
 }
 
 func BuildDocumentsResource(version string, values url.Values) string {
