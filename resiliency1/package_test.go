@@ -45,12 +45,12 @@ func _ExampleExchange_PutGet() {
 
 func ExampleExchange_Get() {
 	values := make(url.Values)
-	values.Add(core.ZoneKey, "zone1")
+	values.Add(core.RegionKey, "*")
 	docs, status1 := get[core.Output](context.Background(), nil, values)
 	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs))
 
 	//Output:
-	//test: get() -> [status:OK] [count:2]
+	//test: get() -> [status:OK] [count:3]
 
 }
 

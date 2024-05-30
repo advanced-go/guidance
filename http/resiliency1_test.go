@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/guidance/module"
 	resiliency1 "github.com/advanced-go/guidance/resiliency1"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"io"
@@ -50,7 +51,7 @@ func init() {
 }
 
 func Test_resiliencyExchangeV1(t *testing.T) {
-	//access.Dis
+	defer controller.DisableLogging(true)()
 	basePath := "file://[cwd]/httptest/resiliency1/"
 
 	type args struct {
@@ -59,7 +60,7 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 	}
 	workflow := []struct {
 		suite  string
-		name   string
+		test   string
 		action string
 		args   args
 	}{
@@ -85,7 +86,7 @@ func Test_resiliencyExchangeV1(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		t.Run(tt.suite+"/"+tt.name, func(t *testing.T) {
+		t.Run(tt.suite+"/"+tt.test, func(t *testing.T) {
 			got, status := resiliencyExchange(req, nil)
 			// test status code
 			if got.StatusCode != resp.StatusCode {

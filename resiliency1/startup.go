@@ -8,7 +8,6 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
-	"time"
 )
 
 var (
@@ -29,7 +28,8 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
+	ctrl := controller.NewExchangeController("documents", host.Do)
+	//controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
 	controller.RegisterController(ctrl)
 	status := put[core.Output](context.Background(), nil, testEntry)
 	if !status.OK() {
