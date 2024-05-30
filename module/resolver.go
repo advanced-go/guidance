@@ -1,7 +1,6 @@
 package module
 
 import (
-	"fmt"
 	"github.com/advanced-go/stdlib/uri"
 	"net/url"
 )
@@ -18,6 +17,7 @@ const (
 	noVersionQueryFormat    = "/%v:%v"
 )
 
+/*
 func BuildPath(authority, version, resource string, values url.Values) string {
 	return fmt.Sprintf("%v%v", authority, ":"+BuildResourcePath(version, resource, values))
 }
@@ -26,13 +26,17 @@ func BuildResourcePath(version, resource string, values url.Values) string {
 	return fmt.Sprintf("%v%v", formatPath(version, resource)[1:], formatValues(values))
 }
 
+
+*/
+
 func BuildDocumentsPath(version string, values url.Values) string {
-	//path := fmt.Sprintf("/%v:%v", DocumentsAuthority, DocumentsResource)
 	return uri.BuildURLWithAuthority("", DocumentsAuthority, version, DocumentsResource, values)
 }
 
+/*
 func BuildDocumentsResource(version string, values url.Values) string {
-	return BuildResourcePath(version, DocumentsResource, values)
+	return fmt.Sprintf("%v%v", formatPath(version, DocumentsResource)[1:], formatValues(values))
+
 }
 
 func formatValues(values url.Values) string {
@@ -48,3 +52,6 @@ func formatPath(version, path string) string {
 	}
 	return ":" + version + "/" + path
 }
+
+
+*/

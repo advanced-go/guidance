@@ -2,9 +2,7 @@ package module
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/uri"
-	"net/url"
 )
 
 func ExampleBuildDocumentsPath() {
@@ -30,18 +28,19 @@ func ExampleBuildDocumentsPath() {
 	fmt.Printf("test: BuildDocumentsPath(\"%v\",\"%v\") -> [%v]\n", Ver2, values, path)
 
 	//Output:
-	//test: BuildDocumentsPath("","") -> [github/advanced-go/documents:resiliency1]
-	//test: BuildDocumentsPath("v1","") -> [github/advanced-go/documents:v1/resiliency1]
-	//test: BuildDocumentsPath("","host=www.google.com&region=us&zone=west") -> [github/advanced-go/documents:resiliency1?host=www.google.com&region=us&zone=west]
-	//test: BuildDocumentsPath("v2","host=www.google.com&region=us&zone=west") -> [github/advanced-go/documents:v2/resiliency1?host=www.google.com&region=us&zone=west]
+	//test: BuildDocumentsPath("","") -> [/github/advanced-go/documents:resiliency]
+	//test: BuildDocumentsPath("v1","") -> [/github/advanced-go/documents:v1/resiliency]
+	//test: BuildDocumentsPath("","map[host:[www.google.com] region:[us] zone:[*]]") -> [/github/advanced-go/documents:resiliency?host=www.google.com&region=us&zone=%2A]
+	//test: BuildDocumentsPath("v2","map[host:[www.google.com] region:[us] zone:[*]]") -> [/github/advanced-go/documents:v2/resiliency?host=www.google.com&region=us&zone=%2A]
 
 }
 
+/*
 func ExampleBuildDocumentsResource() {
 	values := make(url.Values)
 	values.Add(core.RegionKey, "us")
 	values.Add(core.HostKey, "www.google.com")
-	values.Add(core.ZoneKey, "west")
+	values.Add(core.ZoneKey, "*")
 
 	// Resource path only
 	path := BuildDocumentsResource("", nil)
@@ -59,9 +58,12 @@ func ExampleBuildDocumentsResource() {
 	fmt.Printf("test: BuildDocumentsResource(\"%v\",\"%v\") -> [%v]\n", Ver2, values.Encode(), path)
 
 	//Output:
-	//test: BuildDocumentsResource("","") -> [resiliency1]
-	//test: BuildDocumentsResource("","host=www.google.com&region=us&zone=west") -> [resiliency1?host=www.google.com&region=us&zone=west]
-	//test: BuildDocumentsResource("v1","") -> [v1/resiliency1]
-	//test: BuildDocumentsResource("v2","host=www.google.com&region=us&zone=west") -> [v2/resiliency1?host=www.google.com&region=us&zone=west]
+	//test: BuildDocumentsResource("","") -> [resiliency]
+	//test: BuildDocumentsResource("","host=www.google.com&region=us&zone=%2A") -> [resiliency?host=www.google.com&region=us&zone=%2A]
+	//test: BuildDocumentsResource("v1","") -> [v1/resiliency]
+	//test: BuildDocumentsResource("v2","host=www.google.com&region=us&zone=%2A") -> [v2/resiliency?host=www.google.com&region=us&zone=%2A]
 
 }
+
+
+*/

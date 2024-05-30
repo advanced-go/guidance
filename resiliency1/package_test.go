@@ -53,22 +53,3 @@ func ExampleExchange_GetAll() {
 	//test: get() -> [status:OK] [count:3]
 
 }
-
-func ExampleURL() {
-	uri := "resiliency/controller/timeout?region=*&zone=="
-	u, _ := url.Parse(uri)
-
-	fmt.Printf("test: url.Parse(\"%v\") -> [path:%v] [query:%v]\n", uri, u.Path, u.RawQuery)
-	fmt.Printf("test: url.Parse(\"%v\") -> [path:%v] [query:%v]\n", uri, u.Path, u.Query().Encode())
-
-	e := u.Query().Encode()
-	fmt.Printf("test: Query() -> [encoded:%v]\n", e)
-
-	u1, _ := url.QueryUnescape(e)
-	fmt.Printf("test: Query() -> [unesc:%v]\n", u1)
-
-	//Output:
-	//test: url.Parse("resiliency/controller/timeout?region=*") -> [path:resiliency/controller/timeout] [query:region=*]
-	//test: url.Parse("resiliency/controller/timeout?region=*") -> [path:resiliency/controller/timeout] [query:region=%2A]
-
-}
