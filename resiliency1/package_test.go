@@ -29,7 +29,7 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 
 func _ExampleExchange_PutGet() {
 	status := put[core.Output](context.Background(), nil, testEntry)
-	cnt := entryRsc.Count()
+	cnt := docsRsc.Count()
 	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
 
 	values := make(url.Values)
@@ -43,7 +43,7 @@ func _ExampleExchange_PutGet() {
 
 }
 
-func ExampleExchange_Get() {
+func ExampleExchange_GetAll() {
 	values := make(url.Values)
 	values.Add(core.RegionKey, "*")
 	docs, status1 := get[core.Output](context.Background(), nil, values)

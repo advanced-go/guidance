@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.ResiliencyResource, entryContent, nil)
-	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource, entryRsc.Do)
+	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.ResiliencyResource, docsContent, nil)
+	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
 )
 
 var (
@@ -28,8 +28,7 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := controller.NewExchangeController("documents", host.Do)
-	//controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
+	ctrl := controller.NewExchangeController("documents", docs.Do)
 	controller.RegisterController(ctrl)
 	status := put[core.Output](context.Background(), nil, testEntry)
 	if !status.OK() {
