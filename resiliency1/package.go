@@ -19,33 +19,19 @@ const (
 	PkgPath = "github/advanced-go/guidance/resiliency1"
 
 	// Upstream authorities
-	documentsAuthority      = "github/advanced-go/documents"
+	DocumentsAuthority      = "github/advanced-go/documents"
+	DocumentsControllerName = "documents"
 	documentsPath           = "/github/advanced-go/documents:%sresiliency"
 	documentsV1             = "v1"
 	documentsResource       = "resiliency"
-	DocumentsControllerName = "documents"
 )
 
+// Controllers - egress traffic controllers
 var (
-	controllers = []*controller.Controller{
-		controller.NewController(DocumentsControllerName,
-			controller.NewPrimaryResource("", documentsAuthority, time.Second*1, "", nil),
-			controller.NewSecondaryResource("localhost:8081", documentsAuthority, time.Second*2, core.HealthLivenessPath, nil)),
+	Controllers = []controller.Config{
+		{DocumentsControllerName, "localhost:8081", DocumentsAuthority, core.HealthLivenessPath, time.Second * 2},
 	}
 )
-
-// Controller - return the egress controller for a given controller name
-func Controller(name string) *controller.Controller {
-	if name == "" {
-		return nil
-	}
-	for _, ctrl := range controllers {
-		if ctrl.Name == name {
-			return ctrl
-		}
-	}
-	return nil
-}
 
 type Entry struct {
 	Origin    core.Origin

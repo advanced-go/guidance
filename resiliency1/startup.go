@@ -12,7 +12,7 @@ import (
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
 	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](documentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(documentsAuthority, mapResource, docsRsc.Do)
+	docs, err   = httpx.NewHost(DocumentsAuthority, mapResource, docsRsc.Do)
 )
 
 var (
@@ -28,14 +28,9 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := Controller(DocumentsControllerName)
+	ctrl := controller.New(Controllers[0], docs.Do)
 	controller.RegisterController(ctrl)
-	status := controller.UpdatePrimaryExchange([]core.HttpExchange{docs.Do})
-	if !status.OK() {
-		fmt.Printf("resiliency1 startup error: %v\n", status)
-		return
-	}
-	status = put[core.Output](context.Background(), nil, testEntry)
+	status := put[core.Output](context.Background(), nil, testEntry)
 	if !status.OK() {
 		fmt.Printf("resiliency1 startup error: %v\n", status)
 	}

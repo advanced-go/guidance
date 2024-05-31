@@ -2,18 +2,24 @@ package resiliency
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
 	PkgPath            = "github/advanced-go/guidance/resiliency2"
-	documentsAuthority = "github/advanced-go/documentsv2"
-	documentsResource  = "resiliency2"
-	resiliencyRoot     = "resiliency2"
+	DocumentsAuthority = "github/advanced-go/documents"
+	documentsResource  = "resiliency"
+
+	documentsPath = "/github/advanced-go/documents:%sresiliency"
+	documentsV2   = "v2"
 )
 
 type Entry struct {
@@ -34,11 +40,11 @@ type PostData struct{}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || url.Path != resiliencyRoot {
+	if url == nil || url.Path != documentsResource {
 		return nil, core.StatusBadRequest()
 	}
 	switch url.Path {
-	case resiliencyRoot:
+	case documentsResource:
 		return get[core.Log](ctx, core.AddRequestId(h), url.Query())
 	default:
 		return nil, core.StatusBadRequest()
@@ -47,11 +53,11 @@ func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Statu
 
 // Delete - resource DELETE
 func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
-	if url == nil {
-		return core.StatusBadRequest()
+	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
+		return core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid URL")))
 	}
 	switch url.Path {
-	case resiliencyRoot:
+	case module.ResiliencyResource:
 		return delete[core.Log](ctx, core.AddRequestId(h), url.Query())
 	default:
 		return core.StatusBadRequest()
@@ -73,7 +79,7 @@ func Put(r *http.Request, body []Entry) *core.Status {
 		body = content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case documentsResource:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -95,7 +101,7 @@ func Post(r *http.Request, body *PostData) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case documentsResource:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -117,7 +123,7 @@ func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case resiliencyRoot:
+	case documentsResource:
 		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()

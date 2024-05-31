@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	documentsV1Name = module.Ver1 + "/" + module.DocumentsResource
+	documentsV1Name = module.Ver1 + "/" + "resiliency"
 	actionTest      = "test"
 	//actionEmpty     = "empty"
 	actionInit = "init"

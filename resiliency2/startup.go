@@ -2,7 +2,6 @@ package resiliency
 
 import (
 	"fmt"
-	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -12,15 +11,15 @@ import (
 
 var (
 	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](resiliencyRoot, entryContent, nil)
-	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource, entryRsc.Do)
+	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](documentsResource, entryContent, nil)
+	host, err    = httpx.NewHost(DocumentsAuthority, mapResource, entryRsc.Do)
 )
 
 func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", DocumentsAuthority, time.Second*2, "", host.Do), nil)
 	controller.RegisterController(ctrl)
 }
 
@@ -33,6 +32,6 @@ func matchEntry(req *http.Request, item *Entry) bool {
 }
 
 func mapResource(r *http.Request) string {
-	return resiliencyRoot
+	return documentsResource
 
 }
