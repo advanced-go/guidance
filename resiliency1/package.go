@@ -63,11 +63,6 @@ func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
 	}
 }
 
-// PutBodyConstraints - put constraints
-//type PutBodyConstraints interface {
-//	[]Entry | []byte
-//}
-
 // Put - resource PUT
 func Put(r *http.Request, body []Entry) *core.Status {
 	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {

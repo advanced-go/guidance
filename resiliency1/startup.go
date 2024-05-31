@@ -13,7 +13,7 @@ import (
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
 	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.ResiliencyResource, docsContent, nil)
-	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
+	docs, err   = httpx.NewHost(documentsAuthority, mapResource, docsRsc.Do)
 )
 
 var (
@@ -25,6 +25,7 @@ var (
 )
 
 func init() {
+	defer controller.DisableLogging(true)()
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}

@@ -3,7 +3,6 @@ package resiliency
 import (
 	"bytes"
 	"context"
-	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
@@ -14,7 +13,7 @@ import (
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) *core.Status {
 	var e E
 
-	url := module.BuildDocumentsPath(module.Ver1, nil)
+	url := Expansion("", documentsPath, documentsV1, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))

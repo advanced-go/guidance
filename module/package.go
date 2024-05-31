@@ -6,6 +6,8 @@ const (
 	Version   = "1.1.1"
 	Ver1      = "v1"
 	Ver2      = "v2"
+
+	ResiliencyResource = "resiliency"
 )
 
 // Configuration keys used on startup for map values
