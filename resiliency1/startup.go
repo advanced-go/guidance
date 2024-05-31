@@ -3,7 +3,6 @@ package resiliency
 import (
 	"context"
 	"fmt"
-	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -12,7 +11,7 @@ import (
 
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.ResiliencyResource, docsContent, nil)
+	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](documentsResource, docsContent, nil)
 	docs, err   = httpx.NewHost(documentsAuthority, mapResource, docsRsc.Do)
 )
 
@@ -29,13 +28,17 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := controller.NewExchangeController("documents", docs.Do)
+	ctrl := Controller(DocumentsControllerName)
 	controller.RegisterController(ctrl)
-	status := put[core.Output](context.Background(), nil, testEntry)
+	status := controller.UpdatePrimaryExchange([]core.HttpExchange{docs.Do})
+	if !status.OK() {
+		fmt.Printf("resiliency1 startup error: %v\n", status)
+		return
+	}
+	status = put[core.Output](context.Background(), nil, testEntry)
 	if !status.OK() {
 		fmt.Printf("resiliency1 startup error: %v\n", status)
 	}
-
 }
 
 func matchEntry(req *http.Request, item *Entry) bool {
@@ -47,6 +50,6 @@ func matchEntry(req *http.Request, item *Entry) bool {
 }
 
 func mapResource(r *http.Request) string {
-	return module.ResiliencyResource
+	return documentsResource
 
 }

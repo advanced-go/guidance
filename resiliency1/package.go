@@ -5,17 +5,47 @@ import (
 	"errors"
 	"fmt"
 	"github.com/advanced-go/guidance/module"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const (
 	PkgPath = "github/advanced-go/guidance/resiliency1"
+
+	// Upstream authorities
+	documentsAuthority      = "github/advanced-go/documents"
+	documentsPath           = "/github/advanced-go/documents:%sresiliency"
+	documentsV1             = "v1"
+	documentsResource       = "resiliency"
+	DocumentsControllerName = "documents"
 )
+
+var (
+	controllers = []*controller.Controller{
+		controller.NewController(DocumentsControllerName,
+			controller.NewPrimaryResource("", documentsAuthority, time.Second*1, "", nil),
+			controller.NewSecondaryResource("localhost:8081", documentsAuthority, time.Second*2, core.HealthLivenessPath, nil)),
+	}
+)
+
+// Controller - return the egress controller for a given controller name
+func Controller(name string) *controller.Controller {
+	if name == "" {
+		return nil
+	}
+	for _, ctrl := range controllers {
+		if ctrl.Name == name {
+			return ctrl
+		}
+	}
+	return nil
+}
 
 type Entry struct {
 	Origin    core.Origin

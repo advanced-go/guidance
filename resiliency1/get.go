@@ -5,15 +5,16 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 )
 
-// http://localhost:8081/github/advanced-go/guidance:resiliency?reg=us&az=dallas&sz=dfwocp1&host=www.google.com
+// http://localhost:8081/github/advanced-go/guidance:resiliency?region=us&zone=dallas&sub-zone=dfwocp1&host=www.google.com
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
-	url := Expansion("", documentsPath, documentsV1, values)
+	url := uri.Expansion("", documentsPath, documentsV1, values)
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	httpx.Forward(req.Header, h)

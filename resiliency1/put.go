@@ -6,6 +6,7 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/uri"
 	"io"
 	"net/http"
 )
@@ -13,7 +14,7 @@ import (
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) *core.Status {
 	var e E
 
-	url := Expansion("", documentsPath, documentsV1, nil)
+	url := uri.Expansion("", documentsPath, documentsV1, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
