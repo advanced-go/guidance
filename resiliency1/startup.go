@@ -3,6 +3,7 @@ package resiliency1
 import (
 	"context"
 	"fmt"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -11,8 +12,8 @@ import (
 
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](documentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(DocumentsAuthority, mapResource, docsRsc.Do)
+	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, docsContent, nil)
+	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
 )
 
 var (
@@ -45,6 +46,6 @@ func matchEntry(req *http.Request, item *Entry) bool {
 }
 
 func mapResource(r *http.Request) string {
-	return documentsResource
+	return module.DocumentsResource
 
 }

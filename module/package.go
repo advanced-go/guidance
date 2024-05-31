@@ -10,6 +10,15 @@ const (
 	ResiliencyResource = "resiliency"
 )
 
+const (
+	DocumentsAuthority = "github/advanced-go/documents"
+	DocumentsResource  = "resiliency"
+	DocumentsPath      = "/github/advanced-go/documents:%sresiliency"
+
+	DocumentsV1 = "v1"
+	DocumentsV2 = "v2"
+)
+
 // Configuration keys used on startup for map values
 const (
 	PackageNameUserKey     = "user"    // type:text, empty:false

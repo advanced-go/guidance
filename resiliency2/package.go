@@ -14,12 +14,7 @@ import (
 )
 
 const (
-	PkgPath            = "github/advanced-go/guidance/resiliency2"
-	DocumentsAuthority = "github/advanced-go/documents"
-	documentsResource  = "resiliency"
-
-	documentsPath = "/github/advanced-go/documents:%sresiliency"
-	documentsV2   = "v2"
+	PkgPath = "github/advanced-go/guidance/resiliency2"
 )
 
 type Entry struct {
@@ -40,11 +35,11 @@ type PostData struct{}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || url.Path != documentsResource {
+	if url == nil || url.Path != module.DocumentsResource {
 		return nil, core.StatusBadRequest()
 	}
 	switch url.Path {
-	case documentsResource:
+	case module.DocumentsResource:
 		return get[core.Log](ctx, core.AddRequestId(h), url.Query())
 	default:
 		return nil, core.StatusBadRequest()
@@ -79,7 +74,7 @@ func Put(r *http.Request, body []Entry) *core.Status {
 		body = content
 	}
 	switch r.URL.Path {
-	case documentsResource:
+	case module.DocumentsResource:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -101,7 +96,7 @@ func Post(r *http.Request, body *PostData) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case documentsResource:
+	case module.DocumentsResource:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -123,7 +118,7 @@ func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case documentsResource:
+	case module.DocumentsResource:
 		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()

@@ -16,20 +16,14 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/resiliency1"
-
-	// Upstream authorities
-	DocumentsAuthority      = "github/advanced-go/documents"
+	PkgPath                 = "github/advanced-go/guidance/resiliency1"
 	DocumentsControllerName = "documents"
-	documentsPath           = "/github/advanced-go/documents:%sresiliency"
-	documentsV1             = "v1"
-	documentsResource       = "resiliency"
 )
 
 // Controllers - egress traffic controllers
 var (
 	Controllers = []controller.Config{
-		{DocumentsControllerName, "localhost:8081", DocumentsAuthority, core.HealthLivenessPath, time.Second * 2},
+		{DocumentsControllerName, "localhost:8081", module.DocumentsAuthority, core.HealthLivenessPath, time.Second * 2},
 	}
 )
 
