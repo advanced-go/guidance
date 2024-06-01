@@ -16,7 +16,6 @@ import (
 
 const (
 	entriesJson = "file:///c:/Users/markb/GitHub/guidance/resiliency1/documents-v1.json"
-	//"file://[cwd]/documents-v1.json"
 )
 
 func init() {
@@ -44,7 +43,7 @@ func messageHandler(msg *messaging.Message) {
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
 	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(module.DocumentsAuthorityV1, mapResource, docsRsc.Do)
+	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
 )
 
 func initializeDocuments() {

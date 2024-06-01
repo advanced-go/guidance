@@ -15,7 +15,7 @@ import (
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) *core.Status {
 	var e E
 
-	url := uri.Expansion("", module.DocumentsPathV1, module.DocumentsV1, nil)
+	url := uri.Expansion("", module.DocumentsPath, module.DocumentsV1, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
