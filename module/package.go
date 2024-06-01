@@ -25,9 +25,14 @@ const (
 
 // Upstream authorities/resources
 const (
-	DocumentsAuthority = "github/advanced-go/documents"
-	DocumentsResource  = "resiliency"
-	DocumentsPath      = "/github/advanced-go/documents:%sresiliency"
+	DocumentsResource = "resiliency"
+
+	DocumentsAuthorityV1 = "github/advanced-go/documents/1"
+	DocumentsPathV1      = DocumentsAuthorityV1 + ":%sresiliency"
+
+	DocumentsAuthorityV2 = "github/advanced-go/documents/2"
+	DocumentsPathV2      = DocumentsAuthorityV2 + ":%sresiliency"
+
 	DocumentsV1        = "v1"
 	DocumentsV2        = "v2"
 	DocumentsRouteName = "documents"
@@ -36,7 +41,7 @@ const (
 // Routes - upstream egress traffic route configuration
 var (
 	Routes = []controller.Config{
-		{DocumentsRouteName, "localhost:8081", DocumentsAuthority, core.HealthLivenessPath, time.Second * 2},
+		{DocumentsRouteName, "localhost:8081", DocumentsAuthorityV1, core.HealthLivenessPath, time.Second * 2},
 	}
 )
 

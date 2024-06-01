@@ -15,7 +15,7 @@ import (
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
 	var e E
-	url := uri.Expansion("", module.DocumentsPath, module.DocumentsV2, values)
+	url := uri.Expansion("", module.DocumentsPathV2, module.DocumentsV2, values)
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	// Set headers

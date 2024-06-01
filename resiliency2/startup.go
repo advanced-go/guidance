@@ -3,26 +3,28 @@ package resiliency
 import (
 	"fmt"
 	"github.com/advanced-go/guidance/module"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
+	"time"
 )
 
 var (
-	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry2, nil, nil)
+	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
 	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, entryContent, nil)
-	host, err    = httpx.NewHost(module.DocumentsAuthority, mapResource2, entryRsc.Do)
+	host, err    = httpx.NewHost(module.DocumentsAuthorityV2, mapResource, entryRsc.Do)
 )
 
 func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	//ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
-	//controller.RegisterController(ctrl)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthorityV2, time.Second*2, "", host.Do), nil)
+	controller.RegisterController(ctrl)
 }
 
-func matchEntry2(req *http.Request, item *Entry) bool {
+func matchEntry(req *http.Request, item *Entry) bool {
 	filter := core.NewOrigin(req.URL.Query())
 	if core.OriginMatch(item.Origin, filter) {
 		return true
@@ -30,7 +32,7 @@ func matchEntry2(req *http.Request, item *Entry) bool {
 	return false
 }
 
-func mapResource2(r *http.Request) string {
+func mapResource(r *http.Request) string {
 	return module.DocumentsResource
 
 }

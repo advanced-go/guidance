@@ -42,9 +42,9 @@ func messageHandler(msg *messaging.Message) {
 }
 
 var (
-	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry1, nil, nil)
+	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
 	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource1, docsRsc.Do)
+	docs, err   = httpx.NewHost(module.DocumentsAuthorityV1, mapResource, docsRsc.Do)
 )
 
 func initializeDocuments() {
@@ -69,7 +69,7 @@ func initializeDocuments() {
 	}
 }
 
-func matchEntry1(req *http.Request, item *Entry) bool {
+func matchEntry(req *http.Request, item *Entry) bool {
 	filter := core.NewOrigin(req.URL.Query())
 	target := core.Origin{Region: item.Region, Zone: item.Zone, SubZone: item.SubZone, Host: item.Host}
 	if core.OriginMatch(target, filter) {
@@ -78,7 +78,7 @@ func matchEntry1(req *http.Request, item *Entry) bool {
 	return false
 }
 
-func mapResource1(r *http.Request) string {
+func mapResource(r *http.Request) string {
 	return module.DocumentsResource
 
 }
