@@ -6,9 +6,39 @@ import (
 	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/host"
 	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/messaging"
 	"net/http"
+	"time"
 )
+
+const (
+	entriesJson = "file://[cwd]/documents-v1.json"
+)
+
+func init() {
+	a, err1 := host.RegisterControlAgent(PkgPath, messageHandler)
+	if err1 != nil {
+		fmt.Printf("init(\"%v\") failure: [%v]\n", PkgPath, err1)
+	}
+	a.Run()
+	initializeDocuments()
+}
+
+func messageHandler(msg *messaging.Message) {
+	start := time.Now()
+	switch msg.Event() {
+	case messaging.StartupEvent:
+		// Any processing for a Startup event would be here
+		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
+	case messaging.ShutdownEvent:
+	case messaging.PingEvent:
+		// Any processing for a Shutdown/Ping event would be here
+		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
+	}
+}
 
 var (
 	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
@@ -16,30 +46,32 @@ var (
 	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
 )
 
-var (
-	testEntry = []Entry{
-		{Origin: core.Origin{Region: "region1", Zone: "Zone1", Host: "www.host1.com"}, Status: "active", Timeout: "100ms", RateLimit: "125", RateBurst: "25"},
-		{Origin: core.Origin{Region: "region1", Zone: "Zone2", Host: "www.host2.com"}, Status: "inactive", Timeout: "250ms", RateLimit: "100", RateBurst: "10"},
-		{Origin: core.Origin{Region: "region2", Zone: "Zone1", Host: "www.google.com"}, Status: "removed", Timeout: "3s", RateLimit: "50", RateBurst: "5"},
-	}
-)
-
-func init() {
+func initializeDocuments() {
 	defer controller.DisableLogging(true)()
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	ctrl := controller.New(Controllers[0], docs.Do)
-	controller.RegisterController(ctrl)
-	status := put[core.Output](context.Background(), nil, testEntry)
+	entries, status := json.New[[]Entry](entriesJson, nil)
 	if !status.OK() {
-		fmt.Printf("resiliency1 startup error: %v\n", status)
+		fmt.Printf("initializeDocuments.New() -> [status:%v]\n", status)
+		return
+	}
+	cfg, ok := module.ControllerConfig(module.DocumentsControllerName)
+	if !ok {
+		fmt.Printf("initializeDocuments.ControllerConfig() [ok:%v]\n", ok)
+	}
+	ctrl := controller.New(cfg, docs.Do)
+	controller.RegisterController(ctrl)
+	status = put[core.Output](context.Background(), nil, entries)
+	if !status.OK() {
+		fmt.Printf("initializeDocuments.put() [status:%v]\n", status)
 	}
 }
 
 func matchEntry(req *http.Request, item *Entry) bool {
 	filter := core.NewOrigin(req.URL.Query())
-	if core.OriginMatch(item.Origin, filter) {
+	target := core.Origin{Region: item.Region, Zone: item.Zone, SubZone: item.SubZone, Host: item.Host}
+	if core.OriginMatch(target, filter) {
 		return true
 	}
 	return false

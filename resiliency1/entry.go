@@ -1,9 +1,10 @@
 package resiliency1
 
-import "github.com/advanced-go/stdlib/core"
-
 type Entry struct {
-	Origin    core.Origin
+	Region    string `json:"region"`
+	Zone      string `json:"zone"`
+	SubZone   string `json:"sub-zone"`
+	Host      string `json:"host"`
 	Status    string `json:"status"`
 	CreatedTS string `json:"created-ts"`
 	UpdatedTS string `json:"updated-ts"`

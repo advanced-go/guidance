@@ -18,30 +18,13 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 		case httpx.OpReplace:
 			if op.Path == core.HostKey {
 				if s, ok1 := op.Value.(string); ok1 {
-					(*item)[0].Origin.Host = s
+					(*item)[0].Host = s
 				}
 			}
 		default:
 		}
 	}
 	return core.StatusOK()
-}
-
-func _ExampleExchange_PutGet() {
-	status := put[core.Output](context.Background(), nil, testEntry)
-	cnt := docsRsc.Count()
-	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
-
-	//values := make(url.Values)
-	//values.Add(core.ZoneKey, "zone1")
-	url, _ := url.Parse("https://www.google.search/search?zone=zone1")
-	docs1, status1 := get[core.Output](context.Background(), nil, url)
-	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
-
-	//Output:
-	//test: put() -> [status:OK] [count:3]
-	//test: get() -> [status:OK] [count:2]
-
 }
 
 func ExampleExchange_GetAll() {
