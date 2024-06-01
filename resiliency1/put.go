@@ -37,6 +37,6 @@ func createReadCloser(body any) (io.ReadCloser, int64, *core.Status) {
 	case []byte:
 		return io.NopCloser(bytes.NewReader(ptr)), int64(len(ptr)), core.StatusOK()
 	default:
-		return nil, 0, core.NewStatus(http.StatusBadRequest)
+		return nil, 0, core.NewStatusError(core.StatusInvalidArgument, core.NewInvalidBodyTypeError(body))
 	}
 }

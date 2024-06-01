@@ -32,10 +32,11 @@ func _ExampleExchange_PutGet() {
 	cnt := docsRsc.Count()
 	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
 
-	values := make(url.Values)
-	values.Add(core.ZoneKey, "zone1")
-	docs, status1 := get[core.Output](context.Background(), nil, values)
-	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs))
+	//values := make(url.Values)
+	//values.Add(core.ZoneKey, "zone1")
+	url, _ := url.Parse("https://www.google.search/search?zone=zone1")
+	docs1, status1 := get[core.Output](context.Background(), nil, url)
+	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
 
 	//Output:
 	//test: put() -> [status:OK] [count:3]
@@ -44,9 +45,10 @@ func _ExampleExchange_PutGet() {
 }
 
 func ExampleExchange_GetAll() {
-	values := make(url.Values)
-	values.Add(core.RegionKey, "*")
-	docs1, status1 := get[core.Output](context.Background(), nil, values)
+	//values := make(url.Values)
+	//values.Add(core.RegionKey, "*")
+	url, _ := url.Parse("https://www.google.search/search?region=*")
+	docs1, status1 := get[core.Output](context.Background(), nil, url)
 	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
 
 	//Output:
