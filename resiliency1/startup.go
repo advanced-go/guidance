@@ -56,9 +56,9 @@ func initializeDocuments() {
 		fmt.Printf("initializeDocuments.New() -> [status:%v]\n", status)
 		return
 	}
-	cfg, ok := module.ControllerConfig(module.DocumentsControllerName)
+	cfg, ok := module.GetRoute(module.DocumentsRouteName)
 	if !ok {
-		fmt.Printf("initializeDocuments.ControllerConfig() [ok:%v]\n", ok)
+		fmt.Printf("initializeDocuments.GetRoute() [ok:%v]\n", ok)
 	}
 	ctrl := controller.New(cfg, docs.Do)
 	controller.RegisterController(ctrl)
