@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	entriesJson = "file://[cwd]/documents-v1.json"
+	entriesJson = "file:///c:/Users/markb/GitHub/guidance/resiliency1/documents-v1.json"
+	//"file://[cwd]/documents-v1.json"
 )
 
 func init() {
@@ -41,13 +42,13 @@ func messageHandler(msg *messaging.Message) {
 }
 
 var (
-	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry1, nil, nil)
 	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
+	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource1, docsRsc.Do)
 )
 
 func initializeDocuments() {
-	defer controller.DisableLogging(true)()
+	//defer controller.DisableLogging(true)()
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
@@ -68,7 +69,7 @@ func initializeDocuments() {
 	}
 }
 
-func matchEntry(req *http.Request, item *Entry) bool {
+func matchEntry1(req *http.Request, item *Entry) bool {
 	filter := core.NewOrigin(req.URL.Query())
 	target := core.Origin{Region: item.Region, Zone: item.Zone, SubZone: item.SubZone, Host: item.Host}
 	if core.OriginMatch(target, filter) {
@@ -77,7 +78,7 @@ func matchEntry(req *http.Request, item *Entry) bool {
 	return false
 }
 
-func mapResource(r *http.Request) string {
+func mapResource1(r *http.Request) string {
 	return module.DocumentsResource
 
 }

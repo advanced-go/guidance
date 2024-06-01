@@ -30,6 +30,6 @@ func ExampleExchange_Resiliency() {
 	}
 
 	//Output:
-	//test: Exchange() -> [status:OK] [status-code:200] [bytes:415] [content:[{{region1 Zone1  www.host1.com } active   100ms 125 25} {{region1 Zone2  www.host2.com } inactive   250ms 100 10}]]
+	//test: Exchange() -> [status:OK] [status-code:200] [bytes:359] [content:[{region1 Zone1  www.host1.com active   100ms 125 25} {region1 Zone2  www.host2.com inactive   250ms 100 10}]]
 
 }
