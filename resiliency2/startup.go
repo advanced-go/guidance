@@ -3,9 +3,11 @@ package resiliency
 import (
 	"fmt"
 	"github.com/advanced-go/guidance/module"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
+	"time"
 )
 
 var (
@@ -18,8 +20,11 @@ func init() {
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
-	//ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthorityV2, time.Second*2, "", host.Do), nil)
-	//controller.RegisterController(ctrl)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthorityV2, time.Second*2, "", host.Do), nil)
+	err = controller.RegisterController(ctrl)
+	if err != nil {
+		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err)
+	}
 }
 
 func matchEntry(req *http.Request, item *Entry) bool {
