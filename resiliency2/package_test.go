@@ -1,4 +1,4 @@
-package resiliency
+package resiliency2
 
 import (
 	"context"
@@ -40,9 +40,10 @@ func ExampleExchange_PutGet() {
 	cnt := entryRsc.Count()
 	fmt.Printf("test: put() -> [status:%v] [count:%v]\n", status, cnt)
 
-	values := make(url.Values)
-	values.Add(core.ZoneKey, "zone1")
-	docs, status1 := get[core.Output](context.Background(), nil, values)
+	//values := make(url.Values)
+	//values.Add(core.ZoneKey, "zone1")
+	url, _ := url.Parse("https://www.google.search/search?zone=zone1")
+	docs, status1 := get[core.Output](context.Background(), nil, url)
 	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs))
 
 	//Output:

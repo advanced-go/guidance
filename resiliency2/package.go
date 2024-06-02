@@ -1,4 +1,4 @@
-package resiliency
+package resiliency2
 
 import (
 	"context"
@@ -40,7 +40,7 @@ func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Statu
 	}
 	switch url.Path {
 	case module.DocumentsResource:
-		return get[core.Log](ctx, core.AddRequestId(h), url.Query())
+		return get[core.Log](ctx, core.AddRequestId(h), url)
 	default:
 		return nil, core.StatusBadRequest()
 	}

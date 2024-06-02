@@ -1,4 +1,4 @@
-package resiliency
+package resiliency2
 
 import (
 	"bytes"
@@ -15,7 +15,6 @@ import (
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) *core.Status {
 	var e E
 
-	// Set headers
 	url := uri.Expansion("", module.DocumentsPathV2, module.DocumentsV2, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
@@ -23,6 +22,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 		return status
 	}
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
+	httpx.Forward(req.Header, h)
 	_, status = httpx.DoExchange(req)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))

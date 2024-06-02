@@ -1,7 +1,8 @@
-package resiliency
+package resiliency2
 
 import (
 	"context"
+	"errors"
 	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -13,19 +14,21 @@ import (
 
 // http://localhost:8081/github/advanced-go/guidance:resiliency?reg=us&az=dallas&sz=dfwocp1&host=www.google.com
 
-func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status *core.Status) {
+func get[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL) (entries []Entry, status *core.Status) {
 	var e E
-	url := uri.Expansion("", module.DocumentsPathV2, module.DocumentsV2, values)
-
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	// Set headers
+	if url == nil {
+		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid argument: URL is nil"))
+	}
+	url2 := uri.Expansion("", module.DocumentsPathV2, module.DocumentsV2, url.Query())
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
+	httpx.Forward(req.Header, h)
 	resp, status1 := httpx.DoExchange(req)
-	if !status1.OK() && !status1.NotFound() && !status1.Timeout() {
+	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))
 		return nil, status1
 	}
 	entries, status = json.New[[]Entry](resp.Body, h)
-	if !status.OK() && !status1.NotFound() && !status1.Timeout() {
+	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 	}
 	return

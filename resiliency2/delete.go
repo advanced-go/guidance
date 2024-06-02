@@ -1,4 +1,4 @@
-package resiliency
+package resiliency2
 
 import (
 	"context"
@@ -13,4 +13,3 @@ func delete[E core.ErrorHandler](ctx context.Context, h http.Header, values url.
 
 	return core.StatusOK()
 }
-
