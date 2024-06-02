@@ -17,6 +17,7 @@ var (
 )
 
 func init() {
+	defer controller.DisableLogging(true)()
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}

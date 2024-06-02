@@ -47,7 +47,7 @@ var (
 )
 
 func initializeDocuments() {
-	//defer controller.DisableLogging(true)()
+	defer controller.DisableLogging(true)()
 	if err != nil {
 		fmt.Printf("error: new resource %v", err)
 	}
