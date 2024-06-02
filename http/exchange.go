@@ -34,6 +34,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewResponseWithStatus(status, status.Err)
 	}
 	core.AddRequestId(r.Header)
+	r.Header.Set(core.XAuthority, module.Authority)
 	switch strings.ToLower(p.Resource) {
 	case module.ResiliencyResource:
 		return resiliencyExchange(r, p)
