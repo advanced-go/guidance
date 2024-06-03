@@ -10,11 +10,11 @@ type Entry struct {
 	UpdatedTS string `json:"updated-ts"`
 
 	// Timeout
-	Timeout string `json:"timeout"`
+	Timeout int `json:"timeout"`
 
 	// Rate Limiting
-	RateLimit string `json:"rate-limit"`
-	RateBurst string `json:"rate-burst"`
+	RateLimit float64 `json:"rate-limit"`
+	RateBurst int     `json:"rate-burst"`
 }
 
 type PostData struct {

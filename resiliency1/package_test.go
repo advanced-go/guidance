@@ -28,8 +28,7 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 }
 
 func _ExampleExchange_GetAll() {
-	//values := make(url.Values)
-	//values.Add(core.RegionKey, "*")
+
 	url, _ := url.Parse("https://www.google.search/search?region=*")
 	docs1, status1 := get[core.Output](context.Background(), nil, url)
 	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
@@ -40,8 +39,7 @@ func _ExampleExchange_GetAll() {
 }
 
 func ExampleExchange_Get() {
-	//values := make(url.Values)
-	//values.Add(core.RegionKey, "*")
+
 	url, _ := url.Parse("https://localhost:8081/github/advanced-go/guidance:resiliency/google-search?region=*")
 
 	docs1, status1 := Get(context.Background(), nil, url)

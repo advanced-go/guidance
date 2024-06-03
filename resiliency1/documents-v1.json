@@ -8,9 +8,9 @@
     "status":"active",
     "created-ts":"",
     "updated-ts":"",
-    "timeout":"100ms",
-    "rate-limit":"125",
-    "rate-burst":"25"
+    "timeout":100,
+    "rate-limit":125,
+    "rate-burst":25
   },
   {
     "region":"region1",
@@ -21,9 +21,9 @@
      "status":"inactive",
     "created-ts":"",
     "updated-ts":"",
-    "timeout":"250ms",
-    "rate-limit":"100",
-    "rate-burst":"10"
+    "timeout":250,
+    "rate-limit":100,
+    "rate-burst":10
   },
   {
     "region":"region2",
@@ -34,8 +34,8 @@
     "status":"removed",
     "created-ts":"",
     "updated-ts":"",
-    "timeout":"3s",
-    "rate-limit":"50",
-    "rate-burst":"5"
+    "timeout":3000,
+    "rate-limit":50,
+    "rate-burst":5
   }
 ]
