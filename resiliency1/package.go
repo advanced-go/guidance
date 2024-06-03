@@ -8,6 +8,7 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,13 +24,14 @@ func errorInvalidURL(path string) *core.Status {
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
+	if url == nil || !strings.HasPrefix(url.Path, "/"+module.Authority) {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("invalid or nil URL")))
 	}
 	if url.Query() == nil {
 		return nil, core.NewStatusError(core.StatusInvalidContent, errors.New(fmt.Sprintf("query arguments are nil")))
 	}
-	switch url.Path {
+	p := uri.Uproot(url.Path)
+	switch p.Resource {
 	case module.ResiliencyResource:
 		return get[core.Log](ctx, core.AddRequestId(h), url)
 	default:
@@ -39,10 +41,11 @@ func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Statu
 
 // Delete - resource DELETE
 func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
-	if url == nil || !strings.HasPrefix(url.Path, module.ResiliencyResource) {
+	if url == nil || !strings.HasPrefix(url.Path, "/"+module.Authority) {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("invalid URL")))
 	}
-	switch url.Path {
+	p := uri.Uproot(url.Path)
+	switch p.Resource {
 	case module.ResiliencyResource:
 		return delete[core.Log](ctx, core.AddRequestId(h), url)
 	default:
@@ -52,7 +55,7 @@ func Delete(ctx context.Context, h http.Header, url *url.URL) *core.Status {
 
 // Put - resource PUT, with optional content override
 func Put(r *http.Request, body []Entry) *core.Status {
-	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, "/"+module.Authority) {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid URL"))
 	}
 	if body == nil {
@@ -64,7 +67,8 @@ func Put(r *http.Request, body []Entry) *core.Status {
 		}
 		body = content
 	}
-	switch r.URL.Path {
+	p := uri.Uproot(r.URL.Path)
+	switch p.Resource {
 	case module.ResiliencyResource:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
@@ -74,7 +78,7 @@ func Put(r *http.Request, body []Entry) *core.Status {
 
 // Post - resource POST, with optional content override
 func Post(r *http.Request, body *PostData) *core.Status {
-	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, "/"+module.Authority) {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid URL"))
 	}
 	if body == nil {
@@ -86,7 +90,8 @@ func Post(r *http.Request, body *PostData) *core.Status {
 		}
 		body = &content
 	}
-	switch r.URL.Path {
+	p := uri.Uproot(r.URL.Path)
+	switch p.Resource {
 	case module.ResiliencyResource:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
@@ -96,7 +101,7 @@ func Post(r *http.Request, body *PostData) *core.Status {
 
 // Patch - resource PATCH, with optional content override
 func Patch(r *http.Request, body *httpx.Patch) *core.Status {
-	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, module.ResiliencyResource) {
+	if r == nil || r.URL == nil || !strings.HasPrefix(r.URL.Path, "/"+module.Authority) {
 		return core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid URL"))
 	}
 	if body == nil {
@@ -108,7 +113,8 @@ func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 		}
 		body = &content
 	}
-	switch r.URL.Path {
+	p := uri.Uproot(r.URL.Path)
+	switch p.Resource {
 	case module.ResiliencyResource:
 		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
