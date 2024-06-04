@@ -23,20 +23,24 @@ func errorInvalidURL(path string) *core.Status {
 }
 
 // Get - resource GET
-func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || !strings.HasPrefix(url.Path, "/"+module.Authority) {
-		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("invalid or nil URL")))
-	}
-	if url.Query() == nil {
-		return nil, core.NewStatusError(core.StatusInvalidContent, errors.New(fmt.Sprintf("query arguments are nil")))
-	}
-	p := uri.Uproot(url.Path)
-	switch p.Resource {
-	case module.ResiliencyResource:
-		return get[core.Log](ctx, core.AddRequestId(h), url)
-	default:
-		return nil, errorInvalidURL(url.Path)
-	}
+func Get(ctx context.Context, h http.Header, values url.Values) ([]Entry, http.Header, *core.Status) {
+	return get[core.Log](ctx, core.AddRequestId(h), values)
+	/*
+		if url == nil || !strings.HasPrefix(url.Path, "/"+module.Authority) {
+			return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("invalid or nil URL")))
+		}
+		if url.Query() == nil {
+			return nil, core.NewStatusError(core.StatusInvalidContent, errors.New(fmt.Sprintf("query arguments are nil")))
+		}
+		p := uri.Uproot(url.Path)
+		switch p.Resource {
+		case module.ResiliencyResource:
+			return get[core.Log](ctx, core.AddRequestId(h), url)
+		default:
+			return nil, errorInvalidURL(url.Path)
+		}
+
+	*/
 }
 
 // Delete - resource DELETE

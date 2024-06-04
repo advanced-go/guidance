@@ -42,10 +42,11 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 
 func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var entries any
+	var headers http.Header
 
 	switch version {
 	case module.Ver1, "":
-		entries, status = resiliency1.Get(ctx, h, url)
+		entries, headers, status = resiliency1.Get(ctx, h, url.Query())
 	case module.Ver2:
 		entries, status = resiliency2.Get(ctx, h, url)
 	default:
