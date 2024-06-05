@@ -18,7 +18,9 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 	if p == nil {
 		p1, status := httpx.ValidateURL(r.URL, module.Authority)
 		if !status.OK() {
-			return httpx.NewResponseWithStatus(status, status.Err)
+			h2 := make(http.Header)
+			h2.Add(httpx.ContentType, httpx.ContentTypeText)
+			return httpx.NewResponse(status.HttpCode(), h2, status.Err), status
 		}
 		p = p1
 	}
@@ -35,7 +37,9 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 		return post(r, p.Version)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
-		return httpx.NewResponseWithStatus(status, status.Err)
+		h2 := make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err), status
 	}
 }
 
