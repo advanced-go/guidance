@@ -3,7 +3,6 @@ package resiliency1
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
@@ -14,10 +13,6 @@ import (
 const (
 	PkgPath = "github/advanced-go/guidance/resiliency1"
 )
-
-func errorInvalidURL(path string) *core.Status {
-	return core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("invalid argument: URL path is invalid %v", path)))
-}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, values url.Values) ([]Entry, http.Header, *core.Status) {
@@ -31,18 +26,15 @@ func Delete(ctx context.Context, h http.Header, values url.Values) (http.Header,
 
 // Put - resource PUT, with optional content override
 func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
-	h2 := make(http.Header)
-	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	if r == nil {
-		return h2, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
+		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
 	if body == nil {
 		content, status := json2.New[[]Entry](r.Body, r.Header)
 		if !status.OK() {
 			var e core.Log
 			e.Handle(status, core.RequestId(r.Header))
-			h2.Add(httpx.ContentType, httpx.ContentTypeText)
-			return h2, status
+			return nil, status
 		}
 		body = content
 	}
@@ -51,18 +43,15 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 
 // Post - resource POST, with optional content override
 func Post(r *http.Request, body *PostData) (http.Header, *core.Status) {
-	h2 := make(http.Header)
 	if r == nil {
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return h2, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
+		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
 	if body == nil {
 		content, status := json2.New[PostData](r.Body, r.Header)
 		if !status.OK() {
 			var e core.Log
 			e.Handle(status, core.RequestId(r.Header))
-			h2.Add(httpx.ContentType, httpx.ContentTypeText)
-			return h2, status
+			return nil, status
 		}
 		body = &content
 	}
@@ -71,18 +60,15 @@ func Post(r *http.Request, body *PostData) (http.Header, *core.Status) {
 
 // Patch - resource PATCH, with optional content override
 func Patch(r *http.Request, body *httpx.Patch) (http.Header, *core.Status) {
-	h2 := make(http.Header)
 	if r == nil {
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return h2, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
+		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
 	if body == nil {
 		content, status := json2.New[httpx.Patch](r.Body, r.Header)
 		if !status.OK() {
 			var e core.Log
 			e.Handle(status, core.RequestId(r.Header))
-			h2.Add(httpx.ContentType, httpx.ContentTypeText)
-			return h2, status
+			return nil, status
 		}
 		body = &content
 	}

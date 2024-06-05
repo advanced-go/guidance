@@ -12,9 +12,9 @@ var list = []Entry{
 }
 
 func ExampleEntry() {
-	buf, err := json.Marshal(list)
-	if err != nil {
-		fmt.Printf("test: Entry{} -> [err:%v]\n", err)
+	buf, err1 := json.Marshal(list)
+	if err1 != nil {
+		fmt.Printf("test: Entry{} -> [err:%v]\n", err1)
 	} else {
 		fmt.Printf("test: Entry{} -> %v\n", string(buf))
 	}

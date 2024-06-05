@@ -33,6 +33,6 @@ func ExampleExchange_GetAll() {
 	fmt.Printf("test: get() -> [status:%v] [header:%v] [count:%v]\n", status1, h, len(docs1))
 
 	//Output:
-	//test: get() -> [status:OK] [header:map[Content-Type:[application/json]]] [count:3]
+	//test: get() -> [status:OK] [header:map[]] [count:3]
 
 }

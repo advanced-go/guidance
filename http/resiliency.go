@@ -53,12 +53,15 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, 
 		entries, status = resiliency2.Get(ctx, h, url)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
+	}
+	if h2 == nil {
 		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
 	if !status.OK() {
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 		return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeJson)
 	return httpx.NewResponse[E](status.HttpCode(), h2, entries)
 }
 
@@ -72,9 +75,11 @@ func delete[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.UR
 		status = resiliency2.Delete(ctx, h, url)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
+	if h2 == nil {
+		h2 = make(http.Header)
+	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
@@ -88,9 +93,11 @@ func put[E core.ErrorHandler](r *http.Request, version string) (resp *http.Respo
 		status = resiliency2.Put(r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
+	if h2 == nil {
+		h2 = make(http.Header)
+	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
@@ -104,9 +111,11 @@ func patch[E core.ErrorHandler](r *http.Request, version string) (resp *http.Res
 		status = resiliency2.Patch(r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
+	if h2 == nil {
+		h2 = make(http.Header)
+	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
@@ -123,5 +132,9 @@ func post[E core.ErrorHandler](r *http.Request, version string) (resp *http.Resp
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
+	if h2 == nil {
+		h2 = make(http.Header)
+	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }

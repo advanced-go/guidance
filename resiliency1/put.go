@@ -15,25 +15,22 @@ import (
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (http.Header, *core.Status) {
 	var e E
 
-	h2 := make(http.Header)
 	if len(body) == 0 {
-		return h2, core.StatusOK()
+		return nil, core.StatusOK()
 	}
 	url := uri.Expansion("", module.DocumentsPath, module.DocumentsV1, nil)
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return h2, status
+		return nil, status
 	}
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
 	httpx.Forward(req.Header, h, core.XAuthority)
 	_, status = httpx.DoExchange(req)
 	if !status.OK() {
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 		e.Handle(status, core.RequestId(h))
 	}
-	return h2, status
+	return nil, status
 }
 
 func createReadCloser(body any) (io.ReadCloser, int64, *core.Status) {

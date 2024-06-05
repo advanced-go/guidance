@@ -17,8 +17,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	var e E
 
 	if values == nil {
-		h2 = make(http.Header)
-		return nil, h2, core.StatusNotFound()
+		return nil, nil, core.StatusNotFound()
 	}
 	url2 := uri.Expansion("", module.DocumentsPath, module.DocumentsV1, values)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
@@ -26,18 +25,11 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	resp, status1 := httpx.DoExchange(req)
 	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return nil, h2, status1
+		return nil, nil, status1
 	}
 	entries, status = json.New[[]Entry](resp.Body, h)
 	if !status.OK() {
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 		e.Handle(status, core.RequestId(h))
-	} else {
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeJson)
 	}
 	return
 }
