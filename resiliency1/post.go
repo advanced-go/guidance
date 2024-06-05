@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
-func post[E core.ErrorHandler](ctx context.Context, h http.Header, data *PostData) *core.Status {
-	return core.StatusOK()
+func post[E core.ErrorHandler](ctx context.Context, h http.Header, data *PostData) (http.Header, *core.Status) {
+	h2 := make(http.Header)
+	return h2, core.StatusOK()
 }

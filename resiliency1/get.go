@@ -26,10 +26,12 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	resp, status1 := httpx.DoExchange(req)
 	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 		return nil, h2, status1
 	}
 	entries, status = json.New[[]Entry](resp.Body, h)
 	if !status.OK() {
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 		e.Handle(status, core.RequestId(h))
 	} else {
 		h2.Add(httpx.ContentType, httpx.ContentTypeJson)

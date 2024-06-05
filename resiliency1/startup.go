@@ -65,7 +65,7 @@ func initializeDocuments() {
 	if err != nil {
 		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err)
 	}
-	status = put[core.Output](context.Background(), nil, entries)
+	_, status = put[core.Output](context.Background(), nil, entries)
 	if !status.OK() {
 		fmt.Printf("initializeDocuments.put() [status:%v]\n", status)
 	}

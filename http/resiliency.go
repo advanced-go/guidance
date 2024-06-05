@@ -42,77 +42,92 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 
 func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var entries any
-	var headers http.Header
+	var h2 http.Header
 
 	switch version {
 	case module.Ver1, "":
-		entries, headers, status = resiliency1.Get(ctx, h, url.Query())
+		entries, h2, status = resiliency1.Get(ctx, h, url.Query())
 	case module.Ver2:
 		entries, status = resiliency2.Get(ctx, h, url)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
-		return httpx.NewResponseWithStatus(status, status.Err)
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
 	if !status.OK() {
-		return httpx.NewResponseWithStatus(status, status.Err)
+		return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 	}
-	resp, status = httpx.NewJsonResponse(entries, nil)
+	resp, status = httpx.NewResponseWithBody(status.HttpCode(), h2, entries)
 	if !status.OK() {
 		var e core.Log
 		e.Handle(status, core.RequestId(h))
-		return httpx.NewResponseWithStatus(status, status.Err)
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
+		return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 	}
 	return
 }
 
 func delete(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+	var h2 http.Header
+
 	switch version {
 	case module.Ver1, "":
-		status = resiliency1.Delete(ctx, h, url)
+		h2, status = resiliency1.Delete(ctx, h, url.Query())
 	case module.Ver2:
 		status = resiliency2.Delete(ctx, h, url)
 	default:
-		status1 := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
-		return httpx.NewResponseWithStatus(status1, status1.Err)
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithStatus(status, status.Err)
+	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 }
 
 func put(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	var h2 http.Header
+
 	switch version {
 	case module.Ver1, "":
-		status = resiliency1.Put(r, nil)
+		h2, status = resiliency1.Put(r, nil)
 	case module.Ver2:
 		status = resiliency2.Put(r, nil)
 	default:
-		status1 := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
-		return httpx.NewResponseWithStatus(status1, status1.Err)
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithStatus(status, status.Err)
+	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 }
 
 func patch(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	var h2 http.Header
+
 	switch version {
 	case module.Ver1, "":
-		status = resiliency1.Patch(r, nil)
+		h2, status = resiliency1.Patch(r, nil)
 	case module.Ver2:
 		status = resiliency2.Patch(r, nil)
 	default:
-		status1 := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
-		return httpx.NewResponseWithStatus(status1, status1.Err)
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithStatus(status, status.Err)
+	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 }
 
 func post(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	var h2 http.Header
+
 	switch version {
 	case module.Ver1, "":
-		status = resiliency1.Post(r, nil)
+		h2, status = resiliency1.Post(r, nil)
 	case module.Ver2:
 		status = resiliency2.Post(r, nil)
 	default:
-		status1 := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
-		return httpx.NewResponseWithStatus(status1, status1.Err)
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+		h2 = make(http.Header)
+		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithStatus(status, status.Err)
+	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
 }

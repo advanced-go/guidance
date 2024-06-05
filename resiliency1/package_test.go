@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
-	"net/url"
 )
 
 func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Status {
@@ -27,23 +27,10 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 	return core.StatusOK()
 }
 
-func _ExampleExchange_GetAll() {
-
-	url, _ := url.Parse("https://www.google.search/search?region=*")
-	docs1, status1 := get[core.Output](context.Background(), nil, url)
-	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
-
-	//Output:
-	//test: get() -> [status:OK] [count:3]
-
-}
-
-func ExampleExchange_Get() {
-
-	url, _ := url.Parse("https://localhost:8081/github/advanced-go/guidance:resiliency/google-search?region=*")
-
-	docs1, status1 := Get(context.Background(), nil, url)
-	fmt.Printf("test: get() -> [status:%v] [count:%v]\n", status1, len(docs1))
+func ExampleExchange_GetAll() {
+	values := uri.BuildValues("region=*")
+	docs1, h, status1 := Get(context.Background(), nil, values)
+	fmt.Printf("test: get() -> [status:%v] [header:%v] [count:%v]\n", status1, h, len(docs1))
 
 	//Output:
 	//test: get() -> [status:OK] [count:3]

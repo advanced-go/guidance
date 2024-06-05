@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
-func patch[E core.ErrorHandler](ctx context.Context, h http.Header, body *httpx.Patch) *core.Status {
-	return core.StatusOK()
+func patch[E core.ErrorHandler](ctx context.Context, h http.Header, body *httpx.Patch) (http.Header, *core.Status) {
+	h2 := make(http.Header)
+	return h2, core.StatusOK()
 }
