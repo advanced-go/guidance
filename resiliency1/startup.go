@@ -41,9 +41,9 @@ func messageHandler(msg *messaging.Message) {
 }
 
 var (
-	docsContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	docsRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, docsContent, nil)
-	docs, err   = httpx.NewHost(module.DocumentsAuthority, mapResource, docsRsc.Do)
+	content        = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	resource       = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, content, nil)
+	authority, err = httpx.NewHost(module.DocumentsAuthority, mapResource, resource.Do)
 )
 
 func initializeDocuments() {
@@ -60,7 +60,7 @@ func initializeDocuments() {
 	if !ok {
 		fmt.Printf("initializeDocuments.GetRoute() [ok:%v]\n", ok)
 	}
-	ctrl := controller.New(cfg, docs.Do)
+	ctrl := controller.New(cfg, authority.Do)
 	err = controller.RegisterController(ctrl)
 	if err != nil {
 		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err)

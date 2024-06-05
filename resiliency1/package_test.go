@@ -3,6 +3,7 @@ package resiliency1
 import (
 	"context"
 	"fmt"
+	"github.com/advanced-go/guidance/module"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/uri"
@@ -29,7 +30,9 @@ func patchProcess(_ *http.Request, item *[]Entry, patch *httpx.Patch) *core.Stat
 
 func ExampleExchange_GetAll() {
 	values := uri.BuildValues("region=*")
-	docs1, h, status1 := Get(context.Background(), nil, values)
+	h := make(http.Header)
+	h.Add(core.XAuthority, module.Authority)
+	docs1, h, status1 := Get(context.Background(), h, values)
 	fmt.Printf("test: get() -> [status:%v] [header:%v] [count:%v]\n", status1, h, len(docs1))
 
 	//Output:
