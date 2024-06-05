@@ -14,36 +14,35 @@ import (
 	"net/url"
 )
 
-func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.Status) {
+func resiliencyExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*http.Response, *core.Status) {
+	h2 := make(http.Header)
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
+
 	if p == nil {
 		p1, status := httpx.ValidateURL(r.URL, module.Authority)
 		if !status.OK() {
-			h2 := make(http.Header)
-			h2.Add(httpx.ContentType, httpx.ContentTypeText)
-			return httpx.NewResponse(status.HttpCode(), h2, status.Err), status
+			return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 		}
 		p = p1
 	}
 	switch r.Method {
 	case http.MethodGet:
-		return get(r.Context(), r.Header, r.URL, p.Version)
+		return get[E](r.Context(), r.Header, r.URL, p.Version)
 	case http.MethodDelete:
-		return delete(r.Context(), r.Header, r.URL, p.Version)
+		return delete[E](r.Context(), r.Header, r.URL, p.Version)
 	case http.MethodPut:
-		return put(r, p.Version)
+		return put[E](r, p.Version)
 	case http.MethodPatch:
-		return patch(r, p.Version)
+		return patch[E](r, p.Version)
 	case http.MethodPost:
-		return post(r, p.Version)
+		return post[E](r, p.Version)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
-		h2 := make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return httpx.NewResponse(status.HttpCode(), h2, status.Err), status
+		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
 	}
 }
 
-func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+func get[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var entries any
 	var h2 http.Header
 
@@ -58,20 +57,12 @@ func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
 	if !status.OK() {
-		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 	}
-	resp, status = httpx.NewResponse(status.HttpCode(), h2, entries)
-	if !status.OK() {
-		var e core.Log
-		e.Handle(status, core.RequestId(h))
-		h2 = make(http.Header)
-		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
-	}
-	return
+	return httpx.NewResponse[E](status.HttpCode(), h2, entries)
 }
 
-func delete(ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+func delete[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var h2 http.Header
 
 	switch version {
@@ -84,10 +75,10 @@ func delete(ctx context.Context, h http.Header, url *url.URL, version string) (r
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
-func put(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+func put[E core.ErrorHandler](r *http.Request, version string) (resp *http.Response, status *core.Status) {
 	var h2 http.Header
 
 	switch version {
@@ -100,10 +91,10 @@ func put(r *http.Request, version string) (resp *http.Response, status *core.Sta
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
-func patch(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+func patch[E core.ErrorHandler](r *http.Request, version string) (resp *http.Response, status *core.Status) {
 	var h2 http.Header
 
 	switch version {
@@ -116,10 +107,10 @@ func patch(r *http.Request, version string) (resp *http.Response, status *core.S
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
 
-func post(r *http.Request, version string) (resp *http.Response, status *core.Status) {
+func post[E core.ErrorHandler](r *http.Request, version string) (resp *http.Response, status *core.Status) {
 	var h2 http.Header
 
 	switch version {
@@ -132,5 +123,5 @@ func post(r *http.Request, version string) (resp *http.Response, status *core.St
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }
