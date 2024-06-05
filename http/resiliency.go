@@ -22,7 +22,6 @@ func resiliencyExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.S
 		}
 		p = p1
 	}
-	r.URL = p.PathURL()
 	switch r.Method {
 	case http.MethodGet:
 		return get(r.Context(), r.Header, r.URL, p.Version)
@@ -55,15 +54,15 @@ func get(ctx context.Context, h http.Header, url *url.URL, version string) (resp
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
 	if !status.OK() {
-		return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
-	resp, status = httpx.NewResponseWithBody(status.HttpCode(), h2, entries)
+	resp, status = httpx.NewResponse(status.HttpCode(), h2, entries)
 	if !status.OK() {
 		var e core.Log
 		e.Handle(status, core.RequestId(h))
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
-		return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 	return
 }
@@ -81,7 +80,7 @@ func delete(ctx context.Context, h http.Header, url *url.URL, version string) (r
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 }
 
 func put(r *http.Request, version string) (resp *http.Response, status *core.Status) {
@@ -97,7 +96,7 @@ func put(r *http.Request, version string) (resp *http.Response, status *core.Sta
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 }
 
 func patch(r *http.Request, version string) (resp *http.Response, status *core.Status) {
@@ -113,7 +112,7 @@ func patch(r *http.Request, version string) (resp *http.Response, status *core.S
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 }
 
 func post(r *http.Request, version string) (resp *http.Response, status *core.Status) {
@@ -129,5 +128,5 @@ func post(r *http.Request, version string) (resp *http.Response, status *core.St
 		h2 = make(http.Header)
 		h2.Add(httpx.ContentType, httpx.ContentTypeText)
 	}
-	return httpx.NewResponseWithBody(status.HttpCode(), h2, status.Err)
+	return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 }
