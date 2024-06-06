@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	entriesJson = "file:///c:/Users/markb/GitHub/guidance/resiliency1/documents-v1.json"
+	entriesJson = "file:///c:/Users/markb/GitHub/guidance/resiliency1/resiliency1test/documents-v1.json"
 )
 
 func init() {
