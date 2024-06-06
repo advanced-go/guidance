@@ -41,15 +41,15 @@ func messageHandler(msg *messaging.Message) {
 }
 
 var (
-	content        = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	resource       = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, content, nil)
-	authority, err = httpx.NewHost(module.DocumentsAuthority, mapResource, resource.Do)
+	content            = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	resource           = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, content, nil)
+	authority, hostErr = httpx.NewHost(module.DocumentsAuthority, mapResource, resource.Do)
 )
 
 func initializeDocuments() {
 	defer controller.DisableLogging(true)()
-	if err != nil {
-		fmt.Printf("error: new resource %v", err)
+	if hostErr != nil {
+		fmt.Printf("error: new resource %v", hostErr)
 	}
 	entries, status := json.New[[]Entry](entriesJson, nil)
 	if !status.OK() {
@@ -61,9 +61,9 @@ func initializeDocuments() {
 		fmt.Printf("initializeDocuments.GetRoute() [ok:%v]\n", ok)
 	}
 	ctrl := controller.New(cfg, authority.Do)
-	err = controller.RegisterController(ctrl)
-	if err != nil {
-		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err)
+	err0 := controller.RegisterController(ctrl)
+	if err0 != nil {
+		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err0)
 	}
 	_, status = put[core.Output](context.Background(), nil, entries)
 	if !status.OK() {

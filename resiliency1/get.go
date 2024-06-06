@@ -19,8 +19,14 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if values == nil {
 		return nil, nil, core.StatusNotFound()
 	}
-	url2 := uri.Expansion("", module.DocumentsPath, module.DocumentsV1, values)
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	url := uri.Resolve("", module.DocumentsAuthority, module.DocumentsV1, module.DocumentsResource, values, h)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, nil, core.NewStatusError(core.StatusInvalidArgument, err)
+	}
 	httpx.Forward(req.Header, h, core.XAuthority)
 	resp, status1 := httpx.DoExchange(req)
 	if !status1.OK() {

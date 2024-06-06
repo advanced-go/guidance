@@ -18,13 +18,19 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 	if len(body) == 0 {
 		return nil, core.StatusOK()
 	}
-	url := uri.Expansion("", module.DocumentsPath, module.DocumentsV1, nil)
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	rc, _, status := createReadCloser(body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 		return nil, status
 	}
-	req, _ := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
+	url := uri.Resolve("", module.DocumentsAuthority, module.DocumentsV1, module.DocumentsResource, nil, h)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
+	if err != nil {
+		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
+	}
 	httpx.Forward(req.Header, h, core.XAuthority)
 	_, status = httpx.DoExchange(req)
 	if !status.OK() {
