@@ -42,7 +42,7 @@ func messageHandler(msg *messaging.Message) {
 
 var (
 	content            = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	resource           = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, content, nil)
+	resource           = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResourceV1, content, nil)
 	authority, hostErr = httpx.NewHost(module.DocumentsAuthority, mapResource, resource.Do)
 )
 
@@ -81,6 +81,6 @@ func matchEntry(req *http.Request, item *Entry) bool {
 }
 
 func mapResource(r *http.Request) string {
-	return module.DocumentsResource
+	return module.DocumentsResourceV1
 
 }

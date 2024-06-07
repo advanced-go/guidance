@@ -14,7 +14,7 @@ const (
 
 func ExamplePut() {
 	h := make(http.Header)
-	h.Add(uri.BuildPath(module.DocumentsAuthority, module.DocumentsV1, module.DocumentsResource, nil), putResp)
+	h.Add(uri.BuildPath(module.DocumentsAuthority, module.DocumentsResourceV1, nil), putResp)
 
 	_, status := put[core.Output](nil, h, nil)
 	fmt.Printf("test: put(nil,h,nil) -> [status:%v]\n", status)

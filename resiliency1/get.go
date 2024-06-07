@@ -22,7 +22,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	url := uri.Resolve("", module.DocumentsAuthority, module.DocumentsV1, module.DocumentsResource, values, h)
+	url := uri.Resolve("", module.DocumentsAuthority, module.DocumentsResourceV1, values, h)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, core.NewStatusError(core.StatusInvalidArgument, err)

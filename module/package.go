@@ -25,15 +25,12 @@ const (
 
 // Upstream authorities/resources
 const (
-	DocumentsResource  = "resiliency"
-	DocumentsAuthority = "github/advanced-go/documents"
-	DocumentsPath      = DocumentsAuthority + ":%sresiliency"
+	DocumentsAuthority  = "github/advanced-go/documents"
+	DocumentsResourceV1 = "v1/resiliency"
 
 	DocumentsAuthorityV2 = "github/advanced-go/documents/2"
-	DocumentsPathV2      = DocumentsAuthorityV2 + ":%sresiliency"
+	DocumentsResourceV2  = "v2/resiliency"
 
-	DocumentsV1        = "v1"
-	DocumentsV2        = "v2"
 	DocumentsRouteName = "documents"
 )
 
