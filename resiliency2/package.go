@@ -35,11 +35,11 @@ type PostData struct{}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, url *url.URL) ([]Entry, *core.Status) {
-	if url == nil || url.Path != module.DocumentsResource {
+	if url == nil {
 		return nil, core.StatusBadRequest()
 	}
 	switch url.Path {
-	case module.DocumentsResource:
+	case module.DocumentsResourceV2:
 		return get[core.Log](ctx, core.AddRequestId(h), url)
 	default:
 		return nil, core.StatusBadRequest()
@@ -74,7 +74,7 @@ func Put(r *http.Request, body []Entry) *core.Status {
 		body = content
 	}
 	switch r.URL.Path {
-	case module.DocumentsResource:
+	case module.DocumentsResourceV2:
 		return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -96,7 +96,7 @@ func Post(r *http.Request, body *PostData) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case module.DocumentsResource:
+	case module.DocumentsResourceV2:
 		return post[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()
@@ -118,7 +118,7 @@ func Patch(r *http.Request, body *httpx.Patch) *core.Status {
 		body = &content
 	}
 	switch r.URL.Path {
-	case module.DocumentsResource:
+	case module.DocumentsResourceV2:
 		return patch[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 	default:
 		return core.StatusBadRequest()

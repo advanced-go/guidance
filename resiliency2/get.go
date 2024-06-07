@@ -19,7 +19,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL) 
 	if url == nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid argument: URL is nil"))
 	}
-	url2 := uri.Expansion("", module.DocumentsPathV2, module.DocumentsV2, url.Query())
+	url2 := uri.Expansion("", module.DocumentsAuthorityV2, module.DocumentsResourceV2, url.Query())
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
 	httpx.Forward(req.Header, h, core.XAuthority)
 	resp, status1 := httpx.DoExchange(req)

@@ -12,7 +12,7 @@ import (
 
 var (
 	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResource, entryContent, nil)
+	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResourceV2, entryContent, nil)
 	host, err    = httpx.NewHost(module.DocumentsAuthorityV2, mapResource, entryRsc.Do)
 )
 
@@ -37,6 +37,6 @@ func matchEntry(req *http.Request, item *Entry) bool {
 }
 
 func mapResource(r *http.Request) string {
-	return module.DocumentsResource
+	return module.DocumentsResourceV2
 
 }
