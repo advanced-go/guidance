@@ -1,11 +1,5 @@
 package module
 
-import (
-	"github.com/advanced-go/stdlib/controller"
-	"github.com/advanced-go/stdlib/core"
-	"time"
-)
-
 const (
 	Authority = "github/advanced-go/guidance"
 	RouteName = "guidance"
@@ -33,15 +27,3 @@ const (
 
 	DocumentsRouteName = "documents"
 )
-
-// Routes - upstream egress traffic route configuration
-var (
-	Routes = []controller.Config{
-		{DocumentsRouteName, "localhost:8081", DocumentsAuthority, core.HealthLivenessPath, time.Second * 2},
-	}
-)
-
-// GetRoute - get the route configuration
-func GetRoute(routeName string) (controller.Config, bool) {
-	return controller.GetRoute(routeName, Routes)
-}

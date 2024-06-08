@@ -3,16 +3,22 @@ package resiliency1
 import (
 	"context"
 	"errors"
+	"github.com/advanced-go/guidance/module"
+	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 const (
 	PkgPath = "github/advanced-go/guidance/resiliency1"
 )
+
+// Route upstream egress traffic route configuration
+var Route = controller.Config{RouteName: module.DocumentsRouteName, Host: "localhost:8081", Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, values url.Values) ([]Entry, http.Header, *core.Status) {
