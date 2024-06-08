@@ -6,6 +6,7 @@ import (
 	resiliency1 "github.com/advanced-go/guidance/resiliency1"
 	"github.com/advanced-go/stdlib/controller"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"io"
 	"net/http"
@@ -18,9 +19,30 @@ const (
 	documentsV1Name = module.Ver1 + "/" + "resiliency"
 	actionTest      = "test"
 	//actionEmpty     = "empty"
-	actionInit = "init"
-	actionAdd  = "add"
+	actionInit  = "init"
+	actionAdd   = "add"
+	entriesJson = "file:///c:/Users/markb/GitHub/guidance/resiliency1/resiliency1test/documents-v1.json"
 )
+
+var (
+	content            = httpx.NewListContent[resiliency1.Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	resource           = httpx.NewResource[resiliency1.Entry, httpx.Patch, struct{}](module.DocumentsResourceV1, content, nil)
+	authority, hostErr = httpx.NewHost(module.DocumentsAuthority, mapResource, resource.Do)
+)
+
+func matchEntry(req *http.Request, item *resiliency1.Entry) bool {
+	filter := core.NewOrigin(req.URL.Query())
+	target := core.Origin{Region: item.Region, Zone: item.Zone, SubZone: item.SubZone, Host: item.Host}
+	if core.OriginMatch(target, filter) {
+		return true
+	}
+	return false
+}
+
+func mapResource(r *http.Request) string {
+	return module.DocumentsResourceV1
+
+}
 
 func matchOrigin(item *core.Origin, req *http.Request) bool {
 	filter := core.NewOrigin(req.URL.Query())
@@ -43,11 +65,32 @@ var (
 )
 
 func init() {
-	//if err != nil {
-	//	fmt.Printf("error: new resource %v", err)
+	//initializeDocuments
+}
+
+func initializeDocuments() {
+	defer controller.DisableLogging(true)()
+	if hostErr != nil {
+		fmt.Printf("error: new resource %v", hostErr)
+	}
+	//entries, status := json.New[[]resiliency1.Entry](entriesJson, nil)
+	//if !status.OK() {
+	//	fmt.Printf("initializeDocuments.New() -> [status:%v]\n", status)
+	//	return
 	//}
-	//ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthority, time.Second*2, "", host.Do), nil)
-	//controller.RegisterController(ctrl)
+	cfg, ok := module.GetRoute(module.DocumentsRouteName)
+	if !ok {
+		fmt.Printf("initializeDocuments.GetRoute() [ok:%v]\n", ok)
+	}
+	ctrl := controller.New(cfg, authority.Do)
+	err0 := controller.RegisterController(ctrl)
+	if err0 != nil {
+		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err0)
+	}
+	//_, status = put[core.Output](context.Background(), nil, entries)
+	///if !status.OK() {
+	//	fmt.Printf("initializeDocuments.put() [status:%v]\n", status)
+	//}
 }
 
 func Test_resiliencyExchangeV1(t *testing.T) {
