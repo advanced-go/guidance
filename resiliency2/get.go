@@ -20,8 +20,12 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL) 
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid argument: URL is nil"))
 	}
 	url2 := uri.Expansion("", module.DocumentsAuthorityV2, module.DocumentsResourceV2, url.Query())
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
-	httpx.Forward(req.Header, h, core.XAuthority)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url2, nil)
+	if err != nil {
+		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
+	}
+	req.Header.Set(core.XFrom, module.Authority)
+	httpx.Forward(req.Header, h)
 	resp, status1 := httpx.DoExchange(req)
 	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))

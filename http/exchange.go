@@ -27,7 +27,6 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
 	}
 	core.AddRequestId(r.Header)
-	r.Header.Set(core.XAuthority, module.Authority)
 	switch p.Resource {
 	case module.ResiliencyResource:
 		return resiliencyExchange[core.Log](r, p)

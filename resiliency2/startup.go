@@ -11,20 +11,20 @@ import (
 )
 
 var (
-	entryContent = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
-	entryRsc     = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResourceV2, entryContent, nil)
-	host, err    = httpx.NewHost(module.DocumentsAuthorityV2, mapResource, entryRsc.Do)
+	content            = httpx.NewListContent[Entry, httpx.Patch, struct{}](false, matchEntry, nil, nil)
+	resource           = httpx.NewResource[Entry, httpx.Patch, struct{}](module.DocumentsResourceV2, content, nil)
+	authority, authErr = httpx.NewHost(module.DocumentsAuthorityV2, mapResource, resource.Do)
 )
 
 func init() {
 	defer controller.DisableLogging(true)()
-	if err != nil {
-		fmt.Printf("error: new resource %v", err)
+	if authErr != nil {
+		fmt.Printf("error: new resource %v", authErr)
 	}
-	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthorityV2, time.Second*2, "", host.Do), nil)
-	err = controller.RegisterController(ctrl)
-	if err != nil {
-		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err)
+	ctrl := controller.NewController("entry-resource", controller.NewPrimaryResource("", module.DocumentsAuthorityV2, time.Second*2, "", authority.Do), nil)
+	err1 := controller.RegisterController(ctrl)
+	if err1 != nil {
+		fmt.Printf("initializeDocuments.RegisterController() [err:%v]\n", err1)
 	}
 }
 

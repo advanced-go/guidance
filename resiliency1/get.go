@@ -27,7 +27,8 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Val
 	if err != nil {
 		return nil, nil, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
-	httpx.Forward(req.Header, h, core.XAuthority)
+	req.Header.Set(core.XFrom, module.Authority)
+	httpx.Forward(req.Header, h)
 	resp, status1 := httpx.DoExchange(req)
 	if !status1.OK() {
 		e.Handle(status1, core.RequestId(h))
