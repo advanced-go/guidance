@@ -25,7 +25,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 		e.Handle(status, core.RequestId(h))
 		return nil, status
 	}
-	url := resolver.Resolve(hostKey, module.DocumentsAuthority, module.DocumentsResourceV1, nil, h)
+	url := resolver.Url(hostKey, module.DocumentsAuthority, module.DocumentsResourceV1, nil, h)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
 	if err != nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
