@@ -24,6 +24,4 @@ const (
 
 	DocumentsAuthorityV2 = "github/advanced-go/documents/2"
 	DocumentsResourceV2  = "v2/resiliency"
-
-	DocumentsRouteName = "documents"
 )

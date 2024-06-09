@@ -7,7 +7,6 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
-	"github.com/advanced-go/stdlib/uri"
 	"io"
 	"net/http"
 )
@@ -26,7 +25,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 		e.Handle(status, core.RequestId(h))
 		return nil, status
 	}
-	url := uri.Resolve("", module.DocumentsAuthority, module.DocumentsResourceV1, nil, h)
+	url := resolver.Resolve(hostKey, module.DocumentsAuthority, module.DocumentsResourceV1, nil, h)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
 	if err != nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, err)

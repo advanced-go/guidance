@@ -8,17 +8,29 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 	"net/url"
 	"time"
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/resiliency1"
+	PkgPath   = "github/advanced-go/guidance/resiliency1"
+	RouteName = "documents"
+	hostKey   = "docs-host"
 )
 
-// Route upstream egress traffic route configuration
-var Route = controller.Config{RouteName: module.DocumentsRouteName, Host: "localhost:8081", Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}
+var resolver = uri.NewResolver([]uri.HostEntry{{Key: hostKey, Host: "www.documents.com", Proxy: false}})
+
+// Route - upstream egress traffic route configuration
+func Route(routeName string) (*controller.Config, bool) {
+	switch routeName {
+	case RouteName:
+		return &controller.Config{RouteName: RouteName, Host: resolver.Host(hostKey), Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}, true
+	default:
+		return nil, false
+	}
+}
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, values url.Values) ([]Entry, http.Header, *core.Status) {
