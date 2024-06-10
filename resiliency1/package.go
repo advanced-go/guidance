@@ -16,7 +16,7 @@ import (
 
 const (
 	PkgPath   = "github/advanced-go/guidance/resiliency1"
-	RouteName = "documents"
+	RouteName = "documents-resiliency"
 	hostKey   = "docs-host"
 )
 
