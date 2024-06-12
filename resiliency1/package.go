@@ -16,20 +16,15 @@ import (
 
 const (
 	PkgPath   = "github/advanced-go/guidance/resiliency1"
-	RouteName = "documents-resiliency"
+	routeName = "documents-resiliency"
 	hostKey   = "docs-host"
 )
 
 var resolver = uri.NewResolver([]uri.HostEntry{{Key: hostKey, Host: "www.documents.com", Proxy: false}})
 
 // EgressRoute - upstream egress traffic route configuration
-func EgressRoute(routeName string) (*controller.Config, bool) {
-	switch routeName {
-	case RouteName:
-		return &controller.Config{RouteName: RouteName, Host: resolver.Host(hostKey), Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}, true
-	default:
-		return nil, false
-	}
+func EgressRoute() *controller.Config {
+	return &controller.Config{RouteName: routeName, Host: resolver.Host(hostKey), Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}
 }
 
 // Get - resource GET
