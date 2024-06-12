@@ -27,7 +27,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 	}
 	req.Header.Set(core.XFrom, module.Authority)
 	httpx.Forward(req.Header, h, core.XAuthority)
-	_, status = httpx.DoExchange(req)
+	_, status = httpx.Exchange(req)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 	}
