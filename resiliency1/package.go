@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/advanced-go/guidance/module"
-	"github.com/advanced-go/stdlib/controller"
+	"github.com/advanced-go/stdlib/controller2"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	json2 "github.com/advanced-go/stdlib/json"
@@ -23,8 +23,8 @@ const (
 var resolver = uri.NewResolver([]uri.HostEntry{{Key: hostKey, Host: "www.documents.com", Proxy: false}})
 
 // EgressRoute - upstream egress traffic route configuration
-func EgressRoute() *controller.Config {
-	return &controller.Config{RouteName: routeName, Host: resolver.Host(hostKey), Authority: module.DocumentsAuthority, LivenessPath: core.HealthLivenessPath, Duration: time.Second * 2}
+func EgressRoute() *controller2.Config {
+	return &controller2.Config{RouteName: routeName, Host: resolver.Host(hostKey), Authority: module.DocumentsAuthority, Duration: time.Second * 2}
 }
 
 // Get - resource GET
