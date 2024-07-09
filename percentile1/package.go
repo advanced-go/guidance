@@ -7,9 +7,7 @@ import (
 )
 
 const (
-	PkgPath   = "github/advanced-go/guidance/percentile1"
-	routeName = "documents-resiliency"
-	hostKey   = "docs-host"
+	PkgPath = "github/advanced-go/guidance/percentile1"
 )
 
 // Get - resource GET
