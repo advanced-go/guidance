@@ -3,7 +3,6 @@ package percentile1
 import (
 	"context"
 	"github.com/advanced-go/stdlib/core"
-	"net/url"
 )
 
 const (
@@ -11,6 +10,6 @@ const (
 )
 
 // Get - resource GET
-func Get(ctx context.Context, values url.Values) (Entry, *core.Status) {
+func Get(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
 	return entryData[0], core.StatusOK()
 }
