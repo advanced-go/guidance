@@ -1,4 +1,4 @@
-package scheduling1
+package schedule1
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package percentile1
+package schedule1
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/percentile1"
+	PkgPath = "github/advanced-go/guidance/schedule1"
 )
 
 // Get - resource GET
