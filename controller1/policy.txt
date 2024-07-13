@@ -36,7 +36,7 @@ C. How to remove an authority? - USE VERSIONING
    2. Permanently, need to be guidance set by a user
 
 D. How to handle versioning??
-   1. Can we use existing module versioning?
+   1. Can we use existing module versioning? YES
       - This would have to be in the meta-data of what you have and what you need.
       - Need to allow for a version mask, so that you can support semantic versioning
    2. Append a version number to the authority.
