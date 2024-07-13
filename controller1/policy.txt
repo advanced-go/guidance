@@ -1,0 +1,35 @@
+
+
+A controller policy needs the following:
+ 1. Some way to create a complete URL given an incoming request
+    a. If the request contains a authority, then it should b automatic
+
+ 2. Timeout - optional as this defaults to 3 seconds
+
+ 3. RateLimiting - only disabling is allowed as rate limiting is enabled by default with the
+                   rate limit and rate burst configured dynamically. The threshold to start
+                   rate limiting is also determined dynamically based on experience
+ 4. Policy - controls how a host is selected
+    a. Need the ability to limit possible hosts
+       - Limit by Region, Zone, SubZone, Host
+
+
+B. When authority URL's are used.
+   1. Ingress controllers
+      a. Need a list of ingress authorities to publish.
+         - One timeout override for ingress host controller
+   2. Egress controllers
+      a. Need a list of egress authorities
+         - Route Name
+         - Optional timeout
+         - Optional disabling RateLimiting - rate limiting is good for transient latencies
+         - Limit egress origins by Region, Zone, SubZone, Host
+         - Need an optional timespan so that the origins can be tested during off hours.
+           Can this be configured dynamically??
+
+
+C. How to remove an authority?
+   1. Suddenly disappears, egress controller needs to react.
+   2. Permanently, need to be guidance set by a user
+
+D. How to handle versioning??
