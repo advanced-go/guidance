@@ -13,3 +13,7 @@ const (
 func Get(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
 	return entryData[0], core.StatusOK()
 }
+
+func GetHost(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+	return entryData[0], core.StatusOK()
+}
