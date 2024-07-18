@@ -1,0 +1,17 @@
+
+Data Architecture
+----------------
+
+1. Fact data - Select and Insert only.
+   - Select and insert as needed. Interact directly with database.
+
+2. Dimensional data
+
+
+
+3. Global Configuration
+   - Common package that can cache this data, with a scheduling component
+     Ex. scheduling
+
+
+

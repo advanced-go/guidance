@@ -1,4 +1,4 @@
-package controller1
+package controller2
 
 import "fmt"
 

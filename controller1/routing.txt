@@ -1,0 +1,116 @@
+
+New routing architecture: dynamic authority based routing.
+
+Can everything be automated and in the cloud?
+
+How to determine when and if there is a new version?
+
+What kinds of data?
+
+1. Ingress host route
+2. Ingress authorities with a definition of Primary or Secondary. So routing can default to the
+   primary authority.
+
+3. Egress routes
+4. Egress authorities
+3. Egress routing policy
+
+
+
+
+
+
+
+
+
+
+
+// Host and primary configuration are as follows:
+	// Primary - route to host unless upstream failure rate exceeds a threshold, then route to secondaries
+	//           based on filters. If not filters are configured then stay on primary. Once the rate falls
+	//           below the threshold, fail back to the host
+	// Default - route to host on startup, then rely on secondaries for all routing. Without secondary
+	//           filters, then remain on host.
+	//
+
+When a new host starts up then the host should send the configuration.
+  1. Trigger a host startup message so that the existing Egress controller can update the
+     routing information.
+
+
+Conversion strategies:
+ 1. Major version change
+     - Manual execution
+     - Requires new host version
+ 2. Minor version change
+     - Manual or automatic
+     - New host version ?
+ 3. Patch version change
+     - Manual or automatic.
+
+
+ Without guidance, then conversion is attempted at a time when the service is off-peak.
+ Guidance can be used to change when a conversion is run.
+
+ How to know when a version changes??
+ How to determine a version based on the route's version mask?
+ ? Can we use the host authority version information??
+
+ If we use the startup host as the current version
+
+ CANT BE DONE, rely on the ecosystem. Need resiliency when connecting to cloud
+
+ // Host and primary configuration are as follows:
+ 	// Primary - route to host unless upstream failure rate exceeds a threshold, then route to secondaries
+ 	//           based on filters. If no filters are configured then stay on primary. Once the rate falls
+ 	//           below the threshold, fail back to the host
+ 	// Default - route to host on startup, then rely on secondaries for all routing. Without secondary
+ 	//           filters, remain on host.
+ 	//
+ 	Host    string `json:"host"`
+ 	Primary bool   `json:"primary"`
+
+
+B. When authority URL's are used.
+   1. Ingress controllers
+      a. Need a list of ingress authorities to publish.
+         - One timeout override for ingress host controller
+         - Need the authority/module version
+   2. Egress controllers
+      a. Need a list of egress authorities
+         - Route Name
+         - Optional timeout
+         - Optional disabling RateLimiting - rate limiting is good for transient latencies
+         - Need the authority/module version
+         - Include egress origins by Region, Zone, SubZone, Host
+         - Exclude egress origins.
+         - Need an optional timespan so that the origins can be tested during off hours.
+           Can this be configured dynamically??
+
+
+A controller policy needs the following:
+ 1. Some way to create a complete URL given an incoming request
+    a. If the request contains a authority, then it should b automatic
+
+ 2. Timeout - optional as this defaults to 3 seconds
+
+ 3. RateLimiting - only disabling is allowed as rate limiting is enabled by default with the
+                   rate limit and rate burst configured dynamically. The threshold to start
+                   rate limiting is also determined dynamically based on experience
+ 4. Policy - controls how a host is selected
+    a. Need the ability to limit possible hosts
+       - Limit by Region, Zone, SubZone, Host
+
+
+
+
+C. How to remove an authority? - USE VERSIONING
+   1. Suddenly disappears, egress controller needs to react.
+   2. Permanently, need to be guidance set by a user
+
+D. How to handle versioning??
+   1. Can we use existing module versioning? YES
+      - This would have to be in the meta-data of what you have and what you need.
+      - Need to allow for a version mask, so that you can support semantic versioning
+   2. Append a version number to the authority.
+      - How would this scheme correlate to an exact module version?

@@ -1,43 +1,21 @@
+Routing policy and processing
+
+If a host is configured - static routing, then route to that host only.
+  - Ignore versioning
+
+Policy Options -
+  1. Static routing
+     - Can be used for authority or URL routing.
+     - Single host, no failover
+
+  2. Dynamic routing
+     - Only authority based routing
+     - Policy required with configured templates
+
+  3. Dynamic routing with conversion
+       - Only authority based routing
+       - Policy required with configured templates
+       - Conversion policy required
 
 
-A controller policy needs the following:
- 1. Some way to create a complete URL given an incoming request
-    a. If the request contains a authority, then it should b automatic
 
- 2. Timeout - optional as this defaults to 3 seconds
-
- 3. RateLimiting - only disabling is allowed as rate limiting is enabled by default with the
-                   rate limit and rate burst configured dynamically. The threshold to start
-                   rate limiting is also determined dynamically based on experience
- 4. Policy - controls how a host is selected
-    a. Need the ability to limit possible hosts
-       - Limit by Region, Zone, SubZone, Host
-
-
-B. When authority URL's are used.
-   1. Ingress controllers
-      a. Need a list of ingress authorities to publish.
-         - One timeout override for ingress host controller
-         - Need the authority/module version
-   2. Egress controllers
-      a. Need a list of egress authorities
-         - Route Name
-         - Optional timeout
-         - Optional disabling RateLimiting - rate limiting is good for transient latencies
-         - Need the authority/module version
-         - Include egress origins by Region, Zone, SubZone, Host
-         - Exclude egress origins.
-         - Need an optional timespan so that the origins can be tested during off hours.
-           Can this be configured dynamically??
-
-
-C. How to remove an authority? - USE VERSIONING
-   1. Suddenly disappears, egress controller needs to react.
-   2. Permanently, need to be guidance set by a user
-
-D. How to handle versioning??
-   1. Can we use existing module versioning? YES
-      - This would have to be in the meta-data of what you have and what you need.
-      - Need to allow for a version mask, so that you can support semantic versioning
-   2. Append a version number to the authority.
-      - How would this scheme correlate to an exact module version?
