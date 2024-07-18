@@ -1,0 +1,4 @@
+
+The percentiles are kept for each host, and are updated periodically.
+
+This information is cached in the agent, and an agent is configured to periodically refresh the cache
