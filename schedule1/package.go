@@ -28,11 +28,11 @@ func IsScheduled(scheduleId string) bool {
 	return true
 }
 
-func IsIngressControllerScheduled() bool {
+func IsIngressControllerScheduled(origin core.Origin) bool {
 	return IsScheduled("ingress-controller")
 }
 
-func IsEgressControllerScheduled() bool {
+func IsEgressControllerScheduled(origin core.Origin) bool {
 	return IsScheduled("egress-controller")
 }
 
