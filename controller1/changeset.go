@@ -2,6 +2,14 @@ package controller1
 
 import "github.com/advanced-go/stdlib/core"
 
+type ProcessingUpdate struct {
+	ProcessingScheduleId any `json:"processing-schedule-id"`
+	DependencyScheduleId any `json:"dependency-schedule-id"`
+	DependencyUpdates    any `json:"dependency-updates"`
+	Email                any `json:"email"`
+	Slack                any `json:"slack"`
+}
+
 type AuthorityChange struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -36,12 +44,7 @@ type Changeset struct {
 	// Do we need both? Can we only use a changeset id??
 	ChangesetId string             `json:"changeset-id"`
 	Origin      core.Origin        `json:"origin"`
+	Processing  ProcessingUpdate   `json:"processing-update"`
 	Authority   AuthorityChangeset `json:"authority-changeset"`
 	Egress      EgressChangeset    `json:"egress-changeset"`
-}
-
-type EntryUpdate struct {
-	ProcessingScheduleId string `json:"processing-schedule-id"`
-	DependencyUpdates    bool   `json:"dependency-updates"`
-	DependencyScheduleId string `json:"dependency-schedule-id"`
 }

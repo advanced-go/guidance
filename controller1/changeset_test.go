@@ -5,6 +5,10 @@ import (
 	json2 "github.com/advanced-go/stdlib/json"
 )
 
+const (
+	test2Path = "file://[cwd]/changeset-test2.json"
+)
+
 var (
 	set = Changeset{
 		Authority: AuthorityChangeset{
@@ -57,9 +61,19 @@ var (
 	*/
 )
 
-func ExampleChangeset_Nil() {
+func ExampleChangeset_Marshal() {
 	buf, status := json2.Marshal(&set)
-	fmt.Printf("test: Case_4() -> [status:%v] [%v]\n", status, string(buf))
+	fmt.Printf("test: Marshal() -> [status:%v] [%v]\n", status, string(buf))
+
+	//Output:
+	//fail
+
+}
+
+func ExampleChangeset_Unmarshal() {
+	change, status := json2.New[Changeset](test2Path, nil)
+
+	fmt.Printf("test: Unmarshal() -> [status:%v] [%v]\n", status, change.Processing)
 
 	//Output:
 	//fail

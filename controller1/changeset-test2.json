@@ -1,0 +1,18 @@
+{
+  "version": "2.3.4",
+  "changeset-id": "1234567",
+  "origin": {
+    "region": "us-central1",
+    "zone": "a",
+    "sub-zone": "",
+    "host": "www.host.com",
+    "instance-id": "67890"
+  },
+  "processing-update": {
+    "processing-schedule-id": "schedule-id",
+    "dependency-schedule-id": null,
+    "dependency-updates": true,
+    "email": null,
+    "slack": null
+  }
+}
