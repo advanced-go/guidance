@@ -10,10 +10,15 @@ shard/host.
 Maybe also a ring buffer architecture.
 
 
-2. Controller
-   - A host entry must be created by a user, no changeset needed as there is no rollback. At that time
-   - At that time, the options for dependency management and processing will be created.
-   - The initial version number is 0.0.0
-   - Updating of the entry, schedule id's and dependency management flag can be done via a post command
-   - Updating the version number can also be done via post with a :
-       rollback and optional version number.
+A. Controller
+   1. Entry
+     - A host entry must be created by a user, no changeset needed as there is no rollback. At that time
+     - At that time, the options for dependency management and processing will be created.
+     - The initial version number is 0.0.0
+     - Updating of the entry, schedule id's and dependency management flag can be done via a post command
+     - Updating the version number can also be done via post with a :
+        rollback and optional version number.
+     - Support deletion also, with an access log traffic check.
+     - Do we need a flag for active/inactive status? That would turn off the controller.
+     - How to make each update unique and not update the wrong data
+     - Create a changeset id that must be presented.

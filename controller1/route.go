@@ -3,7 +3,6 @@ package controller1
 import (
 	"errors"
 	"fmt"
-	"github.com/advanced-go/observation/common"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
 	"time"
@@ -25,7 +24,7 @@ const (
 )
 
 var (
-	safeRoute = common.NewSafe()
+	//safeRoute = common.NewSafe()
 	routeData = []Route{
 		{EntryId: 1, RouteId: 1, RouteName: "google-search", Authority: "github/advanced-go/observation", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{EntryId: 1, RouteId: 2, RouteName: "google-search", Authority: "github/advanced-go/observation", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},

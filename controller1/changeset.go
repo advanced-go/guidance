@@ -32,10 +32,12 @@ type EgressChangeset struct {
 }
 
 type Changeset struct {
-	Version   string             `json:"version"`
-	Origin    core.Origin        `json:"origin"`
-	Authority AuthorityChangeset `json:"authority-changeset"`
-	Egress    EgressChangeset    `json:"egress-changeset"`
+	Version string `json:"version"`
+	// Do we need both? Can we only use a changeset id??
+	ChangesetId string             `json:"changeset-id"`
+	Origin      core.Origin        `json:"origin"`
+	Authority   AuthorityChangeset `json:"authority-changeset"`
+	Egress      EgressChangeset    `json:"egress-changeset"`
 }
 
 type EntryUpdate struct {
