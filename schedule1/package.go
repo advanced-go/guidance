@@ -9,11 +9,17 @@ const (
 	PkgPath = "github/advanced-go/guidance/schedule1"
 )
 
-// Get - resource GET
-func Get(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+// GetGlobal - resource GET
+func GetGlobal(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
 	return entryData[0], core.StatusOK()
 }
 
+/*
 func GetHost(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+	return entryData[0], core.StatusOK()
+}
+*/
+
+func GetGroup(ctx context.Context, groupId string) (Entry, *core.Status) {
 	return entryData[0], core.StatusOK()
 }

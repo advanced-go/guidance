@@ -42,6 +42,9 @@ type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 	UpdatedTS time.Time `json:"updated-ts"`
 
+	// Needs to be a dependency schedule configuration
+	ScheduleId string // Does this need rollback, auditing??
+
 	// Notifications
 	Email string
 	Slack string

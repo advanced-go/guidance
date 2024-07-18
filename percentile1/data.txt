@@ -1,4 +1,7 @@
 
 The percentiles are kept for each host, and are updated periodically.
 
-This information is cached in the agent, and an agent is configured to periodically refresh the cache
+This information is cached in the agent, and an agent is configured to periodically refresh the cache from
+the database.
+
+The schedule for refresh is set by the system, as the percentiles are updated by a database job.

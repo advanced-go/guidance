@@ -1,0 +1,26 @@
+
+Data consistency.
+
+Does this need to support rollback and auditing?? - Auditing only, rollback is over kill.
+Refresh on a fixed predetermined schedule.
+Maybe use change data capture??
+
+A. Global Scheduling
+  - There needs to be a fixed schedule to query for new data.
+
+  - This schedule can be fixed for this type of data as the refresh interval can be communicated to a user.
+    Maybe hourly?
+
+  - There should be an agent that can update the package cache of schedules.
+
+
+B. Dimensional Scheduling - via Groups
+   1. By Groups
+      - This runs into a cardinality issue with many hosts and changes to those hosts?
+      - Maybe a small number of schedules can be kept and reduce the cardinality
+      - Support multiple schedules for a given option.
+         a. So for dependency checking, let there be several groups that a given host can pick from
+      - These can then be refreshed similar to global schedules.
+   2. By Dimension
+      - Not supported
+
