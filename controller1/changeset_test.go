@@ -7,27 +7,12 @@ import (
 
 var (
 	set = Changeset{
-		DependencyUpdate: DependencyUpdateChangeset{
-			Update: []DependencyUpdateChange{
-				{
-					Enable: false,
-				},
-			},
-		},
 		Authority: AuthorityChangeset{
 			Insert: []AuthorityChange{
 				{
 					Name:    "github/advanced-go/observation",
 					Version: "2.3.*",
 					Role:    "primary",
-				},
-			},
-		},
-		Ingress: IngressChangeset{
-			Update: []IngressChange{
-				{
-					RouteName:    "host",
-					RateLimiting: false,
 				},
 			},
 		},

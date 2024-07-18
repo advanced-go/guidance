@@ -8,3 +8,9 @@ So, agents need to be sharded by the origin, so that a given controller update c
 shard/host.
 
 Maybe also a ring buffer architecture.
+
+
+2. Controller
+   - A host entry must be created by a user, no changeset needed as there is no rollback. At that time
+   - At that time, the options for dependency management and processing will be created.
+   - The initial version number is 0.0.0

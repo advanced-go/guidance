@@ -2,14 +2,6 @@ package controller1
 
 import "github.com/advanced-go/stdlib/core"
 
-type DependencyUpdateChange struct {
-	Enable bool `json:"enable"`
-}
-
-type DependencyUpdateChangeset struct {
-	Update []DependencyUpdateChange `json:"update"`
-}
-
 type AuthorityChange struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -20,17 +12,6 @@ type AuthorityChangeset struct {
 	Insert []AuthorityChange `json:"insert"`
 	Update []AuthorityChange `json:"update"`
 	Delete []AuthorityChange `json:"delete"`
-}
-
-type IngressChange struct {
-	RouteName    string `json:"route"`
-	RateLimiting bool   `json:"rate-limiting"`
-}
-
-type IngressChangeset struct {
-	//Insert []IngressChange `json:"insert""`
-	Update []IngressChange `json:"update"`
-	//Delete []IngressChange `json:"delete"`
 }
 
 type EgressChange struct {
@@ -51,10 +32,8 @@ type EgressChangeset struct {
 }
 
 type Changeset struct {
-	Version          string                    `json:"version"`
-	Origin           core.Origin               `json:"origin"`
-	DependencyUpdate DependencyUpdateChangeset `json:"dependency-update-changeset"`
-	Authority        AuthorityChangeset        `json:"authority-changeset"`
-	Ingress          IngressChangeset          `json:"ingress-changeset"`
-	Egress           EgressChangeset           `json:"egress-changeset"`
+	Version   string             `json:"version"`
+	Origin    core.Origin        `json:"origin"`
+	Authority AuthorityChangeset `json:"authority-changeset"`
+	Egress    EgressChangeset    `json:"egress-changeset"`
 }

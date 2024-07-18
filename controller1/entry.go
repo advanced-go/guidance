@@ -38,13 +38,18 @@ type Entry struct {
 	Zone      string    `json:"zone"`
 	SubZone   string    `json:"sub-zone"`
 	Host      string    `json:"host"`
-	Version   string    `json:"version"` // Used to determine changes
 	CreatedTS time.Time `json:"created-ts"`
-	UpdatedTS time.Time `json:"updated-ts"`
+	//UpdatedTS time.Time `json:"updated-ts"` this is in CDC
 
-	// Dependency management - schedule and toggle. No rollback, only auditing via CDC
-	DependencyUpdates bool   `json:"dependency-updates"`
-	ScheduleId        string `json:"schedule-id"`
+	// Current version - auditing via CDC
+	Version string `json:"version"`
+
+	// Processing schedule - no rollback, only auditing via CDC
+	ProcessingScheduleId string `json:"processing-schedule-id"`
+
+	// Dependency management - schedule and toggle, no rollback, only auditing via CDC
+	DependencyUpdates    bool   `json:"dependency-updates"`
+	DependencyScheduleId string `json:"dependency-schedule-id"`
 
 	// Notifications
 	Email string
