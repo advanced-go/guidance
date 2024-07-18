@@ -42,8 +42,9 @@ type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 	UpdatedTS time.Time `json:"updated-ts"`
 
-	// Needs to be a dependency schedule configuration
-	ScheduleId string // Does this need rollback, auditing??
+	// Dependency management - schedule and toggle. No rollback, only auditing via CDC
+	DependencyUpdates bool   `json:"dependency-updates"`
+	ScheduleId        string `json:"schedule-id"`
 
 	// Notifications
 	Email string

@@ -1,0 +1,10 @@
+
+This is dimensional data, stored by dimension.
+The cardinality and change frequency of this data does not allow a common package to manage consistency.
+
+Therefore, this data must reside in memory with the agent that needs this data.
+
+So, agents need to be sharded by the origin, so that a given controller update can be routed to the appropriate
+shard/host.
+
+Maybe also a ring buffer architecture.
