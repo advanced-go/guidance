@@ -44,6 +44,9 @@ type Entry struct {
 	// Current version - auditing via CDC
 	Version string `json:"version"`
 
+	// Can also add ingress rate limiting if needed.
+	IngressRateLimiting bool `json:"ingress-rate-limiting"`
+
 	// Processing schedule - no rollback, only auditing via CDC
 	ProcessingScheduleId string `json:"processing-schedule-id"`
 

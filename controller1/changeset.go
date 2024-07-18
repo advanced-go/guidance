@@ -37,3 +37,10 @@ type Changeset struct {
 	Authority AuthorityChangeset `json:"authority-changeset"`
 	Egress    EgressChangeset    `json:"egress-changeset"`
 }
+
+type EntryUpdate struct {
+	ProcessingScheduleId string `json:"processing-schedule-id"`
+	DependencyUpdates    bool   `json:"dependency-updates"`
+	DependencyScheduleId string `json:"dependency-schedule-id"`
+	IngressRateLimiting  bool   `json:"ingress-rate-limiting"`
+}
