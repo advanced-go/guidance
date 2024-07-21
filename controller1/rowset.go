@@ -9,11 +9,18 @@ type RoutingPolicy struct {
 	OriginThreshold int `json:"origin-threshold"`
 }
 
+type DependencySchedule struct {
+	HourFrom int    `json:"hour-from"`
+	HourTo   int    `json:"hour-to"`
+	Include  bool   `json:"include"`
+	Days     string `json:"days"`
+}
+
 type Rowset struct {
-	Version              string `json:"version"`
-	ProcessingScheduleId string `json:"processing-schedule-id"`
-	DependencyUpdates    bool   `json:"dependency-updates"`
-	DependencyScheduleId string `json:"dependency-schedule-id"`
+	Version string `json:"version"`
+	//ProcessingScheduleId string `json:"processing-schedule-id"`
+	//DependencyUpdates    bool   `json:"dependency-updates"`
+	Schedule DependencySchedule `json:"schedule"`
 
 	RouteName string `json:"route"`
 	//RateLimiting bool   `json:"rate-limiting"`
