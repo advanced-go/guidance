@@ -4,7 +4,8 @@ type RoutingPolicy struct {
 	Primary     bool   `json:"primary"`
 	Authority   string `json:"authority"` // github/advanced-go/observation: provider/account/repository
 	AuthVersion string `json:"auth-version"`
-	Prioritize  string `json:"prioritize"` // Origin, availability
+	// SubZone over Zone over Region. If failover, maybe need to go to Zone over SubZone
+	Prioritize string `json:"prioritize"` // Origin, availability
 	// OriginThreshold - when to prioritize by availability instead of origin
 	OriginThreshold int `json:"origin-threshold"`
 }
