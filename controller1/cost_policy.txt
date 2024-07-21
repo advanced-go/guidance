@@ -1,0 +1,15 @@
+
+Cost policy is used to control routing decisions.
+
+Routing decisions arise in 2 use cases:
+ 1. Application startup.
+    a. Authority routing
+       - Find an origin based on authority. Is there a preference for authority, like a primary/secondary
+       - Is there a cost policy to determine origin scope?
+       - What are the metrics to determine origin scope? Latency, Consistency, Availability
+       - What conditions would cause a change in how metrics are valued? Choosing availability over latency?
+       - What is the default when there are no metrics??
+
+    b. Host routing
+       - Find a host, same host name in different origins.
+       - Same issues as above relating to cost and metrics
