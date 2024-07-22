@@ -1,43 +1,62 @@
 package controller1
 
+// Version policy
+// Startup 2.3.* - any patch, prefer the latest
+// Conversion2.3.* - automatically update dependency with a change request
+// Version supports wildcards allowing control of dependency updates. so least restrictive to most restrictive would be:
+//  2.*
+//  2.3.*
+//  2.3.12
+
+// RoutingPolicy - routing information
 type RoutingPolicy struct {
-	Primary     bool   `json:"primary"`
-	Authority   string `json:"authority"` // github/advanced-go/observation: provider/account/repository
+	// Allows wildcards so that host selection is less restrictive than static version
+	// Usually a less restrictive version, so that for failover, a host with an acceptable
+	// version can be accepted.
 	AuthVersion string `json:"auth-version"`
-	// SubZone over Zone over Region. If failover, maybe need to go to Zone over SubZone
-	Prioritize string `json:"prioritize"` // Origin, availability
-	// OriginThreshold - when to prioritize by availability instead of origin
-	OriginThreshold int `json:"origin-threshold"`
+	// Scope for authority selection
+	Scope string `json:"scope"` // Zone, Region, All or none.
+	// FailureThreshold - when routing changes occurr
+	FailureThreshold int `json:"failure-threshold"`
 }
 
-type DependencySchedule struct {
-	HourFrom int    `json:"hour-from"`
-	HourTo   int    `json:"hour-to"`
-	Include  bool   `json:"include"`
-	Days     string `json:"days"`
+type DependencyPolicy struct {
+	// Do we need to create a changeset for every change??
+	// How to choose a host, version with wildcards. This version is less restrictive than in the rowset.
+	AuthVersion string `json:"auth-version"`
+	HourFrom    int    `json:"hour-from"`
+	HourTo      int    `json:"hour-to"`
+	Include     bool   `json:"include"`
+	Days        string `json:"days"`
 }
 
 type Rowset struct {
-	Version string `json:"version"`
-	//ProcessingScheduleId string `json:"processing-schedule-id"`
-	//DependencyUpdates    bool   `json:"dependency-updates"`
-	Schedule DependencySchedule `json:"schedule"`
+	Version    string           `json:"version"`
+	Conversion DependencyPolicy `json:"dependency-policy"`
 
 	RouteName string `json:"route"`
-	//RateLimiting bool   `json:"rate-limiting"`
-	//RegionT      string `json:"region-t"`
-	//ZoneT        string `json:"zone-t"`
-	//SubZoneT     string `json:"sub-zone-t"`
-	//HostT        string `json:"host-t"`
-	// Need to determine a cost metric. This choice is between consistency vs availability.
-	// All consistency means only local zone routing.
-	// Startup
-	//Authority      string        `json:"authority"` // github/advanced-go/observation: provider/account/repository
-	//AuthVersion    string        `json:"auth-version"`
-	StartupPolicy  RoutingPolicy `json:"startup-policy"`
-	FailoverPolicy RoutingPolicy `json:"failover-policy"`
+	// Always favor a primary authority
+	Authority string `json:"authority"` // github/advanced-go/observation: provider/account/repository
+	// This has to be specific, so that version changes can be determined for failover, conversion.
+	// 2.3.12
+	// Changing the auth version should change the failover policy version
+	AuthVersion string `json:"auth-version"`
 
-	// Notifications
-	Email string
-	Slack string
+	//StartupPolicy  RoutingPolicy `json:"startup-policy"`
+	// If a failure on startup, then go to failover.
+	FailoverPolicy RoutingPolicy `json:"failover-policy"`
+	// For failover routing
+	//AuthVersionT string`json:"auth-version-t"`
+	//FailureThreshold int `json:"failure-threshold"`
 }
+
+//ProcessingScheduleId string `json:"processing-schedule-id"`
+//DependencyUpdates    bool   `json:"dependency-updates"`
+//RateLimiting bool   `json:"rate-limiting"`
+//RegionT      string `json:"region-t"`
+//ZoneT        string `json:"zone-t"`
+//SubZoneT     string `json:"sub-zone-t"`
+//HostT        string `json:"host-t"`
+// Need to determine a cost metric. This choice is between consistency vs availability.
+// All consistency means only local zone routing.
+// Startup

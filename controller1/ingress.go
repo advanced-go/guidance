@@ -11,21 +11,6 @@ import "time"
 //    - System configurable to include MAJOR.MINOR and/or PATCH
 //    - Dynamic routing would need to know about this decision
 
-// IngressRoute - no configurable host name as it is defaulted to "host"
-// Cardinality - 1
-// Access - IngressAgent
-// Update - User Changeset
-// Optional - Only used to disable rate limiting.
-type IngressRoute struct {
-	EntryId   int       `json:"entry-id"`   // How to refer to the main entry
-	VersionId string    `json:"version-id"` // How to version this artifact
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"` // Auditing
-
-	// Used by IngressAgent
-	RateLimiting bool `json:"rate-limiting"`
-}
-
 // IngressAuthority - ingress authorities
 // Cardinality - n
 // Access - Dynamic routing
