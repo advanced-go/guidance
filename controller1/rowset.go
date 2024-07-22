@@ -15,14 +15,20 @@ type RoutingPolicy struct {
 	// version can be accepted.
 	AuthVersion string `json:"auth-version"`
 	// Scope for authority selection
-	Scope string `json:"scope"` // Zone, Region, All or none.
-	// FailureThreshold - when routing changes occurr
+	Scope string `json:"scope"` // SubZone, Zone, Region, *.
+	// FailureThreshold - when routing changes occur.
+	// Value == -1 -> let system determine
+	// Value == 0  -> no threshold, failover immediately
+	// Value > 0   -> failover when threshold is met
 	FailureThreshold int `json:"failure-threshold"`
 }
 
 type DependencyPolicy struct {
-	// Do we need to create a changeset for every change??
+	// Changeset approval needed. Ever change gets a changeset
+	ChangesetApproval bool `json:"changeset-approval"`
 	// How to choose a host, version with wildcards. This version is less restrictive than in the rowset.
+	// Scope defaults to 'Zone'
+	Scope       string `json:"scope"` // SubZone if used, then Zone, use most restrictive
 	AuthVersion string `json:"auth-version"`
 	HourFrom    int    `json:"hour-from"`
 	HourTo      int    `json:"hour-to"`
