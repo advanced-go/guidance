@@ -114,3 +114,44 @@ D. How to handle versioning??
       - Need to allow for a version mask, so that you can support semantic versioning
    2. Append a version number to the authority.
       - How would this scheme correlate to an exact module version?
+
+
+Rethinking all of this:
+
+With Host routing:
+ - host name is configured in the route config
+ - startup and failover would use the same scoping rules for host selection.
+
+Let's separate the cases for host based routing:
+  1. Startup - Let client set host URL.
+      a. Advantages - client is in best position to know which host to choose, even if we have dynamic
+                      routing, there is usually a primary host for a given authority.
+                    - Can run even if cloud is not available.
+      b. Disadvantages - would need to initialize cloud on startup for failover functionality
+
+  2. Failover - cloud configuration would need a scope and threshold to work.
+      a. Advantages - no scope would mean no failover
+      b. Disadvantages - failover hosts may be limited??
+
+  3. Conversion - relying on current conversion procedures.
+      a. Advantages - can be accomplished without change clients.
+      b. Disadvantages - painful
+
+
+Let's separate the cases for authority based routing:
+  1. Startup - Let client set host URL.
+      a. Advantages - client is in best position to know which host to choose, even if we have dynamic
+                      routing, there is usually a primary host for a given authority.
+                    - Can run even if cloud is not available.
+      b. Disadvantages - would need to initialize cloud on startup for failover functionality
+
+  2. Failover - cloud configuration would need a scope and threshold to work.
+      a. Advantages - no scope would mean no failover
+      b. Disadvantages - failover hosts may be limited??
+
+  3. Conversion - relying on current conversion procedures.
+      a. Advantages - can be accomplished without change clients.
+      b. Disadvantages - painful
+      c. Can we use redirects?? If the redirect is permanent, how can a client update there
+         cache.
+            - To use redirects, then the host configuration needs to be in the cloud

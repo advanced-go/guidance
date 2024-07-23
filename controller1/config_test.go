@@ -12,7 +12,7 @@ var (
 			Path:      "/test/search?q=golang",
 			Template:  "{path}",
 			Authority: "https://www.google.com",
-			Route:     "google-search",
+			RouteName: "google-search",
 		},
 			Timeout: 0,
 		},

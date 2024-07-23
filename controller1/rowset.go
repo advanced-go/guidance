@@ -46,11 +46,17 @@ type Rowset struct {
 	// This has to be specific, so that version changes can be determined for failover, conversion.
 	// 2.3.12
 	// Changing the auth version should change the failover policy version
-	AuthVersion string `json:"auth-version"`
+	//AuthVersion string `json:"auth-version"`
 
+	FailoverScope string `json:"failover-scope"` // SubZone, Zone, Region, *, empty or none not configured
+	// FailureThreshold - when routing changes occur.
+	// Value == -1 -> let system determine
+	// Value == 0  -> no threshold, failover immediately
+	// Value > 0   -> failover when threshold is met
+	FailoverThreshold int `json:"failure-threshold"` //
 	//StartupPolicy  RoutingPolicy `json:"startup-policy"`
 	// If a failure on startup, then go to failover.
-	FailoverPolicy RoutingPolicy `json:"failover-policy"`
+	//FailoverPolicy RoutingPolicy `json:"failover-policy"`
 	// For failover routing
 	//AuthVersionT string`json:"auth-version-t"`
 	//FailureThreshold int `json:"failure-threshold"`

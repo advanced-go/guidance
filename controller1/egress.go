@@ -2,6 +2,13 @@ package controller1
 
 import "time"
 
+// Need to log secondary for a redirect!!
+// Need to notify if there is an issue
+// Need an egress redirect agent??
+// How would this get started?? Maybe when a temp redirect is received then notify cloud??
+// Cloud would need to know to stop failover.
+// When the temporary
+
 // Issues, questions, and decisions.
 // Where does routing matching go? Client or Cloud?
 // Can static configurations go on the client?? YES
