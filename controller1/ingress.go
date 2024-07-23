@@ -38,6 +38,8 @@ type IngressController struct {
 
 	// How to do redirects??
 	RedirectAuthority string // Where to redirect to. How to determine origin. Should be same origin
+	ReplyTo           string `json:"reply-to"` // Needed for monitoring redirect. If the failure rate gets too high
+	// then use the reply to and send a reply
 	// Step percentage determined by cloud.
 	// Send temporary redirects on startup,
 	// when complete, send permanent redirect.
