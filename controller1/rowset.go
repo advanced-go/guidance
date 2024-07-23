@@ -54,6 +54,9 @@ type Rowset struct {
 	// Value == 0  -> no threshold, failover immediately
 	// Value > 0   -> failover when threshold is met
 	FailoverThreshold int `json:"failure-threshold"` //
+
+	// Optional failover authorities
+	FailoverAuthority string `json:"failover-authority"`
 	//StartupPolicy  RoutingPolicy `json:"startup-policy"`
 	// If a failure on startup, then go to failover.
 	//FailoverPolicy RoutingPolicy `json:"failover-policy"`
