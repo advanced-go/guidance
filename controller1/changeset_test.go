@@ -21,7 +21,7 @@ var (
 			},
 		},
 		Ingress: IngressChangeset{
-			Insert: []IngressChange{
+			Update: []IngressChange{
 				{
 					RouteName:        "google-search",
 					RedirectLocation: "location",
@@ -29,30 +29,6 @@ var (
 			},
 		},
 	}
-	/*
-		set = Changset{
-			Authority: AuthorityChangeset{
-				Insert{
-				Name: "github/advanced-go/observation",
-				Version: "2.3.2",
-				Role: "primary",
-				},
-			},
-			Ingress:   []IngressChangset{
-				{
-					RouteName: "host",
-					RateLimiting: true,
-				},
-			},
-			Egress:    []EgressChangset {
-				{
-					RouteName: "google-search",
-					RateLimiting: true,
-				}
-			},
-		}
-
-	*/
 )
 
 func ExampleChangeset_Marshal() {

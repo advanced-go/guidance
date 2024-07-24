@@ -9,14 +9,6 @@ import "time"
 // Cloud would need to know to stop failover.
 // When the temporary
 
-// Issues, questions, and decisions.
-// Where does routing matching go? Client or Cloud?
-// Can static configurations go on the client?? YES
-// On startup, the default host names need to be downloaded to client and a notification needs to be
-// sent to the appropriate Case officer to configure the Egress agents.
-//  - What if agent is in a dynamic routing change? Is there any state that should be saved??
-//  - What if agent is in a failover state? Should be OK to restart. State can be lost.
-
 // EgressController -
 // Cardinality - n
 // Access - EgressAgent
@@ -28,53 +20,16 @@ type EgressController struct {
 	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"` // Auditing
 
-	RedirectLocation  string `json:"redirect-location"`
-	FailoverScope     string `json:"failover-scope"`
-	FailoverThreshold int    `json:"failover-threshold"`
-
-	// Need some cost metrics to determine when to route to a secondary?
-	// Can this be user configurable??
-	// Is there a need to configure host selection based on whether this is on startup/new pod
-	// vs failover??
-	// Can this be handled by Authority role? Startup only filters by role and returns all regions.
-	// dynamic routing picks the closest one.
-	//Authority        string `json:"authority"` // github/advanced-go/observation: provider/account/repository
-	//AuthorityVersion string `json:"authority-version"`
-
-	// Templates for host selection, "local" is valid as is "*". Blank does not include.
-	// Only used for failover
-	//RegionT  string `json:"region-t"`
-	//ZoneT    string `json:"zone-t"`
-	//SubZoneT string `json:"sub-zone-t"`
-}
-
-/*
-// EgressRoutePolicy - provides static and dynamic routing configuration + processing for egress routing
-// These are always inserted with a date. Never updated
-type EgressRoutePolicy struct {
-	EntryId   int       `json:"entry-id"`   // How to refer to the main entry
-	VersionId string    `json:"version-id"` // How to version this artifact
-	RouteName string    `json:"route-name"`
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"` // Auditing
+	RedirectLocation string `json:"redirect-location"`
+	// Is there a need for a list of secondary authorities??
+	FailoverScope string `json:"failover-scope"` // SubZone, Zone, Region, *, empty or none -> not configured
+	// FailureThreshold - when routing changes occur.
+	// Value == -1 -> let system determine
+	// Value == 0  -> no threshold, failover immediately
+	// Value > 0   -> failover when threshold is met
+	FailoverThreshold int `json:"failover-threshold"`
 
 	// Need some cost metrics to determine when to route to a secondary?
 	// Can this be user configurable??
 
-	// Is there a need to configure host selection based on whether this is on startup/new pod
-	// vs failover??
-	// Can this be handled by Authority role? Startup only filters by role and returns all regions.
-	// dynamic routing picks the closest one.
-
-	Authority        string `json:"authority"` // github/advanced-go/observation: provider/account/repository
-	AuthorityVersion string `json:"authority-version"`
-
-	// Templates for host selection, "local" is valid as is "*". Blank does not include.
-	// Only used for failover
-	RegionT  string `json:"region-t"`
-	ZoneT    string `json:"zone-t"`
-	SubZoneT string `json:"sub-zone-t"`
 }
-
-
-*/
