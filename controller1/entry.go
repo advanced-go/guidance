@@ -49,15 +49,15 @@ type Entry struct {
 	//IngressRateLimiting bool `json:"ingress-rate-limiting"`
 
 	// Processing schedule - no rollback, only auditing via CDC
-	ProcessingScheduleId string `json:"processing-schedule-id"`
+	//ProcessingScheduleId string `json:"processing-schedule-id"`
 
 	// Dependency management - schedule and toggle, no rollback, only auditing via CDC
-	DependencyUpdates    bool   `json:"dependency-updates"`
-	DependencyScheduleId string `json:"dependency-schedule-id"`
+	//DependencyUpdates    bool   `json:"dependency-updates"`
+	//DependencyScheduleId string `json:"dependency-schedule-id"`
 
 	// Notifications
-	Email string
-	Slack string
+	//Email string
+	//Slack string
 }
 
 func (e Entry) Origin() core.Origin {

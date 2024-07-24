@@ -13,12 +13,12 @@ type Client struct {
 }
 
 type CloudIngress struct {
-	RedirectAuthority string `json:"authority"` // github/advanced-go/observation: provider/account/repository
+	RedirectAuthority string `json:"redirect-authority"` // github/advanced-go/observation: provider/account/repository
 }
 
 type CloudEgress struct {
 	RouteName         string `json:"route-name"`
-	Authority         string `json:"authority"` // github/advanced-go/observation: provider/account/repository
+	RedirectAuthority string `json:"redirect-authority"` // github/advanced-go/observation: provider/account/repository
 	FailoverScope     string `json:"failover-scope"`
 	FailoverThreshold int    `json:"failover-threshold"`
 }
@@ -30,7 +30,8 @@ type Config struct {
 }
 
 type Case struct {
-	Desc   string `json:"desc"`
-	Client Client `json:"client"`
-	//InCloud  Cloud  `json:"cloud"`
+	Desc    string       `json:"desc"`
+	Client  Client       `json:"client"`
+	Ingress CloudIngress `json:"ingress"`
+	Egress  CloudEgress  `json:"egress"`
 }

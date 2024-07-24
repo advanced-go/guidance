@@ -22,15 +22,21 @@ type AuthorityChangeset struct {
 	Delete []AuthorityChange `json:"delete"`
 }
 
+type IngressChange struct {
+	RouteName        string `json:"route"`
+	RedirectLocation string `json:"redirect-location"` // github/advanced-go/observation: provider/account/repository
+}
+
+type IngressChangeset struct {
+	Insert []IngressChange `json:"insert"`
+	Update []IngressChange `json:"update"`
+	Delete []IngressChange `json:"delete"`
+}
+
 type EgressChange struct {
-	RouteName    string `json:"route"`
-	RateLimiting bool   `json:"rate-limiting"`
-	RegionT      string `json:"region-t"`
-	ZoneT        string `json:"zone-t"`
-	SubZoneT     string `json:"sub-zone-t"`
-	HostT        string `json:"host-t"`
-	Authority    string `json:"authority"` // github/advanced-go/observation: provider/account/repository
-	Version      string `json:"version"`
+	RouteName         string `json:"route"`
+	FailoverScope     string `json:"failover-scope"`
+	FailoverThreshold int    `json:"failover-threshold"`
 }
 
 type EgressChangeset struct {
@@ -42,9 +48,10 @@ type EgressChangeset struct {
 type Changeset struct {
 	Version string `json:"version"`
 	// Do we need both? Can we only use a changeset id??
-	ChangesetId string             `json:"changeset-id"`
-	Origin      core.Origin        `json:"origin"`
-	Processing  ProcessingUpdate   `json:"processing-update"`
-	Authority   AuthorityChangeset `json:"authority-changeset"`
-	Egress      EgressChangeset    `json:"egress-changeset"`
+	ChangesetId string      `json:"changeset-id"`
+	Origin      core.Origin `json:"origin"`
+	//Processing  ProcessingUpdate   `json:"processing-update"`
+	//Authority   AuthorityChangeset `json:"authority-changeset"`
+	Ingress IngressChangeset `json:"ingress-changeset"`
+	Egress  EgressChangeset  `json:"egress-changeset"`
 }

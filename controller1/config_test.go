@@ -16,7 +16,13 @@ var (
 		},
 			Timeout: 0,
 		},
-		Cloud: Cloud{RateLimiting: false},
+		Ingress: CloudIngress{RedirectAuthority: "redirect"},
+		Egress: CloudEgress{
+			RouteName:         "google-search",
+			RedirectAuthority: "",
+			FailoverScope:     "region",
+			FailoverThreshold: 0,
+		},
 	}
 
 	case2 = Case{
@@ -25,11 +31,11 @@ var (
 			Path:      "/test/search?q=golang",
 			Template:  "{path}",
 			Authority: "https://www.google.com",
-			Route:     "google-search",
+			RouteName: "google-search",
 		},
 			Timeout: 3000,
 		},
-		Cloud: Cloud{RateLimiting: true},
+		//	Cloud: Cloud{RateLimiting: true},
 	}
 
 	case3 = Case{
@@ -38,17 +44,14 @@ var (
 			Path:      "/test/search?q=golang",
 			Template:  "{path}",
 			Authority: "https://www.google.com",
-			Route:     "google-search",
+			RouteName: "google-search",
 		},
 			Timeout: 3000,
 		},
-		Cloud: Cloud{
-			RateLimiting: true,
-			RegionT:      "us-central1",
-			ZoneT:        "a",
-			SubZoneT:     "",
-			HostT:        "google.com",
-		},
+		//Cloud: Cloud{
+		//	RateLimiting: true,
+		//
+		//},
 	}
 
 	case4 = Case{
@@ -57,18 +60,9 @@ var (
 			Path:      "/test/search?q=golang",
 			Template:  "{path}",
 			Authority: "https://www.google.com",
-			Route:     "google-search",
+			RouteName: "google-search",
 		},
 			Timeout: 3000,
-		},
-		Cloud: Cloud{
-			RateLimiting:     true,
-			RegionT:          "us-central1",
-			ZoneT:            "a",
-			SubZoneT:         "",
-			HostT:            "google.com",
-			Authority:        "github/advanced-go/observation",
-			AuthorityVersion: "2.3.*",
 		},
 	}
 )

@@ -36,9 +36,11 @@ type IngressController struct {
 	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"` // Auditing
 
-	// How to do redirects??
-	RedirectAuthority string // Where to redirect to. How to determine origin. Should be same origin
-	ReplyTo           string `json:"reply-to"` // Needed for monitoring redirect. If the failure rate gets too high
+	// How to do redirects?? Send a 308 with a location header
+	RedirectLocation string `json:"redirect-location"`
+	Percent          int    `json:"percent"` //Used during redirection routing
+	// Where to redirect to. How to determine origin. Should be same origin
+	//ReplyTo           string `json:"reply-to"` // Needed for monitoring redirect. If the failure rate gets too high
 	// then use the reply to and send a reply
 	// Step percentage determined by cloud.
 	// Send temporary redirects on startup,
