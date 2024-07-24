@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/observation/controller1"
+	PkgPath = "github/advanced-go/guidance/controller1"
 )
 
 // Get - resource GET
@@ -35,6 +35,10 @@ func Put(r *http.Request, body []Entry) *core.Status {
 	return core.StatusOK() //put[core.Log](r.Context(), core.AddRequestId(r.Header), inferenceResource, "", body, nil)
 }
 
-func Query(ctx context.Context, origin core.Origin) ([]Rowset, *core.Status) {
+func IngressQuery(ctx context.Context, origin core.Origin) ([]Rowset, *core.Status) {
+	return []Rowset{}, core.StatusOK()
+}
+
+func EgressQuery(ctx context.Context, origin core.Origin) ([]Rowset, *core.Status) {
 	return []Rowset{}, core.StatusOK()
 }

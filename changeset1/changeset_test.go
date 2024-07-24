@@ -1,4 +1,4 @@
-package controller1
+package changeset1
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ var (
 		Ingress: IngressChangeset{
 			Update: []IngressChange{
 				{
-					RouteName:        "google-search",
-					RedirectLocation: "location",
+					RouteName: "google-search",
+					Location:  "location",
 				},
 			},
 		},

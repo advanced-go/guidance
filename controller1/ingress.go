@@ -11,8 +11,10 @@ type IngressController struct {
 	AgentId   string    `json:"agent-id"` // Auditing
 
 	// How to do redirects?? Send a 308 with a location header
-	RedirectLocation string `json:"redirect-location"`
+	Location string `json:"location"` // Redirect location
 	// Where to redirect to. How to determine origin. Should be same origin
 	// Step percentage determined by cloud.
+	// Need this status to determine on client startup whether all traffic should be redirected.
+	Status string `json:"status"` // Completed, failed, may be processing??
 
 }

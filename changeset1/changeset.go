@@ -1,10 +1,11 @@
-package controller1
+package changeset1
 
 import "github.com/advanced-go/stdlib/core"
 
 type IngressChange struct {
-	RouteName        string `json:"route"`
-	RedirectLocation any    `json:"redirect-location"` // github/advanced-go/observation: provider/account/repository
+	RouteName string `json:"route"`
+	Location  any    `json:"location"` // github/advanced-go/observation: provider/account/repository
+	Status    any    `json:"status"`
 }
 
 type IngressChangeset struct {
@@ -13,6 +14,7 @@ type IngressChangeset struct {
 
 type EgressChange struct {
 	RouteName         string `json:"route"`
+	Location          any    `json:"location"` // github/advanced-go/observation: provider/account/repository
 	FailoverScope     any    `json:"failover-scope"`
 	FailoverThreshold any    `json:"failover-threshold"`
 }

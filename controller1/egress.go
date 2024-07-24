@@ -20,8 +20,10 @@ type EgressController struct {
 	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"` // Auditing
 
-	RedirectLocation string `json:"redirect-location"`
+	Location string `json:"location"` // Redirect location
 	// Is there a need for a list of secondary authorities??
+	// Or maybe some sort of authority template if the authority name changes between scopes
+	// AutuhorityT  - authority template
 	FailoverScope string `json:"failover-scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	// FailureThreshold - when routing changes occur.
 	// Value == -1 -> let system determine
