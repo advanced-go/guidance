@@ -9,14 +9,15 @@ import (
 )
 
 const (
-	EntryIdName   = "entry_id"
-	CreatedTSName = "created_ts"
-	UpdatedTSName = "updated_ts"
-	RegionName    = "region"
-	ZoneName      = "zone"
-	SubZoneName   = "sub_zone"
-	HostName      = "host"
-	VersionName   = "version"
+	EntryIdName        = "entry_id"
+	CreatedTSName      = "created_ts"
+	UpdatedTSName      = "updated_ts"
+	RegionName         = "region"
+	ZoneName           = "zone"
+	SubZoneName        = "sub_zone"
+	HostName           = "host"
+	IngressVersionName = "ingress_version"
+	EgressVersionName  = "egress_version"
 )
 
 var (
@@ -43,7 +44,8 @@ type Entry struct {
 	//UpdatedTS time.Time `json:"updated-ts"` this is in CDC
 
 	// Current version - auditing via CDC
-	Version string `json:"version"`
+	IngressVersion string `json:"ingress-version"`
+	EgressVersion  string `json:"egress-version"`
 }
 
 func (e Entry) Origin() core.Origin {
@@ -67,8 +69,10 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.SubZone = values[i].(string)
 		case HostName:
 			e.Host = values[i].(string)
-		case VersionName:
-			e.Version = values[i].(string)
+		case IngressVersionName:
+			e.IngressVersion = values[i].(string)
+		case EgressVersionName:
+			e.EgressVersion = values[i].(string)
 
 		default:
 			err = errors.New(fmt.Sprintf("invalid field name: %v", name))
@@ -86,7 +90,8 @@ func (e Entry) Values() []any {
 		e.Zone,
 		e.SubZone,
 		e.Host,
-		e.Version,
+		e.IngressVersion,
+		e.EgressVersion,
 	}
 }
 
