@@ -9,10 +9,10 @@ const (
 	PkgPath = "github/advanced-go/guidance/update1"
 )
 
-func IngressUpdateRedirect(ctx context.Context, origin core.Origin, status string) *core.Status {
+func IngressRedirect(ctx context.Context, origin core.Origin, status string) *core.Status {
 	return core.StatusOK()
 }
 
-func EgressUpdateRedirect(ctx context.Context, origin core.Origin, location string) *core.Status {
+func EgressRedirect(ctx context.Context, origin core.Origin, location string) *core.Status {
 	return core.StatusOK()
 }
