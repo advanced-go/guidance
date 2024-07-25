@@ -35,10 +35,10 @@ func Put(r *http.Request, body []Entry) *core.Status {
 	return core.StatusOK() //put[core.Log](r.Context(), core.AddRequestId(r.Header), inferenceResource, "", body, nil)
 }
 
-func IngressQuery(ctx context.Context, origin core.Origin) ([]Rowset, *core.Status) {
-	return []Rowset{}, core.StatusOK()
+func IngressQuery(ctx context.Context, origin core.Origin) ([]Ingress, *core.Status) {
+	return []Ingress{}, core.StatusOK()
 }
 
-func EgressQuery(ctx context.Context, origin core.Origin) ([]Rowset, *core.Status) {
-	return []Rowset{}, core.StatusOK()
+func EgressQuery(ctx context.Context, origin core.Origin) ([]Egress, *core.Status) {
+	return []Egress{}, core.StatusOK()
 }

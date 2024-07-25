@@ -9,11 +9,11 @@ import "time"
 // Cloud would need to know to stop failover.
 // When the temporary
 
-// EgressController -
+// Egress -
 // Cardinality - n
 // Access - EgressAgent
 // Update - User Changeset
-type EgressController struct {
+type Egress struct {
 	EntryId   int       `json:"entry-id"`   // How to refer to the main entry
 	VersionId string    `json:"version-id"` // How to version this artifact
 	RouteName string    `json:"route-name"`

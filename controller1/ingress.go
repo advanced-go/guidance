@@ -4,7 +4,7 @@ import "time"
 
 // Issues, questions, and decisions.
 
-type IngressController struct {
+type Ingress struct {
 	EntryId   int       `json:"entry-id"`   // How to refer to the main entry
 	VersionId string    `json:"version-id"` // How to version this artifact
 	CreatedTS time.Time `json:"created-ts"`
