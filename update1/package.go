@@ -1,4 +1,4 @@
-package changeset1
+package update1
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/guidance/changeset1"
+	PkgPath = "github/advanced-go/guidance/update1"
 )
 
 func IngressUpdateRedirect(ctx context.Context, origin core.Origin, status string) *core.Status {

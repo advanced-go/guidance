@@ -1,4 +1,4 @@
-package changeset1
+package update1
 
 import (
 	"fmt"
