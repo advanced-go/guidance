@@ -43,6 +43,6 @@ func EgressControllers(ctx context.Context, origin core.Origin) ([]Egress, *core
 	return []Egress{}, core.StatusOK()
 }
 
-func Versions(ctx context.Context, origin core.Origin) (egress, ingress string, status *core.Status) {
-	return "", "", core.StatusOK()
+func Version(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+	return Entry{}, core.StatusOK()
 }

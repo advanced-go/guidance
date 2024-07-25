@@ -40,8 +40,10 @@ type Entry struct {
 	SubZone   string    `json:"sub-zone"`
 	Host      string    `json:"host"`
 	CreatedTS time.Time `json:"created-ts"`
-	Status    string    `json:"status"` // Active, inactive, deleted?
-	//UpdatedTS time.Time `json:"updated-ts"` this is in CDC
+	UpdatedTS time.Time `json:"updated-ts"` // Used to optimize restarts
+
+	// Status - Active, Inactive, Removed. Is this needed??
+	Status string `json:"status"`
 
 	// Current version - auditing via CDC
 	IngressVersion string `json:"ingress-version"`
