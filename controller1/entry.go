@@ -50,6 +50,10 @@ type Entry struct {
 	EgressVersion  string `json:"egress-version"`
 }
 
+func (e Entry) IsEmpty() bool {
+	return e.EntryId <= 0
+}
+
 func (e Entry) Origin() core.Origin {
 	return core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
 }

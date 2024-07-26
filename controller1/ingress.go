@@ -18,3 +18,15 @@ type Ingress struct {
 	Status string `json:"status"` // Completed, failed, may be processing??
 
 }
+
+func (i Ingress) IsEmpty() bool {
+	return i.EntryId <= 0
+}
+
+func (i Ingress) IsRedirect() bool {
+	return i.Location != ""
+}
+
+func (i Ingress) InProcess() bool {
+	return i.IsRedirect() && i.Status == ""
+}

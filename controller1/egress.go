@@ -35,3 +35,15 @@ type Egress struct {
 	// Can this be user configurable??
 
 }
+
+func (e Egress) IsEmpty() bool {
+	return e.EntryId <= 0
+}
+
+func (e Egress) IsRedirect() bool {
+	return e.Location != ""
+}
+
+func (e Egress) IsFailover() bool {
+	return e.FailoverScope != ""
+}
