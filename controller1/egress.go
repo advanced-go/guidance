@@ -20,16 +20,16 @@ type Egress struct {
 	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"` // Auditing
 
-	Location string `json:"location"` // Redirect location
+	//Location string `json:"location"` // Redirect location
 	// Is there a need for a list of secondary authorities??
 	// Or maybe some sort of authority template if the authority name changes between scopes
 	// AutuhorityT  - authority template
-	FailoverScope string `json:"failover-scope"` // SubZone, Zone, Region, *, empty or none -> not configured
+	RoutingScope string `json:"failover-scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	// FailureThreshold - when routing changes occur.
 	// Value == -1 -> let system determine
 	// Value == 0  -> no threshold, failover immediately
 	// Value > 0   -> failover when threshold is met
-	FailoverThreshold int `json:"failover-threshold"`
+	RoutingThreshold int `json:"failover-threshold"`
 
 	// Need some cost metrics to determine when to route to a secondary?
 	// Can this be user configurable??
@@ -40,10 +40,6 @@ func (e Egress) IsEmpty() bool {
 	return e.EntryId <= 0
 }
 
-func (e Egress) IsRedirect() bool {
-	return e.Location != ""
-}
-
 func (e Egress) IsFailover() bool {
-	return e.FailoverScope != ""
+	return e.RoutingScope != ""
 }

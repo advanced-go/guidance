@@ -28,8 +28,8 @@ const (
 var (
 	//safeEntry = common.NewSafe()
 	entryData = []Entry{
-		{Region: "us-west1", Zone: "a", Host: "www.host1.com", AgentId: "agent-id", RouteName: "host", Details: "information", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{Region: "us-west1", Zone: "a", Host: "www.host2.com", AgentId: "agent-id", RouteName: "host", Details: "text", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{Region: "us-west1", Zone: "a", Host: "www.host1.com", AgentId: "agent-id", RouteName: "host", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{Region: "us-west1", Zone: "a", Host: "www.host2.com", AgentId: "agent-id", RouteName: "host", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -43,32 +43,17 @@ type Entry struct {
 
 	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"`
-
-	// RateLimiting
-	Limit float64
-	Burst int
-
-	// Routing
-	Primary    string
-	Secondary  string // Location for ingress
-	Percentage int
-	//Code       string
-
-	// Redirect
-
-	// Details + action
-	Details string `json:"details"`
-	Action  string `json:"action"`
 }
 
 type RateLimitingEntry struct {
-	Region    string    `json:"region"`
-	Zone      string    `json:"zone"`
-	SubZone   string    `json:"sub-zone"`
-	Host      string    `json:"host"`
-	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"`
+	InferenceId int       `json:"inference-id"`
+	Region      string    `json:"region"`
+	Zone        string    `json:"zone"`
+	SubZone     string    `json:"sub-zone"`
+	Host        string    `json:"host"`
+	RouteName   string    `json:"route"`
+	CreatedTS   time.Time `json:"created-ts"`
+	AgentId     string    `json:"agent-id"`
 
 	// Need to represent 2 states:
 	// 1. Nil or not configured - both values == -1
@@ -78,32 +63,32 @@ type RateLimitingEntry struct {
 }
 
 type RoutingEntry struct {
-	Region    string    `json:"region"`
-	Zone      string    `json:"zone"`
-	SubZone   string    `json:"sub-zone"`
-	Host      string    `json:"host"`
-	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"`
+	InferenceId int       `json:"inference-id"`
+	Region      string    `json:"region"`
+	Zone        string    `json:"zone"`
+	SubZone     string    `json:"sub-zone"`
+	Host        string    `json:"host"`
+	RouteName   string    `json:"route"`
+	CreatedTS   time.Time `json:"created-ts"`
+	AgentId     string    `json:"agent-id"`
 
 	Location   string `json:"location"`
 	Percentage int    `json:"percentage"`
-	// Need to determine how to represent 3 states:
-	// 1. Nil or not configured - location - empty, percentage = -1, code = empty
-	// 2. Re-routing in progress
-	// 3. Permanent redirect
-	//Code       string `json:"code"` // Can this be used as "RD" for pre redirect, and the
+	// Need to determine how to represent 2 states:
+	// 1. Nil or not configured - location - empty, percentage = -1
+	// 2. Re-routing in progress - location valid, percentage >= 0
 }
 
 // RedirectEntry - applies for both ingress and egress
 type RedirectEntry struct {
-	Region    string    `json:"region"`
-	Zone      string    `json:"zone"`
-	SubZone   string    `json:"sub-zone"`
-	Host      string    `json:"host"`
-	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"`
+	InferenceId int       `json:"inference-id"`
+	Region      string    `json:"region"`
+	Zone        string    `json:"zone"`
+	SubZone     string    `json:"sub-zone"`
+	Host        string    `json:"host"`
+	RouteName   string    `json:"route"`
+	CreatedTS   time.Time `json:"created-ts"`
+	AgentId     string    `json:"agent-id"`
 
 	Location   string `json:"location"`
 	StatusCode string `json:"status-code"` // Only for ingress

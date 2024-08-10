@@ -1,0 +1,10 @@
+{
+  "redirect":{
+    "location":"www.location.com",
+    "status":"in-process"
+  },
+  "routing":{
+    "scope":"region",
+    "threshold":10
+  }
+}
