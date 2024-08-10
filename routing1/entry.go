@@ -1,8 +1,11 @@
-package controller1
+package routing1
 
 import (
 	"time"
 )
+
+// TODO : how to replicate these changes for the same host in different regions, zones, sub-zones
+// Maybe allow the origin to be only the host??
 
 const (
 	EntryIdName        = "entry_id"
@@ -36,27 +39,11 @@ type Entry struct {
 	SubZone   string    `json:"sub-zone"`
 	Host      string    `json:"host"`
 	CreatedTS time.Time `json:"created-ts"`
-	UpdatedTS time.Time `json:"updated-ts"` // Used to optimize restarts
-
-	// Status - Active, Inactive, Removed. Is this needed??
-	Status string `json:"status"`
-
-	// Current version - auditing via CDC
-	IngressVersion string `json:"ingress-version"`
-	EgressVersion  string `json:"egress-version"`
-}
-
-// ControllerDetail - host, utilize semantic versioning
-type ControllerDetail struct {
-	EntryId   int       `json:"entry-id"`
-	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"`
-	Config    string    `json:"config"`
 }
 
-// ActionDetail - host, utilize semantic versioning
-type ActionDetail struct {
+// Detail - not used
+type Detail struct {
 	EntryId   int       `json:"entry-id"`
 	RouteName string    `json:"route"`
 	CreatedTS time.Time `json:"created-ts"`

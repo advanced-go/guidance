@@ -1,4 +1,4 @@
-package controller1
+package action1
 
 import (
 	"fmt"
