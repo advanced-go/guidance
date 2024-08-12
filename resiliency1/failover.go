@@ -11,8 +11,8 @@ import "time"
 type Failover struct {
 	EntryId   int       `json:"entry-id"`
 	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"`
+	CreatedTS time.Time `json:"created-ts"`
 	Scope     string    `json:"scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	Threshold int       `json:"threshold"`
 }

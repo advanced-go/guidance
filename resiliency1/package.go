@@ -49,6 +49,14 @@ func IngressRedirect(ctx context.Context, origin core.Origin) (Redirect, *core.S
 	return Redirect{}, core.StatusOK()
 }
 
+func IngressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
+	return []CDCEntry{}, core.StatusOK()
+}
+
 func EgressFailover(ctx context.Context, origin core.Origin) ([]Failover, *core.Status) {
 	return []Failover{}, core.StatusOK()
+}
+
+func EgressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
+	return []CDCEntry{}, core.StatusOK()
 }

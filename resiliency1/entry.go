@@ -22,8 +22,8 @@ const (
 var (
 	//safeEntry = common.NewSafe()
 	entryData = []Entry{
-		{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		//{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		//{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -32,17 +32,18 @@ func lastEntry() Entry {
 }
 
 // Entry - host, utilize semantic versioning
+// Region    string    `json:"region"`
+// Zone      string    `json:"zone"`
+// SubZone   string    `json:"sub-zone"`
 type Entry struct {
 	EntryId   int       `json:"entry-id"`
-	Region    string    `json:"region"`
-	Zone      string    `json:"zone"`
-	SubZone   string    `json:"sub-zone"`
 	Host      string    `json:"host"`
-	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"`
+	CreatedTS time.Time `json:"created-ts"`
 }
 
 // Detail - not used
+/*
 type Detail struct {
 	EntryId   int       `json:"entry-id"`
 	RouteName string    `json:"route"`
@@ -50,3 +51,6 @@ type Detail struct {
 	AgentId   string    `json:"agent-id"`
 	Config    string    `json:"config"`
 }
+
+
+*/

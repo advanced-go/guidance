@@ -7,8 +7,8 @@ import "time"
 type Redirect struct {
 	EntryId   int       `json:"entry-id"`
 	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
 	AgentId   string    `json:"agent-id"`
+	CreatedTS time.Time `json:"created-ts"`
 	Location  string    `json:"location"`
 	Status    string    `json:"status"` // Scheduled,In-Progress,Completed,Failed
 }
