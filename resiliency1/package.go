@@ -1,4 +1,4 @@
-package routing1
+package resiliency1
 
 import (
 	"context"
@@ -6,14 +6,16 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
+	"time"
 )
 
 const (
-	PkgPath                  = "github/advanced-go/guidance/routing1"
-	RedirectStatusScheduled  = "scheduled"
-	RedirectStatusInProgress = "in-progress"
-	RedirectStatusSucceeded  = "succeeded"
-	RedirectStatusFailed     = "failed"
+	PkgPath                   = "github/advanced-go/guidance/resiliency1"
+	PercentilePollingDuration = time.Hour * 12
+	RedirectStatusScheduled   = "scheduled"
+	RedirectStatusInProgress  = "in-progress"
+	RedirectStatusSucceeded   = "succeeded"
+	RedirectStatusFailed      = "failed"
 )
 
 // Really only need a put
@@ -39,10 +41,14 @@ func AddRedirectStatus(ctx context.Context, origin core.Origin, status string) *
 	return core.StatusOK()
 }
 
-func Ingress(ctx context.Context, origin core.Origin) (Redirect, *core.Status) {
+func IngressPercentile(ctx context.Context, origin core.Origin) (Percentile, *core.Status) {
+	return Percentile{}, core.StatusOK()
+}
+
+func IngressRedirect(ctx context.Context, origin core.Origin) (Redirect, *core.Status) {
 	return Redirect{}, core.StatusOK()
 }
 
-func Egress(ctx context.Context, origin core.Origin) ([]Failover, *core.Status) {
+func EgressFailover(ctx context.Context, origin core.Origin) ([]Failover, *core.Status) {
 	return []Failover{}, core.StatusOK()
 }

@@ -1,4 +1,4 @@
-package percentile1
+package resiliency1
 
 import (
 	"fmt"
