@@ -34,6 +34,7 @@ func lastEntry() Entry {
 // Entry - host, utilize semantic versioning
 // This needs to be updated every time a host starts up. Detail data needs to find the Entry based on the
 // host name = entry detail key
+// Need distinct constraint on: region+zone+subzone+host
 type Entry struct {
 	EntryId   int       `json:"entry-id"`
 	Region    string    `json:"region"`

@@ -53,12 +53,20 @@ func IngressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Stat
 	return []CDCEntry{}, core.StatusOK()
 }
 
+func IngressAssignment(ctx context.Context, origin core.Origin) ([]Assignment, *core.Status) {
+	return []Assignment{}, core.StatusOK()
+}
+
 func EgressFailover(ctx context.Context, origin core.Origin) ([]Failover, *core.Status) {
 	return []Failover{}, core.StatusOK()
 }
 
 func EgressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
 	return []CDCEntry{}, core.StatusOK()
+}
+
+func EgressAssignment(ctx context.Context, origin core.Origin) ([]Assignment, *core.Status) {
+	return []Assignment{}, core.StatusOK()
 }
 
 func EntryQuery(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {

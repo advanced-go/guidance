@@ -3,10 +3,6 @@ package resiliency1
 import "time"
 
 // CDCEntry - resiliency changes
-// Region    string    `json:"region"`
-// Zone      string    `json:"zone"`
-// SubZone   string    `json:"sub-zone"`
-// Host      string    `json:"host"`
 type CDCEntry struct {
 	CDCEntryId int       `json:"cdc-entry-id"`
 	EntryId    int       `json:"entry-id"`
