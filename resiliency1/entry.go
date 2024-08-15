@@ -22,8 +22,8 @@ const (
 var (
 	//safeEntry = common.NewSafe()
 	entryData = []Entry{
-		//{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		//{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -45,16 +45,3 @@ type Entry struct {
 	Status    string    `json:"status"`     // active,in-active
 
 }
-
-// Detail - not used
-/*
-type Detail struct {
-	EntryId   int       `json:"entry-id"`
-	RouteName string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	AgentId   string    `json:"agent-id"`
-	Config    string    `json:"config"`
-}
-
-
-*/
