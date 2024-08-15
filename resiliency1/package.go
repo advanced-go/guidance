@@ -60,3 +60,7 @@ func EgressFailover(ctx context.Context, origin core.Origin) ([]Failover, *core.
 func EgressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
 	return []CDCEntry{}, core.StatusOK()
 }
+
+func EntryQuery(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
+}

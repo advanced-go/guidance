@@ -32,14 +32,20 @@ func lastEntry() Entry {
 }
 
 // Entry - host, utilize semantic versioning
+// This needs to be updated every time a host starts up.
 // Region    string    `json:"region"`
 // Zone      string    `json:"zone"`
 // SubZone   string    `json:"sub-zone"`
 type Entry struct {
 	EntryId   int       `json:"entry-id"`
+	Region    string    `json:"region"`
+	Zone      string    `json:"zone"`
+	SubZone   string    `json:"sub-zone"`
 	Host      string    `json:"host"`
-	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
+	DetailKey string    `json:"detail-key"` // How to query a detail entry, which is a part of the host
+	Status    string    `json:"status"`     // active,in-active
+
 }
 
 // Detail - not used
