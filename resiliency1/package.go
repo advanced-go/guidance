@@ -37,45 +37,63 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 	return nil, core.StatusOK() //put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 }
 
-// Actions
+// Actions - append only to maintain audit trail with inference
 
-// GetActions - retrieve the actions for an origin, containing a route name
+// GetActions - retrieve the latest ingress and egress actions for all of an origin's routes. This is called on
+// host startup.
 func GetActions(ctx context.Context, origin core.Origin) (Actions, *core.Status) {
 	return Actions{}, core.StatusOK()
 }
 
-// UpdateRateLimitingAction - insert/update a rate limiting action
-func UpdateRateLimitingAction(ctx context.Context, origin core.Origin, action *RateLimitingAction) *core.Status {
+// AddRateLimitingAction - add a rate limiting action
+func AddRateLimitingAction(ctx context.Context, origin core.Origin, action *RateLimitingAction) *core.Status {
 	return core.StatusOK()
 }
 
-// UpdateRoutingAction - insert/update a routing action
-func UpdateRoutingAction(ctx context.Context, origin core.Origin, action *RoutingAction) *core.Status {
+// AddRoutingAction - add a routing action
+func AddRoutingAction(ctx context.Context, origin core.Origin, action *RoutingAction) *core.Status {
 	return core.StatusOK()
 }
 
-// UpdateRedirectAction - insert/update a redirect action
-func UpdateRedirectAction(ctx context.Context, origin core.Origin, action *RedirectAction) *core.Status {
+// AddRedirectAction - add a redirect action
+func AddRedirectAction(ctx context.Context, origin core.Origin, action *RedirectAction) *core.Status {
 	return core.StatusOK()
 }
 
-// Plans
+// SLO's
 
 // GetPercentileSLO - retrieve the percentile SLO for an origin
 func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *core.Status) {
 	return PercentileSLO{}, core.StatusOK()
 }
 
+// Plans
+
+// GetRedirectPlan - retrieve the ingress redirect plan
 func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
 	return RedirectPlan{}, core.StatusOK()
 }
 
+// UpdateRedirectPlan - update the ingress redirect plan
 func UpdateRedirectPlan(ctx context.Context, origin core.Origin, status string) *core.Status {
 	return core.StatusOK()
 }
 
+// GetFailoverPlan - retrieve the route egress plan
 func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *core.Status) {
 	return []FailoverPlan{}, core.StatusOK()
+}
+
+// State
+
+// GetIngressState - retrieve the state needed to start the ingress redirect and resiliency agents
+func GetIngressState(ctx context.Context, origin core.Origin) (IngressState, *core.Status) {
+	return IngressState{}, core.StatusOK()
+}
+
+// GetEgressState - retrieve the state needed to start the egress resiliency agent
+func GetEgressState(ctx context.Context, origin core.Origin) ([]EgressState, *core.Status) {
+	return []EgressState{}, core.StatusOK()
 }
 
 // CDC
@@ -85,39 +103,12 @@ func GetEntryCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Sta
 	return []CDCEntry{}, core.StatusOK()
 }
 
-// GetRedirectCDC - retrieve RedirectPlan CDC
-func GetRedirectCDC(ctx context.Context, origin core.Origin) ([]CDCRedirect, *core.Status) {
+// GetRedirectPlanCDC - retrieve RedirectPlan CDC
+func GetRedirectPlanCDC(ctx context.Context, origin core.Origin) ([]CDCRedirect, *core.Status) {
 	return []CDCRedirect{}, core.StatusOK()
 }
 
-// GetFailoverCDC - retrieve FailoverPlan CDC
-func GetFailoverCDC(ctx context.Context, origin core.Origin) ([]CDCFailover, *core.Status) {
+// GetFailoverPlanCDC - retrieve FailoverPlan CDC
+func GetFailoverPlanCDC(ctx context.Context, origin core.Origin) ([]CDCFailover, *core.Status) {
 	return []CDCFailover{}, core.StatusOK()
 }
-
-/*
-
-func IngressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
-	return []CDCEntry{}, core.StatusOK()
-}
-
-func IngressAssignment(ctx context.Context, origin core.Origin, ts time.Time, changesOnly bool) ([]Assignment, *core.Status) {
-	return []Assignment{}, core.StatusOK()
-}
-
-
-
-func EgressCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
-	return []CDCEntry{}, core.StatusOK()
-}
-
-func EgressAssignment(ctx context.Context, origin core.Origin, ts time.Time, changesOnly bool) ([]Assignment, *core.Status) {
-	return []Assignment{}, core.StatusOK()
-}
-
-func EntryQuery(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
-}
-
-
-*/

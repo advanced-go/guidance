@@ -24,6 +24,7 @@ type RedirectPlan struct {
 	RouteName string    `json:"route"`
 	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
+	UpdatedTS time.Time `json:"updated-ts"`
 	Location  string    `json:"location"`
 	Status    string    `json:"status"` // Scheduled,In-Progress,Completed,Failed
 }
