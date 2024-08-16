@@ -2,8 +2,8 @@ package resiliency1
 
 type IngressState struct {
 	// Redirect plan
-	//Location  string    `json:"location"`
-	Status string `json:"status"` // Scheduled,In-Progress,Completed,Failed
+	Location string `json:"location"`
+	Status   string `json:"status"` // Scheduled,In-Progress,Completed,Failed
 
 	// Percentile SLO
 	Percent int `json:"percent"` // Used for latency, traffic, status codes, counter, profile
@@ -15,11 +15,12 @@ type IngressState struct {
 	Burst int     `json:"burst"`
 
 	// Routing action
-	Location   string `json:"location"`
-	Percentage int    `json:"percentage"`
+	Percentage int `json:"percentage"`
 }
 
 type EgressState struct {
+	RouteName string `json:"route"`
+	
 	// Failover plan
 	Scope     string `json:"scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	Threshold int    `json:"threshold"`

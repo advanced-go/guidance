@@ -60,7 +60,8 @@ func AddRedirectAction(ctx context.Context, origin core.Origin, action *Redirect
 	return core.StatusOK()
 }
 
-// SLO's
+// SLO
+// Percentile SLOs are system generated and only need to be retrieved on a sceduled basis.
 
 // GetPercentileSLO - retrieve the percentile SLO for an origin
 func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *core.Status) {
@@ -68,6 +69,8 @@ func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *
 }
 
 // Plans
+// Redirect update only as the previous redirect is not needed??
+// Failover update only
 
 // GetRedirectPlan - retrieve the ingress redirect plan
 func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
