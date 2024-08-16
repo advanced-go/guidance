@@ -2,9 +2,9 @@ package resiliency1
 
 import "time"
 
-// Percentile - percentile config
+// PercentileSLO - percentile config
 // TODO : need to add CDC to this table for Agent data change notifications.
-type Percentile struct {
+type PercentileSLO struct {
 	EntryId   int       `json:"entry-id"`
 	RouteName string    `json:"route"`
 	AgentId   string    `json:"agent-id"`
