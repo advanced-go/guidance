@@ -92,9 +92,9 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 // NewIngressRedirectState - initialize
 func NewIngressRedirectState() *IngressRedirectState {
 	s := new(IngressRedirectState)
-	s.Percent = -1
-	s.Latency = -1
-	s.Minimum = -1
+	s.Percent = DefaultPercentileSLO.Percent
+	s.Latency = DefaultPercentileSLO.Latency
+	s.Minimum = DefaultPercentileSLO.Minimum
 	s.Percentage = -1
 	return s
 }
@@ -107,9 +107,9 @@ func GetIngressRedirectState(ctx context.Context, origin core.Origin) (*IngressR
 // NewIngressResiliencyState - initialize
 func NewIngressResiliencyState() *IngressResiliencyState {
 	s := new(IngressResiliencyState)
-	s.Percent = -1
-	s.Latency = -1
-	s.Minimum = -1
+	s.Percent = DefaultPercentileSLO.Percent
+	s.Latency = DefaultPercentileSLO.Latency
+	s.Minimum = DefaultPercentileSLO.Minimum
 	return s
 }
 

@@ -2,6 +2,10 @@ package resiliency1
 
 import "time"
 
+var (
+	DefaultPercentileSLO = &PercentileSLO{Percent: 99, Latency: 2000, Minimum: 100}
+)
+
 // PercentileSLO - percentile config
 // TODO : need to add CDC to this table for Agent data change notifications.
 type PercentileSLO struct {
