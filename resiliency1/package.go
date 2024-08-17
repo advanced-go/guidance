@@ -89,9 +89,14 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 
 // State
 
-// GetIngressState - retrieve the state needed to start the ingress redirect and resiliency agents
-func GetIngressState(ctx context.Context, origin core.Origin) (IngressState, *core.Status) {
-	return IngressState{}, core.StatusOK()
+// GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
+func GetIngressRedirectState(ctx context.Context, origin core.Origin) (IngressRedirectState, *core.Status) {
+	return IngressRedirectState{}, core.StatusOK()
+}
+
+// GetIngressResiliencyState - retrieve the state needed to start the ingress resiliency agent
+func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (IngressResiliencyState, *core.Status) {
+	return IngressResiliencyState{}, core.StatusOK()
 }
 
 // GetEgressState - retrieve the state needed to start the egress resiliency agent
