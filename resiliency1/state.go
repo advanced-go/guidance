@@ -8,7 +8,7 @@ type IngressRedirectState struct {
 	// Percentile SLO
 	Percent int `json:"percent"` // Used for latency, traffic, status codes, counter, profile
 	Latency int `json:"latency"` // Used for latency, saturation duration or traffic
-	Minimum int `json:"minimum"` // Used for status codes to attenuate underflow, applied to the window interval
+	Minimum int `json:"minimum"` // Used for status codes to attenuate underflow, applied to the window interva
 
 	// Routing action
 	Percentage int `json:"percentage"`
@@ -21,7 +21,7 @@ type IngressResiliencyState struct {
 	// Percentile SLO
 	Percent int `json:"percent"` // Used for latency, traffic, status codes, counter, profile
 	Latency int `json:"latency"` // Used for latency, saturation duration or traffic
-	Minimum int `json:"minimum"` // Used for status codes to attenuate underflow, applied to the window interval
+	Minimum int `json:"minimum"` // Used for status codes to attenuate underflow, applied to the window interva
 
 	// Rate Limiting action
 	Limit float64 `json:"limit"`
