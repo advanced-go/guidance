@@ -14,6 +14,9 @@ type IngressRedirectState struct {
 	Percentage int `json:"percentage"`
 }
 
+func (r *IngressRedirectState) IsActive() bool     { return r.Percentage != -1 }
+func (r *IngressRedirectState) IsConfigured() bool { return r.Location != "" }
+
 type IngressResiliencyState struct {
 	// Percentile SLO
 	Percent int `json:"percent"` // Used for latency, traffic, status codes, counter, profile
@@ -24,6 +27,11 @@ type IngressResiliencyState struct {
 	Limit float64 `json:"limit"`
 	Burst int     `json:"burst"`
 }
+
+// No IsConfigured() as ingress resiliency is automatic without needing a plan
+
+// IsActive - active
+func (r *IngressResiliencyState) IsActive() bool { return r.Limit == -1 }
 
 type EgressState struct {
 	RouteName string `json:"route"`
@@ -40,3 +48,7 @@ type EgressState struct {
 	Location   string `json:"location"`
 	Percentage int    `json:"percentage"`
 }
+
+func (r *EgressState) IsRateLimitingActive() bool { return r.Limit != -1 }
+func (r *EgressState) IsRoutingActive() bool      { return r.Percentage != -1 }
+func (r *EgressState) IsConfigured() bool         { return r.Scope != "" }

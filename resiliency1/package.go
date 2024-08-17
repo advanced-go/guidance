@@ -89,14 +89,33 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 
 // State
 
+// NewIngressRedirectState - initialize
+func NewIngressRedirectState() *IngressRedirectState {
+	s := new(IngressRedirectState)
+	s.Percent = -1
+	s.Latency = -1
+	s.Minimum = -1
+	s.Percentage = -1
+	return s
+}
+
 // GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
-func GetIngressRedirectState(ctx context.Context, origin core.Origin) (IngressRedirectState, *core.Status) {
-	return IngressRedirectState{}, core.StatusOK()
+func GetIngressRedirectState(ctx context.Context, origin core.Origin) (*IngressRedirectState, *core.Status) {
+	return NewIngressRedirectState(), core.StatusOK()
+}
+
+// NewIngressResiliencyState - initialize
+func NewIngressResiliencyState() *IngressResiliencyState {
+	s := new(IngressResiliencyState)
+	s.Percent = -1
+	s.Latency = -1
+	s.Minimum = -1
+	return s
 }
 
 // GetIngressResiliencyState - retrieve the state needed to start the ingress resiliency agent
-func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (IngressResiliencyState, *core.Status) {
-	return IngressResiliencyState{}, core.StatusOK()
+func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (*IngressResiliencyState, *core.Status) {
+	return NewIngressResiliencyState(), core.StatusOK()
 }
 
 // GetEgressState - retrieve the state needed to start the egress resiliency agent
