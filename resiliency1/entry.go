@@ -1,6 +1,7 @@
 package resiliency1
 
 import (
+	"github.com/advanced-go/stdlib/core"
 	"time"
 )
 
@@ -44,5 +45,15 @@ type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 	DetailKey string    `json:"detail-key"` // How to query a detail entry, which is a part of the host
 	Status    string    `json:"status"`     // active,in-active
+}
 
+func (e Entry) Origin() core.Origin {
+	return core.Origin{
+		Region:  e.Region,
+		Zone:    e.Zone,
+		SubZone: e.SubZone,
+		Host:    e.Host,
+		//InstanceId: "",
+		//Route:      "",
+	}
 }
