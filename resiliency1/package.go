@@ -131,16 +131,16 @@ func GetAssignments(ctx context.Context, origin core.Origin) ([]Entry, *core.Sta
 }
 
 // GetEntryCDC - retrieve Entry CDC
-func GetEntryCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
+func GetEntryCDC(ctx context.Context, origin core.Origin, lastId int) ([]CDCEntry, *core.Status) {
 	return []CDCEntry{}, core.StatusOK()
 }
 
 // GetRedirectPlanCDC - retrieve RedirectPlan CDC
-func GetRedirectPlanCDC(ctx context.Context, origin core.Origin) ([]CDCRedirect, *core.Status) {
+func GetRedirectPlanCDC(ctx context.Context, origin core.Origin, lastId int) ([]CDCRedirect, *core.Status) {
 	return []CDCRedirect{}, core.StatusOK()
 }
 
 // GetFailoverPlanCDC - retrieve FailoverPlan CDC
-func GetFailoverPlanCDC(ctx context.Context, origin core.Origin) ([]CDCFailover, *core.Status) {
+func GetFailoverPlanCDC(ctx context.Context, origin core.Origin, lastId int) ([]CDCFailover, *core.Status) {
 	return []CDCFailover{}, core.StatusOK()
 }
