@@ -126,21 +126,22 @@ func GetEgressState(ctx context.Context, origin core.Origin) ([]EgressState, *co
 // CDC
 
 // GetAssignments - retrieve existing Entry
-func GetAssignments(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func GetAssignments(ctx context.Context, origin core.Origin) ([]Entry, int, *core.Status) {
+	lastId := 0
+	return []Entry{}, lastId, core.StatusOK()
 }
 
 // GetNewAssignments - retrieve new Entry
-func GetNewAssignments(ctx context.Context, origin core.Origin, lastId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func GetNewAssignments(ctx context.Context, origin core.Origin, lastId int) ([]Entry, int, *core.Status) {
+	return []Entry{}, lastId, core.StatusOK()
 }
 
 // GetUpdatedRedirectPlans - retrieve updated RedirectPlan
-func GetUpdatedRedirectPlans(ctx context.Context, origin core.Origin, lastId int) ([]RedirectPlan, *core.Status) {
-	return []RedirectPlan{}, core.StatusOK()
+func GetUpdatedRedirectPlans(ctx context.Context, origin core.Origin, lastId int) ([]RedirectPlan, int, *core.Status) {
+	return []RedirectPlan{}, lastId, core.StatusOK()
 }
 
 // GetUpdatedFailoverPlans - retrieve updated FailoverPlan
-func GetUpdatedFailoverPlans(ctx context.Context, origin core.Origin, lastId int) ([]FailoverPlan, *core.Status) {
-	return []FailoverPlan{}, core.StatusOK()
+func GetUpdatedFailoverPlans(ctx context.Context, origin core.Origin, lastId int) ([]FailoverPlan, int, *core.Status) {
+	return []FailoverPlan{}, lastId, core.StatusOK()
 }
