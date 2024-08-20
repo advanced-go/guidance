@@ -61,7 +61,7 @@ func AddRedirectAction(ctx context.Context, origin core.Origin, action *Redirect
 }
 
 // SLO
-// Percentile SLOs are system generated and only need to be retrieved on a sceduled basis.
+// Percentile SLOs are system generated and only need to be retrieved on a scheduled basis.
 
 // GetPercentileSLO - retrieve the percentile SLO for an origin
 func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *core.Status) {
@@ -124,6 +124,11 @@ func GetEgressState(ctx context.Context, origin core.Origin) ([]EgressState, *co
 }
 
 // CDC
+
+// GetAssignments - retrieve Entry
+func GetAssignments(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
+}
 
 // GetEntryCDC - retrieve Entry CDC
 func GetEntryCDC(ctx context.Context, origin core.Origin) ([]CDCEntry, *core.Status) {
