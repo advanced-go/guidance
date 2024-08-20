@@ -21,12 +21,12 @@ const (
 // Really only need a put
 
 // Put - resource PUT, with optional content override
-func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
+func Put(r *http.Request, body []HostEntry) (http.Header, *core.Status) {
 	if r == nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
 	if body == nil {
-		content, status := json2.New[[]Entry](r.Body, r.Header)
+		content, status := json2.New[[]HostEntry](r.Body, r.Header)
 		if !status.OK() {
 			var e core.Log
 			e.Handle(status, core.RequestId(r.Header))
@@ -132,19 +132,19 @@ type LastCDCId struct {
 	Failover int
 }
 
-// GetAssignments - retrieve existing Entry
-func GetAssignments(ctx context.Context, origin core.Origin) ([]Entry, LastCDCId, *core.Status) {
+// GetHostEntries - retrieve existing HostEntry
+func GetHostEntries(ctx context.Context, origin core.Origin) ([]HostEntry, LastCDCId, *core.Status) {
 	last := LastCDCId{
 		Entry:    0,
 		Redirect: 0,
 		Failover: 0,
 	}
-	return []Entry{}, last, core.StatusOK()
+	return []HostEntry{}, last, core.StatusOK()
 }
 
-// GetNewAssignments - retrieve new Entry
-func GetNewAssignments(ctx context.Context, origin core.Origin, lastId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+// GetNewHostEntries - retrieve new HostEntry
+func GetNewHostEntries(ctx context.Context, origin core.Origin, lastId int) ([]HostEntry, *core.Status) {
+	return []HostEntry{}, core.StatusOK()
 }
 
 // GetUpdatedRedirectPlans - retrieve updated RedirectPlan

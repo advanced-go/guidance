@@ -22,21 +22,21 @@ const (
 
 var (
 	//safeEntry = common.NewSafe()
-	entryData = []Entry{
+	entryData = []HostEntry{
 		{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
-func lastEntry() Entry {
+func lastEntry() HostEntry {
 	return entryData[len(entryData)-1]
 }
 
-// Entry - host, utilize semantic versioning
+// HostEntry - host, utilize semantic versioning
 // This needs to be updated every time a host starts up. Detail data needs to find the Entry based on the
 // host name = entry detail key
 // Need distinct constraint on: region+zone+subzone+host
-type Entry struct {
+type HostEntry struct {
 	EntryId   int       `json:"entry-id"`
 	Region    string    `json:"region"`
 	Zone      string    `json:"zone"`
@@ -47,7 +47,7 @@ type Entry struct {
 	Status    string    `json:"status"`     // active,in-active
 }
 
-func (e Entry) Origin() core.Origin {
+func (e HostEntry) Origin() core.Origin {
 	return core.Origin{
 		Region:  e.Region,
 		Zone:    e.Zone,
