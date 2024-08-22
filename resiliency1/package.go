@@ -89,28 +89,9 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 
 // State
 
-// NewIngressRedirectState - initialize
-func NewIngressRedirectState() *IngressRedirectState {
-	s := new(IngressRedirectState)
-	s.Percent = DefaultPercentileSLO.Percent
-	s.Latency = DefaultPercentileSLO.Latency
-	s.Minimum = DefaultPercentileSLO.Minimum
-	s.Percentage = -1
-	return s
-}
-
 // GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
 func GetIngressRedirectState(ctx context.Context, origin core.Origin) (*IngressRedirectState, *core.Status) {
 	return NewIngressRedirectState(), core.StatusOK()
-}
-
-// NewIngressResiliencyState - initialize
-func NewIngressResiliencyState() *IngressResiliencyState {
-	s := new(IngressResiliencyState)
-	s.Percent = DefaultPercentileSLO.Percent
-	s.Latency = DefaultPercentileSLO.Latency
-	s.Minimum = DefaultPercentileSLO.Minimum
-	return s
 }
 
 // GetIngressResiliencyState - retrieve the state needed to start the ingress resiliency agent

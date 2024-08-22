@@ -1,5 +1,6 @@
 package resiliency1
 
+// IngressRedirectState - ingress redirect state
 type IngressRedirectState struct {
 	EntryId   int    `json:"entry-id"`
 	RouteName string `json:"route"`
@@ -17,9 +18,20 @@ type IngressRedirectState struct {
 	Percentage int `json:"percentage"`
 }
 
+// NewIngressRedirectState - initialize
+func NewIngressRedirectState() *IngressRedirectState {
+	s := new(IngressRedirectState)
+	s.Percent = DefaultPercentileSLO.Percent
+	s.Latency = DefaultPercentileSLO.Latency
+	s.Minimum = DefaultPercentileSLO.Minimum
+	s.Percentage = -1
+	return s
+}
+
 func (r *IngressRedirectState) IsActive() bool     { return r.Percentage != -1 }
 func (r *IngressRedirectState) IsConfigured() bool { return r.Location != "" }
 
+// IngressResiliencyState - ingress resiliency state
 type IngressResiliencyState struct {
 	EntryId   int    `json:"entry-id"`
 	RouteName string `json:"route"`
@@ -34,13 +46,27 @@ type IngressResiliencyState struct {
 	Burst int     `json:"burst"`
 }
 
+// NewIngressResiliencyState - initialize
+func NewIngressResiliencyState() *IngressResiliencyState {
+	s := new(IngressResiliencyState)
+	s.Percent = DefaultPercentileSLO.Percent
+	s.Latency = DefaultPercentileSLO.Latency
+	s.Minimum = DefaultPercentileSLO.Minimum
+	return s
+}
+
 // No IsConfigured() as ingress resiliency is automatic without needing a plan
 
 // IsActive - active
 func (r *IngressResiliencyState) IsActive() bool { return r.Limit == -1 }
 
+// EgressState - egress state, needs origin for agent creation
 type EgressState struct {
 	EntryId   int    `json:"entry-id"`
+	Region    string `json:"region"`
+	Zone      string `json:"zone"`
+	SubZone   string `json:"sub-zone"`
+	Host      string `json:"host"`
 	RouteName string `json:"route"`
 
 	// Failover plan
@@ -54,6 +80,18 @@ type EgressState struct {
 	// Routing action
 	Location   string `json:"location"`
 	Percentage int    `json:"percentage"`
+}
+
+// NewEgressState - initialize
+func NewEgressState() *EgressState {
+	s := new(EgressState)
+	s.Scope = ""
+	s.Threshold = -1
+	s.Limit = -1
+	s.Burst = -1
+	s.Location = ""
+	s.Percentage = -1
+	return s
 }
 
 func (r *EgressState) IsRateLimitingActive() bool { return r.Limit != -1 }
