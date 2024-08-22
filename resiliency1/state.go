@@ -1,6 +1,9 @@
 package resiliency1
 
 type IngressRedirectState struct {
+	EntryId   int    `json:"entry-id"`
+	RouteName string `json:"route"`
+
 	// Redirect plan
 	Location string `json:"location"`
 	Status   string `json:"status"` // Scheduled,In-Progress,Completed,Failed
@@ -18,6 +21,9 @@ func (r *IngressRedirectState) IsActive() bool     { return r.Percentage != -1 }
 func (r *IngressRedirectState) IsConfigured() bool { return r.Location != "" }
 
 type IngressResiliencyState struct {
+	EntryId   int    `json:"entry-id"`
+	RouteName string `json:"route"`
+
 	// Percentile SLO
 	Percent int `json:"percent"` // Used for latency, traffic, status codes, counter, profile
 	Latency int `json:"latency"` // Used for latency, saturation duration or traffic
@@ -34,6 +40,7 @@ type IngressResiliencyState struct {
 func (r *IngressResiliencyState) IsActive() bool { return r.Limit == -1 }
 
 type EgressState struct {
+	EntryId   int    `json:"entry-id"`
 	RouteName string `json:"route"`
 
 	// Failover plan
