@@ -19,13 +19,13 @@ type IngressRedirectState struct {
 }
 
 // NewIngressRedirectState - initialize
-func NewIngressRedirectState() *IngressRedirectState {
-	s := new(IngressRedirectState)
+func NewIngressRedirectState(s *IngressRedirectState) {
+	s.Location = ""
+	s.Status = ""
 	s.Percent = DefaultPercentileSLO.Percent
 	s.Latency = DefaultPercentileSLO.Latency
 	s.Minimum = DefaultPercentileSLO.Minimum
 	s.Percentage = -1
-	return s
 }
 
 func (r *IngressRedirectState) IsActive() bool     { return r.Percentage != -1 }
@@ -47,12 +47,12 @@ type IngressResiliencyState struct {
 }
 
 // NewIngressResiliencyState - initialize
-func NewIngressResiliencyState() *IngressResiliencyState {
-	s := new(IngressResiliencyState)
+func NewIngressResiliencyState(s *IngressResiliencyState) {
 	s.Percent = DefaultPercentileSLO.Percent
 	s.Latency = DefaultPercentileSLO.Latency
 	s.Minimum = DefaultPercentileSLO.Minimum
-	return s
+	s.Limit = -1
+	s.Burst = -1
 }
 
 // No IsConfigured() as ingress resiliency is automatic without needing a plan
@@ -83,15 +83,13 @@ type EgressState struct {
 }
 
 // NewEgressState - initialize
-func NewEgressState() *EgressState {
-	s := new(EgressState)
+func NewEgressState(s *EgressState) {
 	s.Scope = ""
 	s.Threshold = -1
 	s.Limit = -1
 	s.Burst = -1
 	s.Location = ""
 	s.Percentage = -1
-	return s
 }
 
 func (r *EgressState) IsRateLimitingActive() bool { return r.Limit != -1 }

@@ -65,7 +65,9 @@ func AddRedirectAction(ctx context.Context, origin core.Origin, action *Redirect
 
 // GetPercentileSLO - retrieve the percentile SLO for an origin
 func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *core.Status) {
-	return PercentileSLO{}, core.StatusOK()
+	var state PercentileSLO
+	NewPercentileSLO(&state)
+	return state, core.StatusOK()
 }
 
 // Plans
@@ -90,13 +92,17 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 // State
 
 // GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
-func GetIngressRedirectState(ctx context.Context, origin core.Origin) (*IngressRedirectState, *core.Status) {
-	return NewIngressRedirectState(), core.StatusOK()
+func GetIngressRedirectState(ctx context.Context, origin core.Origin) (IngressRedirectState, *core.Status) {
+	var state IngressRedirectState
+	NewIngressRedirectState(&state)
+	return state, core.StatusOK()
 }
 
 // GetIngressResiliencyState - retrieve the state needed to start the ingress resiliency agent
-func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (*IngressResiliencyState, *core.Status) {
-	return NewIngressResiliencyState(), core.StatusOK()
+func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (IngressResiliencyState, *core.Status) {
+	var state IngressResiliencyState
+	NewIngressResiliencyState(&state)
+	return state, core.StatusOK()
 }
 
 // GetEgressState - retrieve the state needed to start the egress resiliency agent
