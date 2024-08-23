@@ -89,6 +89,11 @@ func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *
 	return []FailoverPlan{}, core.StatusOK()
 }
 
+// DeleteFailoverPlan - delete the route egress plan
+func DeleteFailoverPlan(ctx context.Context, origin core.Origin) *core.Status {
+	return core.StatusOK()
+}
+
 // State
 
 // GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
