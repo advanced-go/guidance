@@ -59,18 +59,6 @@ func DeleteEgressConfig(ctx context.Context, origin core.Origin) *core.Status {
 	return core.StatusOK()
 }
 
-/*
-// GetRedirectPlan - retrieve the ingress redirect plan
-func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
-	return RedirectPlan{}, core.StatusOK()
-}
-// GetFailoverPlan - retrieve the route egress plan
-func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *core.Status) {
-	return []FailoverPlan{}, core.StatusOK()
-}
-
-*/
-
 // State
 
 // GetIngressRedirectState - retrieve the state needed to start the ingress redirect agent
@@ -94,19 +82,12 @@ func GetEgressState(ctx context.Context, origin core.Origin) ([]EgressState, *co
 
 // CDC
 
-// LastCDCId -
-type LastCDCId struct {
-	Entry    int
-	Redirect int
-	Failover int
-}
-
 // GetHostEntries - retrieve existing HostEntry
 func GetHostEntries(ctx context.Context, origin core.Origin) ([]HostEntry, LastCDCId, *core.Status) {
 	last := LastCDCId{
 		Entry:    0,
 		Redirect: 0,
-		Failover: 0,
+		Egress:   0,
 	}
 	return []HostEntry{}, last, core.StatusOK()
 }

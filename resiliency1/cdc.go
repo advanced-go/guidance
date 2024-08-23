@@ -2,6 +2,13 @@ package resiliency1
 
 import "time"
 
+// LastCDCId -
+type LastCDCId struct {
+	Entry    int
+	Redirect int
+	Egress   int
+}
+
 // CDCEntry - resiliency changes
 type CDCEntry struct {
 	CDCEntryId int       `json:"cdc-entry-id"`
