@@ -21,8 +21,10 @@ type EgressConfig struct {
 	AgentId    string    `json:"agent-id"`
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
 	CreatedTS  time.Time `json:"created-ts"`
-	Scope      string    `json:"scope"` // SubZone, Zone, Region, *, empty or none -> not configured
-	Threshold  int       `json:"threshold"`
+
+	// Failover configuration
+	Scope     string `json:"scope"`     // SubZone, Zone, Region, *, empty or none -> not configured
+	Threshold int    `json:"threshold"` // Percentage of traffic
 }
 
 func (p EgressConfig) Origin() core.Origin {

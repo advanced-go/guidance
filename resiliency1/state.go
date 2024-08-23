@@ -71,7 +71,7 @@ type EgressState struct {
 	Host      string `json:"host"`
 	RouteName string `json:"route"`
 
-	// Failover plan
+	// Failover configuration
 	Scope     string `json:"scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	Threshold int    `json:"threshold"`
 
