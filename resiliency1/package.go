@@ -46,17 +46,17 @@ func GetActions(ctx context.Context, origin core.Origin) (Actions, *core.Status)
 }
 
 // AddRateLimitingAction - add a rate limiting action
-func AddRateLimitingAction(ctx context.Context, origin core.Origin, action *RateLimitingAction) *core.Status {
+func AddRateLimitingAction(ctx context.Context, origin core.Origin, action RateLimitingAction) *core.Status {
 	return core.StatusOK()
 }
 
 // AddRoutingAction - add a routing action
-func AddRoutingAction(ctx context.Context, origin core.Origin, action *RoutingAction) *core.Status {
+func AddRoutingAction(ctx context.Context, origin core.Origin, action RoutingAction) *core.Status {
 	return core.StatusOK()
 }
 
 // AddRedirectAction - add a redirect action
-func AddRedirectAction(ctx context.Context, origin core.Origin, action *RedirectAction) *core.Status {
+func AddRedirectAction(ctx context.Context, origin core.Origin, action RedirectAction) *core.Status {
 	return core.StatusOK()
 }
 
