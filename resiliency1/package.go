@@ -37,29 +37,6 @@ func Put(r *http.Request, body []HostEntry) (http.Header, *core.Status) {
 	return nil, core.StatusOK() //put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 }
 
-// Actions - append only to maintain audit trail with inference
-
-// GetActions - retrieve the latest ingress and egress actions for all of an origin's routes. This is called on
-// host startup.
-func GetActions(ctx context.Context, origin core.Origin) (Actions, *core.Status) {
-	return Actions{}, core.StatusOK()
-}
-
-// AddRateLimitingAction - add a rate limiting action
-func AddRateLimitingAction(ctx context.Context, origin core.Origin, action RateLimitingAction) *core.Status {
-	return core.StatusOK()
-}
-
-// AddRoutingAction - add a routing action
-func AddRoutingAction(ctx context.Context, origin core.Origin, action RoutingAction) *core.Status {
-	return core.StatusOK()
-}
-
-// AddRedirectAction - add a redirect action
-func AddRedirectAction(ctx context.Context, origin core.Origin, action RedirectAction) *core.Status {
-	return core.StatusOK()
-}
-
 // SLO
 // Percentile SLOs are system generated and only need to be retrieved on a scheduled basis.
 
