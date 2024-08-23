@@ -29,12 +29,11 @@ type EgressConfig struct {
 
 func (p EgressConfig) Origin() core.Origin {
 	return core.Origin{
-		Region:     p.Region,
-		Zone:       p.Zone,
-		SubZone:    p.SubZone,
-		Host:       p.Host,
-		InstanceId: "",
-		Route:      p.RouteName,
+		Region:  p.Region,
+		Zone:    p.Zone,
+		SubZone: p.SubZone,
+		Host:    p.Host,
+		Route:   p.RouteName,
 	}
 }
 
@@ -42,6 +41,10 @@ func (p EgressConfig) Origin() core.Origin {
 // TODO : need to add CDC to this table for Agent data change notifications.
 type RedirectConfig struct {
 	EntryId    int       `json:"entry-id"`
+	Region     string    `json:"region"`
+	Zone       string    `json:"zone"`
+	SubZone    string    `json:"sub-zone"`
+	Host       string    `json:"host"`
 	RouteName  string    `json:"route"`
 	AgentId    string    `json:"agent-id"`
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
@@ -49,4 +52,14 @@ type RedirectConfig struct {
 	UpdatedTS  time.Time `json:"updated-ts"`
 	Location   string    `json:"location"`
 	Status     string    `json:"status"` // Scheduled,In-Progress,Completed,Failed
+}
+
+func (p RedirectConfig) Origin() core.Origin {
+	return core.Origin{
+		Region:  p.Region,
+		Zone:    p.Zone,
+		SubZone: p.SubZone,
+		Host:    p.Host,
+		Route:   p.RouteName,
+	}
 }
