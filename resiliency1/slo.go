@@ -10,7 +10,7 @@ var (
 // TODO : need to add CDC to this table for Agent data change notifications.
 type PercentileSLO struct {
 	EntryId   int       `json:"entry-id"`
-	RouteName string    `json:"route"`
+	Route     string    `json:"route"`
 	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
 

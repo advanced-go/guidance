@@ -13,7 +13,7 @@ type LastCDCId struct {
 type CDCEntry struct {
 	CDCEntryId int       `json:"cdc-entry-id"`
 	EntryId    int       `json:"entry-id"`
-	RouteName  string    `json:"route"`
+	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
 	Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
 	Action     string    `json:"action"`   // database update,delete,insert
@@ -23,7 +23,7 @@ type CDCEntry struct {
 type CDCRedirect struct {
 	CDCEntryId int       `json:"cdc-entry-id"`
 	EntryId    int       `json:"entry-id"`
-	RouteName  string    `json:"route"`
+	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
 	Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
 	Action     string    `json:"action"`   // database update,delete,insert
@@ -33,7 +33,7 @@ type CDCRedirect struct {
 type CDCFailover struct {
 	CDCEntryId int       `json:"cdc-entry-id"`
 	EntryId    int       `json:"entry-id"`
-	RouteName  string    `json:"route"`
+	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
 	Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
 	Action     string    `json:"action"`   // database update,delete,insert

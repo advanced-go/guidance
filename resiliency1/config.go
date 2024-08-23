@@ -17,14 +17,14 @@ type EgressConfig struct {
 	Zone       string    `json:"zone"`
 	SubZone    string    `json:"sub-zone"`
 	Host       string    `json:"host"`
-	RouteName  string    `json:"route"`
+	Route      string    `json:"route"`
 	AgentId    string    `json:"agent-id"`
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
 	CreatedTS  time.Time `json:"created-ts"`
 
 	// Failover configuration
-	Scope     string `json:"scope"`     // SubZone, Zone, Region, *, empty or none -> not configured
-	Threshold int    `json:"threshold"` // Percentage of traffic
+	FailoverScope     string `json:"scope"`     // SubZone, Zone, Region, *, empty or none -> not configured
+	FailoverThreshold int    `json:"threshold"` // Percentage of traffic
 }
 
 func (p EgressConfig) Origin() core.Origin {
@@ -33,7 +33,7 @@ func (p EgressConfig) Origin() core.Origin {
 		Zone:    p.Zone,
 		SubZone: p.SubZone,
 		Host:    p.Host,
-		Route:   p.RouteName,
+		Route:   p.Route,
 	}
 }
 
@@ -45,7 +45,7 @@ type RedirectConfig struct {
 	Zone       string    `json:"zone"`
 	SubZone    string    `json:"sub-zone"`
 	Host       string    `json:"host"`
-	RouteName  string    `json:"route"`
+	Route      string    `json:"route"`
 	AgentId    string    `json:"agent-id"`
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
 	CreatedTS  time.Time `json:"created-ts"`
@@ -60,6 +60,6 @@ func (p RedirectConfig) Origin() core.Origin {
 		Zone:    p.Zone,
 		SubZone: p.SubZone,
 		Host:    p.Host,
-		Route:   p.RouteName,
+		Route:   p.Route,
 	}
 }
