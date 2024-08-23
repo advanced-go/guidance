@@ -1,5 +1,7 @@
 package resiliency1
 
+import "github.com/advanced-go/stdlib/core"
+
 // IngressRedirectState - ingress redirect state
 type IngressRedirectState struct {
 	EntryId   int    `json:"entry-id"`
@@ -95,3 +97,14 @@ func NewEgressState(s *EgressState) {
 func (r *EgressState) IsRateLimitingActive() bool { return r.Limit != -1 }
 func (r *EgressState) IsRoutingActive() bool      { return r.Percentage != -1 }
 func (r *EgressState) IsConfigured() bool         { return r.Scope != "" }
+func (r *EgressState) Origin() core.Origin {
+	o := core.Origin{
+		Region:     r.Region,
+		Zone:       r.Zone,
+		SubZone:    r.SubZone,
+		Host:       r.Host,
+		InstanceId: "",
+		Route:      r.RouteName,
+	}
+	return o
+}
