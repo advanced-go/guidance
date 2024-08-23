@@ -5,13 +5,13 @@ import (
 	"time"
 )
 
-// FailoverPlan - egress routing
+// EgressConfig - egress routing
 // TODO : need to add CDC to this table for Agent data change notifications.
 // Threshold - when routing changes occur.
 // Value == -1 -> let system determine
 // Value == 0  -> no threshold, re-routing immediately
 // Value > 0   -> re-routing when threshold is met
-type FailoverPlan struct {
+type EgressConfig struct {
 	EntryId    int       `json:"entry-id"`
 	Region     string    `json:"region"`
 	Zone       string    `json:"zone"`
@@ -25,7 +25,7 @@ type FailoverPlan struct {
 	Threshold  int       `json:"threshold"`
 }
 
-func (p FailoverPlan) Origin() core.Origin {
+func (p EgressConfig) Origin() core.Origin {
 	return core.Origin{
 		Region:     p.Region,
 		Zone:       p.Zone,
@@ -36,9 +36,9 @@ func (p FailoverPlan) Origin() core.Origin {
 	}
 }
 
-// RedirectPlan - ingress redirect
+// RedirectConfig - ingress redirect
 // TODO : need to add CDC to this table for Agent data change notifications.
-type RedirectPlan struct {
+type RedirectConfig struct {
 	EntryId    int       `json:"entry-id"`
 	RouteName  string    `json:"route"`
 	AgentId    string    `json:"agent-id"`

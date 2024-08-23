@@ -47,17 +47,15 @@ func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *
 	return state, core.StatusOK()
 }
 
-// Plans
-// Redirect update only as the previous redirect is not needed??
-// Failover update only
+// Configuration
 
-// UpdateRedirectPlan - update the ingress redirect plan
-func UpdateRedirectPlan(ctx context.Context, origin core.Origin, status string) *core.Status {
+// UpdateRedirectConfig - update the ingress redirect configuration
+func UpdateRedirectConfig(ctx context.Context, origin core.Origin, status string) *core.Status {
 	return core.StatusOK()
 }
 
-// DeleteFailoverPlan - delete the route egress plan
-func DeleteFailoverPlan(ctx context.Context, origin core.Origin) *core.Status {
+// DeleteEgressConfig - delete the route egress config
+func DeleteEgressConfig(ctx context.Context, origin core.Origin) *core.Status {
 	return core.StatusOK()
 }
 
@@ -66,16 +64,10 @@ func DeleteFailoverPlan(ctx context.Context, origin core.Origin) *core.Status {
 func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
 	return RedirectPlan{}, core.StatusOK()
 }
-
-
-*/
-
-/*
 // GetFailoverPlan - retrieve the route egress plan
 func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *core.Status) {
 	return []FailoverPlan{}, core.StatusOK()
 }
-
 
 */
 
@@ -95,7 +87,7 @@ func GetIngressResiliencyState(ctx context.Context, origin core.Origin) (Ingress
 	return state, core.StatusOK()
 }
 
-// GetEgressState - retrieve the state needed to start the egress resiliency agent
+// GetEgressState - retrieve the state needed to start the egress resiliency agents for a host
 func GetEgressState(ctx context.Context, origin core.Origin) ([]EgressState, *core.Status) {
 	return []EgressState{}, core.StatusOK()
 }
@@ -124,12 +116,12 @@ func GetNewHostEntries(ctx context.Context, origin core.Origin, lastId int) ([]H
 	return []HostEntry{}, core.StatusOK()
 }
 
-// GetUpdatedRedirectPlans - retrieve updated RedirectPlan
-func GetUpdatedRedirectPlans(ctx context.Context, origin core.Origin, lastId int) ([]RedirectPlan, *core.Status) {
-	return []RedirectPlan{}, core.StatusOK()
+// GetUpdatedRedirectConfigs - retrieve updated Redirect configurations
+func GetUpdatedRedirectConfigs(ctx context.Context, origin core.Origin, lastId int) ([]RedirectConfig, *core.Status) {
+	return []RedirectConfig{}, core.StatusOK()
 }
 
-// GetUpdatedFailoverPlans - retrieve updated FailoverPlan
-func GetUpdatedFailoverPlans(ctx context.Context, origin core.Origin, lastId int) ([]FailoverPlan, *core.Status) {
-	return []FailoverPlan{}, core.StatusOK()
+// GetUpdatedEgressConfigs - retrieve updated Egress configurations
+func GetUpdatedEgressConfigs(ctx context.Context, origin core.Origin, lastId int) ([]EgressConfig, *core.Status) {
+	return []EgressConfig{}, core.StatusOK()
 }
