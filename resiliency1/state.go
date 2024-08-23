@@ -98,7 +98,7 @@ func (r *EgressState) IsRateLimitingActive() bool { return r.Limit != -1 }
 func (r *EgressState) IsRoutingActive() bool      { return r.Percentage != -1 }
 func (r *EgressState) IsConfigured() bool         { return r.Scope != "" }
 func (r *EgressState) Origin() core.Origin {
-	o := core.Origin{
+	return core.Origin{
 		Region:     r.Region,
 		Zone:       r.Zone,
 		SubZone:    r.SubZone,
@@ -106,5 +106,4 @@ func (r *EgressState) Origin() core.Origin {
 		InstanceId: "",
 		Route:      r.RouteName,
 	}
-	return o
 }

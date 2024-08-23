@@ -1,6 +1,9 @@
 package resiliency1
 
-import "time"
+import (
+	"github.com/advanced-go/stdlib/core"
+	"time"
+)
 
 // FailoverPlan - egress routing
 // TODO : need to add CDC to this table for Agent data change notifications.
@@ -10,12 +13,27 @@ import "time"
 // Value > 0   -> re-routing when threshold is met
 type FailoverPlan struct {
 	EntryId    int       `json:"entry-id"`
+	Region     string    `json:"region"`
+	Zone       string    `json:"zone"`
+	SubZone    string    `json:"sub-zone"`
+	Host       string    `json:"host"`
 	RouteName  string    `json:"route"`
 	AgentId    string    `json:"agent-id"`
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
 	CreatedTS  time.Time `json:"created-ts"`
 	Scope      string    `json:"scope"` // SubZone, Zone, Region, *, empty or none -> not configured
 	Threshold  int       `json:"threshold"`
+}
+
+func (p FailoverPlan) Origin() core.Origin {
+	return core.Origin{
+		Region:     p.Region,
+		Zone:       p.Zone,
+		SubZone:    p.SubZone,
+		Host:       p.Host,
+		InstanceId: "",
+		Route:      p.RouteName,
+	}
 }
 
 // RedirectPlan - ingress redirect
