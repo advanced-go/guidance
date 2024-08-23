@@ -51,25 +51,33 @@ func GetPercentileSLO(ctx context.Context, origin core.Origin) (PercentileSLO, *
 // Redirect update only as the previous redirect is not needed??
 // Failover update only
 
-// GetRedirectPlan - retrieve the ingress redirect plan
-func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
-	return RedirectPlan{}, core.StatusOK()
-}
-
 // UpdateRedirectPlan - update the ingress redirect plan
 func UpdateRedirectPlan(ctx context.Context, origin core.Origin, status string) *core.Status {
 	return core.StatusOK()
-}
-
-// GetFailoverPlan - retrieve the route egress plan
-func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *core.Status) {
-	return []FailoverPlan{}, core.StatusOK()
 }
 
 // DeleteFailoverPlan - delete the route egress plan
 func DeleteFailoverPlan(ctx context.Context, origin core.Origin) *core.Status {
 	return core.StatusOK()
 }
+
+/*
+// GetRedirectPlan - retrieve the ingress redirect plan
+func GetRedirectPlan(ctx context.Context, origin core.Origin) (RedirectPlan, *core.Status) {
+	return RedirectPlan{}, core.StatusOK()
+}
+
+
+*/
+
+/*
+// GetFailoverPlan - retrieve the route egress plan
+func GetFailoverPlan(ctx context.Context, origin core.Origin) ([]FailoverPlan, *core.Status) {
+	return []FailoverPlan{}, core.StatusOK()
+}
+
+
+*/
 
 // State
 
