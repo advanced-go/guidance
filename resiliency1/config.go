@@ -37,7 +37,7 @@ func (p EgressConfig) Origin() core.Origin {
 	}
 }
 
-// RedirectConfig - ingress redirect
+// RedirectConfig - ingress redirect, can be permanent or temporary
 // TODO : need to add CDC to this table for Agent data change notifications.
 type RedirectConfig struct {
 	EntryId    int       `json:"entry-id"`
@@ -50,8 +50,14 @@ type RedirectConfig struct {
 	SQLCommand string    `json:"sql-command"` // insert,update,delete
 	CreatedTS  time.Time `json:"created-ts"`
 	UpdatedTS  time.Time `json:"updated-ts"`
-	Location   string    `json:"location"`
-	Status     string    `json:"status"` // Scheduled,In-Progress,Completed,Failed
+
+	// Redirection attributes.
+	StatusCode int           `json:"status-code"` // 307 - temporary, 308 permanent
+	Filter     string        `json:"filter"`      // JSON redirect filter for traffic, using request attributes
+	Duration   time.Duration `json:"duration"`    // redirect for a duration
+	DeadlineTS time.Time     `json:"deadline-ts"` // redirect until a deadline
+	Location   string        `json:"location"`    // URL or just host name?
+	Status     string        `json:"status"`      // Scheduled,In-Progress,Completed,Failed
 }
 
 func (p RedirectConfig) Origin() core.Origin {
