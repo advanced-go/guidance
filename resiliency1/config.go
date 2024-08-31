@@ -71,37 +71,40 @@ func (p RedirectConfig) Origin() core.Origin {
 }
 
 // Redirect - configuration for a permanent or temporary redirect
+// Origin scope
+// sub-zone - not possible as the location would be the current host
+// zone     - allows redirect between sub-zones
+// region   - allows redirect between zones
+// global   - allows redirect between regions
 type Redirect struct {
+	EntryId    int       `json:"entry-id"`
+	Region     string    `json:"region"`
+	Zone       string    `json:"zone"`
+	SubZone    string    `json:"sub-zone"`
+	Host       string    `json:"host"`
+	Route      string    `json:"route"`
+	AgentId    string    `json:"agent-id"`
+	SQLCommand string    `json:"sql-command"` // insert,update,delete
+	CreatedTS  time.Time `json:"created-ts"`
+
 	StatusCode string `json:"status-code"` // 307 - temporary, 308 permanent
-
-	// Host name and origin.
-	Location RedirectLocation
-	Filter   RedirectFilter
-	Policy   RedirectPolicy
+	Location   string `json:"location"`
+	Scope      string `json:"scope"` // zone, region, global
+	Policy     RedirectPolicy
 }
 
-// RedirectLocation - configured redirect host name and origin
-type RedirectLocation struct {
-	Host string `json:"host"` // host name
+// RedirectStatus - status changes to redirect
+type RedirectStatus struct {
+	EntryId   int       `json:"entry-id"`
+	Region    string    `json:"region"`
+	Zone      string    `json:"zone"`
+	SubZone   string    `json:"sub-zone"`
+	Host      string    `json:"host"`
+	Route     string    `json:"route"`
+	AgentId   string    `json:"agent-id"`
+	CreatedTS time.Time `json:"created-ts"`
 
-	// Origin template to determine where a host is located.
-	// If nothing is configured, then the current Origin is used.
-	// Configurations act as filters/templates to select a particular host in a region
-	RegionT  string `json:"region-t"`
-	ZoneT    string `json:"zone-t"`
-	SubZoneT string `json:"sub-zone-t"`
-	HostT    string `json:"host-t"`
-}
-
-// RedirectFilter - defines how to select traffic to be redirected
-type RedirectFilter struct {
-	// Percentage - percentage of traffic, only allow multiples of 10: 10, 30, 50
-	//Percentage int //
-
-	// Or, request filtering, with methods and headers logical AND
-	Methods string            // List of comma seperated values, GET,PUT,POST, or * or empty
-	Headers map[string]string // JSON list of header name value pairs
-
+	Status string `json:"status"` // Scheduled,In-Progress,Completed,Failed
 }
 
 // RedirectPolicy - defines how the redirect is processed. Steps are the levels of traffic.
@@ -109,9 +112,14 @@ type RedirectFilter struct {
 // Note: there is no configuration to determine when to redirect on egress traffic. In other
 // words, how long is spent on rate limiting vs redirect is left to experience.
 type RedirectPolicy struct {
-	Steps string // List of comma seperated values,a default of 10,20,40,70,100
+	// Filter
+	Methods string            `json:"methods"` // List of comma seperated values, GET,PUT,POST, or * or empty
+	Headers map[string]string // JSON list of header name value pairs
 
+	// Traffic rollout
+	Thresholds string `json:"thresholds"` // List of comma seperated percentages,a default of 10,20,40,70,100
+
+	// Time span for temporary redirect
 	Duration   time.Duration `json:"duration"`    // redirect for a duration
 	DeadlineTS time.Time     `json:"deadline-ts"` // redirect until a deadline
-
 }
