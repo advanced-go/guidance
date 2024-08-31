@@ -6,6 +6,7 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -18,7 +19,14 @@ const (
 	RedirectStatusFailed      = "failed"
 )
 
-// Really only need a put
+// Get - resiliency1 GET
+func Get(ctx context.Context, h http.Header, values url.Values) (entries []RedirectConfig, h2 http.Header, status *core.Status) {
+	return entries, h, core.StatusOK()
+}
+
+func Delete(ctx context.Context, h http.Header, values url.Values) (h2 http.Header, status *core.Status) {
+	return h, core.StatusOK()
+}
 
 // Put - resource PUT, with optional content override
 func Put(r *http.Request, body []HostEntry) (http.Header, *core.Status) {

@@ -69,3 +69,49 @@ func (p RedirectConfig) Origin() core.Origin {
 		Route:   p.Route,
 	}
 }
+
+// Redirect - configuration for a permanent or temporary redirect
+type Redirect struct {
+	StatusCode string `json:"status-code"` // 307 - temporary, 308 permanent
+
+	// Host name and origin.
+	Location RedirectLocation
+	Filter   RedirectFilter
+	Policy   RedirectPolicy
+}
+
+// RedirectLocation - configured redirect host name and origin
+type RedirectLocation struct {
+	Host string `json:"host"` // host name
+
+	// Origin template to determine where a host is located.
+	// If nothing is configured, then the current Origin is used.
+	// Configurations act as filters/templates to select a particular host in a region
+	RegionT  string `json:"region-t"`
+	ZoneT    string `json:"zone-t"`
+	SubZoneT string `json:"sub-zone-t"`
+	HostT    string `json:"host-t"`
+}
+
+// RedirectFilter - defines how to select traffic to be redirected
+type RedirectFilter struct {
+	// Percentage - percentage of traffic, only allow multiples of 10: 10, 30, 50
+	//Percentage int //
+
+	// Or, request filtering, with methods and headers logical AND
+	Methods string            // List of comma seperated values, GET,PUT,POST, or * or empty
+	Headers map[string]string // JSON list of header name value pairs
+
+}
+
+// RedirectPolicy - defines how the redirect is processed. Steps are the levels of traffic.
+// Duration and deadline limit the amount of time.
+// Note: there is no configuration to determine when to redirect on egress traffic. In other
+// words, how long is spent on rate limiting vs redirect is left to experience.
+type RedirectPolicy struct {
+	Steps string // List of comma seperated values,a default of 10,20,40,70,100
+
+	Duration   time.Duration `json:"duration"`    // redirect for a duration
+	DeadlineTS time.Time     `json:"deadline-ts"` // redirect until a deadline
+
+}
