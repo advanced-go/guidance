@@ -88,12 +88,16 @@ type Redirect struct {
 	CreatedTS  time.Time `json:"created-ts"`
 
 	StatusCode string `json:"status-code"` // 307 - temporary, 308 permanent
-	Location   string `json:"location"`
-	Scope      string `json:"scope"` // zone, region, global
-	Policy     RedirectPolicy
+
+	// Redirect host selection
+	Location string `json:"location"`
+	Scope    string `json:"scope"` // zone, region, global
+
+	// Redirect processing directives
+	Policy RedirectPolicy
 }
 
-// RedirectStatus - status changes to redirect
+// RedirectStatus - status changes to redirect only for permanent, temporary redirect status is in access log
 type RedirectStatus struct {
 	EntryId   int       `json:"entry-id"`
 	Region    string    `json:"region"`
@@ -112,14 +116,15 @@ type RedirectStatus struct {
 // Note: there is no configuration to determine when to redirect on egress traffic. In other
 // words, how long is spent on rate limiting vs redirect is left to experience.
 type RedirectPolicy struct {
-	// Filter
+	// Filter for traffic to be redirected
 	Methods string            `json:"methods"` // List of comma seperated values, GET,PUT,POST, or * or empty
-	Headers map[string]string // JSON list of header name value pairs
+	Headers map[string]string `json:"headers"` // JSON list of header name value pairs
 
 	// Traffic rollout
 	Thresholds string `json:"thresholds"` // List of comma seperated percentages,a default of 10,20,40,70,100
 
 	// Time span for temporary redirect
+	StartTS    time.Time     `json:"start-ts"`    // redirect start time
 	Duration   time.Duration `json:"duration"`    // redirect for a duration
 	DeadlineTS time.Time     `json:"deadline-ts"` // redirect until a deadline
 }
