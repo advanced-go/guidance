@@ -11,7 +11,7 @@ type LastCDCId struct {
 
 // CDCEntry - resiliency changes
 type CDCEntry struct {
-	CDCEntryId int       `json:"cdc-entry-id"`
+	CDCEntryId int       `json:"host1-entry-id"`
 	EntryId    int       `json:"entry-id"`
 	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
@@ -21,7 +21,7 @@ type CDCEntry struct {
 
 // CDCRedirect - resiliency changes
 type CDCRedirect struct {
-	CDCEntryId int       `json:"cdc-entry-id"`
+	CDCEntryId int       `json:"host1-entry-id"`
 	EntryId    int       `json:"entry-id"`
 	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
@@ -31,7 +31,7 @@ type CDCRedirect struct {
 
 // CDCFailover - resiliency changes
 type CDCFailover struct {
-	CDCEntryId int       `json:"cdc-entry-id"`
+	CDCEntryId int       `json:"host1-entry-id"`
 	EntryId    int       `json:"entry-id"`
 	Route      string    `json:"route"`
 	CreatedTS  time.Time `json:"created-ts"`
