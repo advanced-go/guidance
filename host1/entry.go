@@ -29,21 +29,21 @@ type LastCDCId struct {
 
 var (
 	//safeEntry = common.NewSafe()
-	entryData = []HostEntry{
+	entryData = []Entry{
 		{Region: "us-west1", Zone: "a", Host: "www.host1.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{Region: "us-west1", Zone: "a", Host: "www.host2.com", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
-func lastEntry() HostEntry {
+func lastEntry() Entry {
 	return entryData[len(entryData)-1]
 }
 
-// HostEntry - host, utilize semantic versioning
+// Entry - host, utilize semantic versioning
 // This needs to be updated every time a host starts up. Detail data needs to find the Entry based on the
 // host name = entry detail key
 // Need distinct constraint on: region+zone+subzone+host
-type HostEntry struct {
+type Entry struct {
 	EntryId   int       `json:"entry-id"`
 	Region    string    `json:"region"`
 	Zone      string    `json:"zone"`
@@ -54,7 +54,7 @@ type HostEntry struct {
 	Status    string    `json:"status"`     // active,in-active
 }
 
-func (e HostEntry) Origin() core.Origin {
+func (e Entry) Origin() core.Origin {
 	return core.Origin{
 		Region:  e.Region,
 		Zone:    e.Zone,

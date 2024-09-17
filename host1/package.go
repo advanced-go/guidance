@@ -12,16 +12,16 @@ const (
 // CDC
 
 // GetHostEntries - retrieve existing HostEntry
-func GetHostEntries(ctx context.Context, origin core.Origin) ([]HostEntry, LastCDCId, *core.Status) {
+func GetHostEntries(ctx context.Context, origin core.Origin) ([]Entry, LastCDCId, *core.Status) {
 	last := LastCDCId{
 		Entry:    0,
 		Redirect: 0,
 		Egress:   0,
 	}
-	return []HostEntry{}, last, core.StatusOK()
+	return []Entry{}, last, core.StatusOK()
 }
 
 // GetNewHostEntries - retrieve new HostEntry
-func GetNewHostEntries(ctx context.Context, origin core.Origin, lastId int) ([]HostEntry, *core.Status) {
-	return []HostEntry{}, core.StatusOK()
+func GetNewHostEntries(ctx context.Context, origin core.Origin, lastId int) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
 }
