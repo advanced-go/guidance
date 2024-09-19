@@ -22,8 +22,13 @@ func QueryIngressHosts(ctx context.Context, origin core.Origin) ([]EntryQuery, L
 }
 
 // QueryNewIngressHosts - retrieve new host entries
-func QueryNewIngressHosts(ctx context.Context, origin core.Origin, lastId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func QueryNewIngressHosts(ctx context.Context, origin core.Origin, lastId int) ([]Entry, LastCDCId, *core.Status) {
+	last := LastCDCId{
+		Entry:    0,
+		Redirect: 0,
+		Egress:   0,
+	}
+	return []Entry{}, last, core.StatusOK()
 }
 
 // QueryEgressHosts - on startup, retrieve existing hosts and redirect status
@@ -37,6 +42,11 @@ func QueryEgressHosts(ctx context.Context, origin core.Origin) ([]EntryQuery, La
 }
 
 // QueryNewEgressHosts - retrieve new host entries
-func QueryNewEgressHosts(ctx context.Context, origin core.Origin, lastId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func QueryNewEgressHosts(ctx context.Context, origin core.Origin, lastId int) ([]Entry, LastCDCId, *core.Status) {
+	last := LastCDCId{
+		Entry:    0,
+		Redirect: 0,
+		Egress:   0,
+	}
+	return []Entry{}, last, core.StatusOK()
 }
