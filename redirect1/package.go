@@ -7,16 +7,59 @@ import (
 )
 
 const (
-	PkgPath                   = "github/advanced-go/guidance/resiliency1"
+	PkgPath                   = "github/advanced-go/guidance/redirect1"
 	PercentilePollingDuration = time.Hour * 12
 	RedirectStatusScheduled   = "scheduled"
 	RedirectStatusInProgress  = "in-progress"
 	RedirectStatusSucceeded   = "succeeded"
 	RedirectStatusFailed      = "failed"
+	RedirectStatusTerminated  = "terminated"
+	RedirectStatusActive      = "active"
+	RedirectStatusInactive    = "inactive"
 )
 
-// Ingress
+// Ingress CaseOfficer functions for the following:
+//   Startup - create and run Redirect agents
+//   New - check for new Redirects after startup
+//   Terminated Status - notify a Redirect agent if a redirect has been terminated by a user
 
+// QueryIngressOpen - find all open redirects, based on status. Used on case officer startup to create
+// the necessary Redirect agents
+func QueryIngressOpen(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
+}
+
+// QueryIngressNew - find new redirects
+func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
+}
+
+// QueryIngressTerminated - find terminated redirects
+func QueryIngressTerminated(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+	return []core.Origin{}, core.StatusOK()
+}
+
+// Egress CaseOfficer functions for the following:
+//   Startup - create and run Redirect agents
+//   New - check for new Redirects after startup, notify Egress agent
+//   Status - notify an Egress agent if a redirect has been activated/de-activated
+
+// QueryEgressNew - find new redirects
+func QueryEgressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
+}
+
+// QueryEgressInactive - find inactive redirects
+func QueryEgressInactive(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+	return []core.Origin{}, core.StatusOK()
+}
+
+// GetEgress - retrieve an egress
+func GetEgress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+	return Entry, core.StatusOK()
+}
+
+/*
 // GetIngressRedirect - get ingress redirect
 func GetIngressRedirect(ctx context.Context, origin core.Origin) ([]RedirectConfig, *core.Status) {
 	return []RedirectConfig{}, core.StatusOK()
@@ -44,7 +87,6 @@ func GetUpdatedEgressRedirect(ctx context.Context, origin core.Origin, lastId in
 	return []RedirectConfig{}, core.StatusOK()
 }
 
-/*
 // UpdateRedirectConfig - update the ingress redirect configuration
 func UpdateRedirectConfig(ctx context.Context, origin core.Origin, status string) *core.Status {
 	return core.StatusOK()
