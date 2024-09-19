@@ -19,9 +19,10 @@ import (
 // region   - allows redirect between zones
 // global   - allows redirect between regions
 type Entry struct {
-	EntryId   int         `json:"entry-id"`
-	Origin    core.Origin `json:"origin"`
-	CreatedTS time.Time   `json:"created-ts"`
+	EntryId    int         `json:"entry-id"`
+	RedirectId int         `json:"redirect-id"`
+	Origin     core.Origin `json:"origin"`
+	CreatedTS  time.Time   `json:"created-ts"`
 
 	// 307 - temporary, 308 permanent
 	StatusCode string `json:"status-code"`
@@ -66,11 +67,12 @@ type CDCEntry struct {
 
 // Status - status changes to redirect only for permanent, temporary redirect status is in access log
 type Status struct {
-	EntryId   int         `json:"entry-id"`
-	Origin    core.Origin `json:"origin"`
-	AgentId   string      `json:"agent-id"`
-	CreatedTS time.Time   `json:"created-ts"`
-	Status    string      `json:"status"` // Scheduled,In-Progress,Completed,Failed,Terminated
+	RedirectId int         `json:"redirect-id"`
+	StatusId   int         `json:"status-id"`
+	Origin     core.Origin `json:"origin"`
+	AgentId    string      `json:"agent-id"`
+	CreatedTS  time.Time   `json:"created-ts"`
+	Status     string      `json:"status"` // Scheduled,In-Progress,Completed,Failed,Terminated
 }
 
 // CDCStatus - resiliency changes

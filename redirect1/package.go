@@ -25,28 +25,32 @@ const (
 
 // QueryIngressOpen - find all open redirects, based on status. Used on case officer startup to create
 // the necessary Redirect agents
-func QueryIngressOpen(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
-}
+//func QueryIngressOpen(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
+//	return []Entry{}, core.StatusOK()
+//}
 
 // QueryIngressNew - find new redirects
-func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
-}
-
-// QueryIngressTerminated - find terminated redirects
-func QueryIngressTerminated(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
 }
 
+// QueryIngressInactive - find terminated redirects
+func QueryIngressInactive(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+	return []core.Origin{}, core.StatusOK()
+}
+
+// GetIngress - retrieve an ingress redirect
+func GetIngress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
+	return Entry{}, core.StatusOK()
+}
+
 // Egress CaseOfficer functions for the following:
-//   Startup - create and run Redirect agents
 //   New - check for new Redirects after startup, notify Egress agent
 //   Status - notify an Egress agent if a redirect has been activated/de-activated
 
 // QueryEgressNew - find new redirects
-func QueryEgressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func QueryEgressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
+	return []core.Origin{}, core.StatusOK()
 }
 
 // QueryEgressInactive - find inactive redirects
@@ -54,9 +58,14 @@ func QueryEgressInactive(ctx context.Context, origin core.Origin) ([]core.Origin
 	return []core.Origin{}, core.StatusOK()
 }
 
-// GetEgress - retrieve an egress
+// GetEgress - retrieve an egress redirect
 func GetEgress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
-	return Entry, core.StatusOK()
+	return Entry{}, core.StatusOK()
+}
+
+// GetHostEgress - retrieve all egress redirects for a host, selecting on the active parameter
+func GetHostEgress(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
+	return []Entry{}, core.StatusOK()
 }
 
 /*
