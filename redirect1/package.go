@@ -35,13 +35,18 @@ func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]
 }
 
 // QueryIngressInactive - find terminated redirects
-func QueryIngressInactive(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+func QueryIngressInactive(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
 }
 
 // GetIngress - retrieve an ingress redirect
 func GetIngress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
 	return Entry{}, core.StatusOK()
+}
+
+// AddIngressStatus - add a status
+func AddIngressStatus(ctx context.Context, origin core.Origin, status string) *core.Status {
+	return core.StatusOK()
 }
 
 // Egress CaseOfficer functions for the following:
@@ -54,7 +59,7 @@ func QueryEgressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]c
 }
 
 // QueryEgressInactive - find inactive redirects
-func QueryEgressInactive(ctx context.Context, origin core.Origin) ([]core.Origin, *core.Status) {
+func QueryEgressInactive(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
 }
 
@@ -66,6 +71,11 @@ func GetEgress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
 // GetHostEgress - retrieve all egress redirects for a host, selecting on the active parameter
 func GetHostEgress(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
 	return []Entry{}, core.StatusOK()
+}
+
+// AddEgressStatus - add a status
+func AddEgressStatus(ctx context.Context, origin core.Origin, status string) *core.Status {
+	return core.StatusOK()
 }
 
 /*
