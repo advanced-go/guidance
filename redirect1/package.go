@@ -40,8 +40,10 @@ func QueryIngressInactive(ctx context.Context, origin core.Origin, lastCDCId int
 }
 
 // GetIngress - retrieve an ingress redirect
-func GetIngress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
-	return Entry{}, core.StatusOK()
+func GetIngress(ctx context.Context, origin core.Origin) (IngressEntry, *core.Status) {
+	e := IngressEntry{}
+	SetRolloutDefaults(&e)
+	return e, core.StatusOK()
 }
 
 // AddIngressStatus - add a status
@@ -64,13 +66,13 @@ func QueryEgressInactive(ctx context.Context, origin core.Origin, lastCDCId int)
 }
 
 // GetEgress - retrieve an egress redirect
-func GetEgress(ctx context.Context, origin core.Origin) (Entry, *core.Status) {
-	return Entry{}, core.StatusOK()
+func GetEgress(ctx context.Context, origin core.Origin) (EgressEntry, *core.Status) {
+	return EgressEntry{}, core.StatusOK()
 }
 
 // GetHostEgress - retrieve all egress redirects for a host, selecting on the active parameter
-func GetHostEgress(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
-	return []Entry{}, core.StatusOK()
+func GetHostEgress(ctx context.Context, origin core.Origin) ([]EgressEntry, *core.Status) {
+	return []EgressEntry{}, core.StatusOK()
 }
 
 // AddEgressStatus - add a status

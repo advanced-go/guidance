@@ -5,35 +5,104 @@ import (
 	"time"
 )
 
+const (
+	DefaultStepDuration   = time.Minute * 5
+	DefaultStepThresholds = "10,20,40,70,100"
+)
+
 // Note: ingress redirects are permanent and process based. No changes are allowed to the Redirect information,
 // as the Redirect can be in progress. Terminating a running redirect can be achieved by adding a "terminated"
 // status
 //
-// Note: CDC needs to be enabled for Entry and Status
-//
+// Note: CDC needs to be enabled for IngressEntry, EgressEntry and IngressStatus
+//       No EgressStatus
 
-// Entry - configuration for a permanent or temporary redirect
-// Origin scope
-// sub-zone - not possible as the location would be the current host
-// zone     - allows redirect between sub-zones
-// region   - allows redirect between zones
-// global   - allows redirect between regions
-type Entry struct {
-	EntryId    int         `json:"entry-id"`
-	RedirectId int         `json:"redirect-id"`
-	Origin     core.Origin `json:"origin"`
-	CreatedTS  time.Time   `json:"created-ts"`
+// IngressEntry - configuration for a permanent or temporary redirect
+type IngressEntry struct {
+	Origin core.Origin `json:"origin"`
 
 	// 307 - temporary, 308 permanent
 	StatusCode string `json:"status-code"`
 
-	// Host selection
+	// Host URL or template
 	Location string `json:"location"`
-	Scope    string `json:"scope"` // zone, region, global
 
-	// Processing configuration
-	Policy Policy
+	// Traffic rollout default 0 / 10,20,40,70,100 / 5 minutes
+	StepRetries    int           `json:"step-retries"`    // Number of times to retry a step before failure
+	StepThresholds string        `json:"step-thresholds"` // List of comma seperated percentages
+	StepDuration   time.Duration `json:"step-duration"`   // How long to process a step
+
+	// Time attributes
+	StartTS  time.Time     `json:"start-ts"` // optional start time
+	Duration time.Duration `json:"duration"` // optional duration for a temporary redirect
 }
+
+func SetRolloutDefaults(e *IngressEntry) {
+	if e.StepThresholds == "" {
+		e.StepThresholds = DefaultStepThresholds
+	}
+	if e.StepDuration == 0 {
+		e.StepDuration = DefaultStepDuration
+	}
+}
+
+// EgressEntry - used for redirecting traffic when upstream host is saturating
+//
+// Scope - new host selection
+//
+//	sub-zone - not possible as the location would be the current host
+//	zone     - allows redirect between sub-zones
+//	region   - allows redirect between zones
+//	global   - allows redirect between regions
+//
+// Threshold - percentage of failure traffic needed to trigger a redirect
+//
+//	value == -1 -> let system determine, first try rate limiting, if not working, then redirect
+//	value == 0  -> no threshold, re-routing immediately when failures occur
+//	value > 0   -> re-routing when failure threshold is met
+type EgressEntry struct {
+	Origin    core.Origin `json:"origin"`
+	Scope     string      `json:"scope"`
+	Threshold int         `json:"threshold"`
+}
+
+/*
+
+// CDCIngressEntry - resiliency changes
+type CDCIngressEntry struct {
+	CDCEntryId int `json:"host1-entry-id"`
+	EntryId    int `json:"entry-id"`
+	//Route      string    `json:"route"`
+	CreatedTS time.Time `json:"created-ts"`
+	//Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
+	SQLCommand string `json:"sql-command"` // database update,delete,insert
+}
+
+// CDCStatus - resiliency changes
+type CDCStatus struct {
+	CDCEntryId int `json:"host1-entry-id"`
+	EntryId    int `json:"entry-id"`
+	//Route      string    `json:"route"`
+	CreatedTS time.Time `json:"created-ts"`
+	//Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
+	SQLCommand string `json:"sql-command"` // database update,delete,insert
+}
+
+
+*/
+
+/*
+
+// Status2 - status changes to redirect only for permanent, temporary redirect status is in access log
+type Status2 struct {
+	//RedirectId int         `json:"redirect-id"`
+	//StatusId   int         `json:"status-id"`
+	Origin    core.Origin `json:"origin"`
+	AgentId   string      `json:"agent-id"`
+	CreatedTS time.Time   `json:"created-ts"`
+	Status    string      `json:"status"` // Scheduled,In-Progress,Completed,Failed,Terminated
+}
+
 
 // Policy - defines how the redirect is processed. Steps are the levels of traffic.
 // Duration and deadline limit the amount of time.
@@ -55,32 +124,4 @@ type Policy struct {
 	Duration   time.Duration `json:"duration"`    // redirect for a duration
 }
 
-// CDCEntry - resiliency changes
-type CDCEntry struct {
-	CDCEntryId int `json:"host1-entry-id"`
-	EntryId    int `json:"entry-id"`
-	//Route      string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	//Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
-	SQLCommand string `json:"sql-command"` // database update,delete,insert
-}
-
-// Status - status changes to redirect only for permanent, temporary redirect status is in access log
-type Status struct {
-	RedirectId int         `json:"redirect-id"`
-	StatusId   int         `json:"status-id"`
-	Origin     core.Origin `json:"origin"`
-	AgentId    string      `json:"agent-id"`
-	CreatedTS  time.Time   `json:"created-ts"`
-	Status     string      `json:"status"` // Scheduled,In-Progress,Completed,Failed,Terminated
-}
-
-// CDCStatus - resiliency changes
-type CDCStatus struct {
-	CDCEntryId int `json:"host1-entry-id"`
-	EntryId    int `json:"entry-id"`
-	//Route      string    `json:"route"`
-	CreatedTS time.Time `json:"created-ts"`
-	//Resource   string    `json:"resource"` // header,ingress-routing,ingress-percentile,egress-routing
-	SQLCommand string `json:"sql-command"` // database update,delete,insert
-}
+*/
