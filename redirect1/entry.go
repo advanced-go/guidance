@@ -27,14 +27,13 @@ type IngressEntry struct {
 	// Host URL or template
 	Location string `json:"location"`
 
-	// Traffic rollout default 0 / 10,20,40,70,100 / 6 minutes
-	StepRetries    int           `json:"step-retries"`    // Number of times to retry a step before failure
+	// Traffic rollout  - optional, defaults: 10,20,40,70,100 / 6 minutes
 	StepThresholds string        `json:"step-thresholds"` // List of comma seperated percentages
 	StepDuration   time.Duration `json:"step-duration"`   // How long to process a step
 
-	// Time attributes
-	StartTS  time.Time     `json:"start-ts"` // optional start time
-	Duration time.Duration `json:"duration"` // optional duration for a temporary redirect
+	// Time attributes - optional
+	StartTS  time.Time     `json:"start-ts"` // start time
+	Duration time.Duration `json:"duration"` // duration for a temporary redirect
 }
 
 func SetRolloutDefaults(e *IngressEntry) {
@@ -57,9 +56,9 @@ func SetRolloutDefaults(e *IngressEntry) {
 //
 // Threshold - percentage of failure traffic needed to trigger a redirect
 //
-//	value == -1 -> let system determine, first try rate limiting, if not working, then redirect
-//	value == 0  -> no threshold, re-routing immediately when failures occur
-//	value > 0   -> re-routing when failure threshold is met
+//	value == -1  -> let system determine, first try rate limiting, if still failing, then redirect
+//	value ==  0  -> no threshold, re-routing immediately when failures occur
+//	value  >  0  -> re-routing when failure threshold is met
 type EgressEntry struct {
 	Origin    core.Origin `json:"origin"`
 	Scope     string      `json:"scope"`
