@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	DefaultStepDuration   = time.Minute * 5
+	DefaultStepDuration   = time.Minute * 6
 	DefaultStepThresholds = "10,20,40,70,100"
 )
 
@@ -27,7 +27,7 @@ type IngressEntry struct {
 	// Host URL or template
 	Location string `json:"location"`
 
-	// Traffic rollout default 0 / 10,20,40,70,100 / 5 minutes
+	// Traffic rollout default 0 / 10,20,40,70,100 / 6 minutes
 	StepRetries    int           `json:"step-retries"`    // Number of times to retry a step before failure
 	StepThresholds string        `json:"step-thresholds"` // List of comma seperated percentages
 	StepDuration   time.Duration `json:"step-duration"`   // How long to process a step
