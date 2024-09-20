@@ -18,6 +18,7 @@ const (
 //       No EgressStatus
 
 // IngressEntry - configuration for a permanent or temporary redirect
+// TODO: Determine if status codes should be configured to determine failure.
 type IngressEntry struct {
 	Origin core.Origin `json:"origin"`
 
@@ -27,9 +28,13 @@ type IngressEntry struct {
 	// Host URL or template
 	Location string `json:"location"`
 
+	// Failure thresholds
+	FailureStatusCodes string `json:"failure-status-codes"` // Comma seperated status codes, including templates
+	FailureThreshold   int    `json:"failure-threshold"`    // Percentage of traffic
+
 	// Traffic rollout  - optional, defaults: 10,20,40,70,100 / 6 minutes
 	StepThresholds string        `json:"step-thresholds"` // List of comma seperated percentages
-	StepDuration   time.Duration `json:"step-duration"`   // How long to process a step
+	StepDuration   time.Duration `json:"step-duration"`   // Step processing duration
 
 	// Time attributes - optional
 	StartTS  time.Time     `json:"start-ts"` // start time
