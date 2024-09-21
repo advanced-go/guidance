@@ -21,6 +21,7 @@ const (
 // TODO: Determine if status codes should be configured to determine failure.
 type IngressEntry struct {
 	Origin core.Origin `json:"origin"`
+	Status string      `json:"status"` // Current status
 
 	// 307 - temporary, 308 permanent
 	StatusCode string `json:"status-code"`
@@ -65,9 +66,11 @@ func SetRolloutDefaults(e *IngressEntry) {
 //	value ==  0  -> no threshold, re-routing immediately when failures occur
 //	value  >  0  -> re-routing when failure threshold is met
 type EgressEntry struct {
-	Origin    core.Origin `json:"origin"`
-	Scope     string      `json:"scope"`
-	Threshold int         `json:"threshold"`
+	Origin core.Origin `json:"origin"`
+	Status string      `json:"status"` // Current status
+
+	Scope     string `json:"scope"`
+	Threshold int    `json:"threshold"`
 }
 
 /*

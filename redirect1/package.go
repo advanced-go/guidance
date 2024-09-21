@@ -11,6 +11,7 @@ const (
 	PercentilePollingDuration = time.Hour * 12
 	RedirectStatusScheduled   = "scheduled"
 	RedirectStatusInProgress  = "in-progress"
+	RedirectStatusUpdate      = "update"
 	RedirectStatusSucceeded   = "succeeded"
 	RedirectStatusFailed      = "failed"
 	RedirectStatusTerminated  = "terminated"
@@ -28,7 +29,7 @@ const (
 //func QueryIngressOpen(ctx context.Context, origin core.Origin) ([]Entry, *core.Status) {
 //	return []Entry{}, core.StatusOK()
 //}
-
+/*
 // QueryIngressNew - find new redirects
 func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
@@ -38,23 +39,34 @@ func QueryIngressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]
 func QueryIngressInactive(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
 }
+*/
 
-// GetIngress - retrieve an ingress redirect
-func GetIngress(ctx context.Context, origin core.Origin) (IngressEntry, *core.Status) {
+// Ingress - retrieve an ingress redirect with status
+func Ingress(ctx context.Context, origin core.Origin) (IngressEntry, *core.Status) {
 	e := IngressEntry{}
 	SetRolloutDefaults(&e)
 	return e, core.StatusOK()
 }
 
-// AddIngressStatus - add a status
-func AddIngressStatus(ctx context.Context, origin core.Origin, status string) *core.Status {
+// Egress - retrieve an egress redirect
+func Egress(ctx context.Context, origin core.Origin) (EgressEntry, *core.Status) {
+	return EgressEntry{}, core.StatusOK()
+}
+
+// AllEgress - retrieve all egress redirects for a host, selecting on the active parameter
+func AllEgress(ctx context.Context, origin core.Origin) ([]EgressEntry, *core.Status) {
+	return []EgressEntry{}, core.StatusOK()
+}
+
+// AddStatus - add a status
+func AddStatus(ctx context.Context, origin core.Origin, status, comment string, ingress bool) *core.Status {
 	return core.StatusOK()
 }
 
 // Egress CaseOfficer functions for the following:
 //   New - check for new Redirects after startup, notify Egress agent
 //   Status - notify an Egress agent if a redirect has been activated/de-activated
-
+/*
 // QueryEgressNew - find new redirects
 func QueryEgressNew(ctx context.Context, origin core.Origin, lastCDCId int) ([]core.Origin, *core.Status) {
 	return []core.Origin{}, core.StatusOK()
@@ -65,20 +77,8 @@ func QueryEgressInactive(ctx context.Context, origin core.Origin, lastCDCId int)
 	return []core.Origin{}, core.StatusOK()
 }
 
-// GetEgress - retrieve an egress redirect
-func GetEgress(ctx context.Context, origin core.Origin) (EgressEntry, *core.Status) {
-	return EgressEntry{}, core.StatusOK()
-}
 
-// GetHostEgress - retrieve all egress redirects for a host, selecting on the active parameter
-func GetHostEgress(ctx context.Context, origin core.Origin) ([]EgressEntry, *core.Status) {
-	return []EgressEntry{}, core.StatusOK()
-}
-
-// AddEgressStatus - add a status
-func AddEgressStatus(ctx context.Context, origin core.Origin, status string) *core.Status {
-	return core.StatusOK()
-}
+*/
 
 /*
 // GetIngressRedirect - get ingress redirect

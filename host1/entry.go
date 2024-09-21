@@ -20,11 +20,18 @@ const (
 	EgressVersionName  = "egress_version"
 )
 
-// LastCDCId -
-type LastCDCId struct {
-	Entry    int
-	Redirect int
-	Egress   int
+// CDCState - last ids
+type CDCState struct {
+	Resource  string
+	LastCDCId int
+}
+
+// NewCDCState - create a new CDCState for a given resource: host,ingress,egress
+func NewCDCState(rsc string) *CDCState {
+	l := new(CDCState)
+	l.LastCDCId = -1
+	l.Resource = rsc
+	return l
 }
 
 // Entry - host, utilize semantic versioning
@@ -39,8 +46,9 @@ type Entry struct {
 	Status    string      `json:"status"`     // active,in-active
 }
 
-type EntryQuery struct {
-	Origin            core.Origin `json:"origin"`
-	IngressRedirectId int         `json:"ingress-redirect-id"`
-	EgressRedirectId  int         `json:"egress-redirect-id"`
+type EntryStatus struct {
+	Origin       core.Origin `json:"origin"`
+	EntryCDCId   int         `json:"entry-cdc-id"`
+	IngressCDCId int         `json:"ingress-cdc-id"`
+	EgressCDCId  int         `json:"egress-cdc-id"`
 }
