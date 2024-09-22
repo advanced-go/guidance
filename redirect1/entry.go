@@ -35,7 +35,7 @@ type IngressEntry struct {
 
 	// Traffic rollout  - optional, defaults: 10,20,40,70,100 / 6 minutes
 	StepThresholds string        `json:"step-thresholds"` // List of comma seperated percentages
-	StepDuration   time.Duration `json:"step-duration"`   // Step processing duration
+	StepDuration   time.Duration `json:"step-duration"`   // Step processing duration, must be >= 5 minutes
 
 	// Time attributes - optional
 	StartTS  time.Time     `json:"start-ts"` // start time
